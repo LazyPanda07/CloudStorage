@@ -1,0 +1,15 @@
+[submodule "INIParser"]
+	path = INIParser
+	url = https://github.com/LazyPanda07/INIParser.git
+[submodule "Log"]
+	path = Log
+	url = https://github.com/LazyPanda07/Log.git
+[submodule "SocketStreams"]
+	path = SocketStreams
+	url = https://github.com/LazyPanda07/SocketStreams.git
+[submodule "HTTP"]
+	path = HTTP
+	url = https://github.com/LazyPanda07/HTTP.git
+[submodule "BaseTCPServer"]
+	path = BaseTCPServer
+	url = https://github.com/LazyPanda07/BaseTCPServer.git
