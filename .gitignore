@@ -34,3 +34,6 @@
 # VS folders
 .vs/
 bin/
+
+# log files
+*.log

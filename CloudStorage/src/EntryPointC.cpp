@@ -6,7 +6,7 @@ int __stdcall wWinMain(HINSTANCE hInstance, HINSTANCE, PWSTR pCmdLine, int nCmdS
 
 	MSG msg = {};
 
-	while (GetMessageW(&msg,nullptr,NULL,NULL))
+	while (GetMessageW(&msg, nullptr, NULL, NULL))
 	{
 		TranslateMessage(&msg);
 		DispatchMessageW(&msg);
