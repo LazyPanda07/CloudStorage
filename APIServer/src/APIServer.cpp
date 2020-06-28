@@ -53,17 +53,17 @@ namespace web
 						{
 							const string& request = it->second;
 
-							if (request == filesRequests::downloadFile)
+							if (request == filesRequests::showAllFilesInDirectory)
 							{
-
+								showAllFilesInDirectory(clientStream, headers.find("Login")->second, headers.find("Directory")->second);
 							}
 							else if (request == filesRequests::uploadFile)
 							{
 
 							}
-							else if (request == filesRequests::showAllFilesInDirectory)
+							if (request == filesRequests::downloadFile)
 							{
-								showAllFilesInDirectory(clientStream, headers.find("Login")->second, headers.find("Directory")->second);
+
 							}
 							else
 							{

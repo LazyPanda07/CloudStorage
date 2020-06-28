@@ -3,8 +3,8 @@
 #include <string>
 
 inline constexpr std::string_view APIServerPort = "8500";
-inline constexpr std::string_view filesServerPort = "12500";
-inline constexpr std::string_view filesSeverIp = "31.207.173.47";
+inline constexpr std::string_view cloudStorageServerPort = "12500";
+inline constexpr std::string_view cloudStorageServerIp = "31.207.173.47";
 
 inline constexpr uint_fast16_t HTTPPacketSize = 4096;
 
@@ -24,5 +24,11 @@ namespace filesRequests
 namespace responses
 {
 	inline constexpr std::string_view okResponse = "OK";
+	inline constexpr std::string_view failResponse = "FAIL";
 	inline constexpr std::string_view unknownRequest = "Unknown request";
+}
+
+namespace filesResponses
+{
+	inline constexpr std::string_view emptyDirectory = "Directory is empty";
 }

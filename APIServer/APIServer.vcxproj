@@ -82,7 +82,9 @@
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)bin\$(Configuration)-$(Platform)\$(ProjectName)\</OutDir>
     <IntDir>$(SolutionDir)bin\int\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
-    <CustomBuildAfterTargets>ClCompile</CustomBuildAfterTargets>
+    <CustomBuildAfterTargets>
+    </CustomBuildAfterTargets>
+    <CustomBuildBeforeTargets>ClCompile</CustomBuildBeforeTargets>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
@@ -96,7 +98,9 @@
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)bin\$(Configuration)-$(Platform)\$(ProjectName)\</OutDir>
     <IntDir>$(SolutionDir)bin\int\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
-    <CustomBuildAfterTargets>ClCompile</CustomBuildAfterTargets>
+    <CustomBuildAfterTargets>
+    </CustomBuildAfterTargets>
+    <CustomBuildBeforeTargets>ClCompile</CustomBuildBeforeTargets>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -117,7 +121,6 @@
     <CustomBuildStep>
       <Command>IF EXIST $(SolutionDir)bin\int\$(Configuration)-$(Platform)\pch\vc$(PlatformToolsetVersion).pdb COPY /Y $(SolutionDir)bin\int\$(Configuration)-$(Platform)\pch\vc$(PlatformToolsetVersion).pdb $(IntDir)
 IF EXIST $(SolutionDir)bin\int\$(Configuration)-$(Platform)\pch\vc$(PlatformToolsetVersion).idb COPY /Y $(SolutionDir)bin\int\$(Configuration)-$(Platform)\pch\vc$(PlatformToolsetVersion).idb $(IntDir)
-
 </Command>
     </CustomBuildStep>
     <CustomBuildStep>
@@ -146,7 +149,8 @@ IF EXIST $(SolutionDir)bin\int\$(Configuration)-$(Platform)\pch\vc$(PlatformTool
     </Link>
     <CustomBuildStep>
       <Command>IF EXIST $(SolutionDir)bin\int\$(Configuration)-$(Platform)\pch\vc$(PlatformToolsetVersion).pdb COPY /Y $(SolutionDir)bin\int\$(Configuration)-$(Platform)\pch\vc$(PlatformToolsetVersion).pdb $(IntDir)
-IF EXIST $(SolutionDir)bin\int\$(Configuration)-$(Platform)\pch\vc$(PlatformToolsetVersion).idb COPY /Y $(SolutionDir)bin\int\$(Configuration)-$(Platform)\pch\vc$(PlatformToolsetVersion).idb $(IntDir)</Command>
+IF EXIST $(SolutionDir)bin\int\$(Configuration)-$(Platform)\pch\vc$(PlatformToolsetVersion).idb COPY /Y $(SolutionDir)bin\int\$(Configuration)-$(Platform)\pch\vc$(PlatformToolsetVersion).idb $(IntDir)
+</Command>
     </CustomBuildStep>
     <CustomBuildStep>
       <Outputs>$(IntDir)vc$(PlatformToolsetVersion).pdb</Outputs>
@@ -171,7 +175,6 @@ IF EXIST $(SolutionDir)bin\int\$(Configuration)-$(Platform)\pch\vc$(PlatformTool
     <CustomBuildStep>
       <Command>IF EXIST $(SolutionDir)bin\int\$(Configuration)-$(Platform)\pch\vc$(PlatformToolsetVersion).pdb COPY /Y $(SolutionDir)bin\int\$(Configuration)-$(Platform)\pch\vc$(PlatformToolsetVersion).pdb $(IntDir)
 IF EXIST $(SolutionDir)bin\int\$(Configuration)-$(Platform)\pch\vc$(PlatformToolsetVersion).idb COPY /Y $(SolutionDir)bin\int\$(Configuration)-$(Platform)\pch\vc$(PlatformToolsetVersion).idb $(IntDir)
-
 </Command>
     </CustomBuildStep>
     <CustomBuildStep>
@@ -200,7 +203,8 @@ IF EXIST $(SolutionDir)bin\int\$(Configuration)-$(Platform)\pch\vc$(PlatformTool
     </Link>
     <CustomBuildStep>
       <Command>IF EXIST $(SolutionDir)bin\int\$(Configuration)-$(Platform)\pch\vc$(PlatformToolsetVersion).pdb COPY /Y $(SolutionDir)bin\int\$(Configuration)-$(Platform)\pch\vc$(PlatformToolsetVersion).pdb $(IntDir)
-IF EXIST $(SolutionDir)bin\int\$(Configuration)-$(Platform)\pch\vc$(PlatformToolsetVersion).idb COPY /Y $(SolutionDir)bin\int\$(Configuration)-$(Platform)\pch\vc$(PlatformToolsetVersion).idb $(IntDir)</Command>
+IF EXIST $(SolutionDir)bin\int\$(Configuration)-$(Platform)\pch\vc$(PlatformToolsetVersion).idb COPY /Y $(SolutionDir)bin\int\$(Configuration)-$(Platform)\pch\vc$(PlatformToolsetVersion).idb $(IntDir)
+</Command>
     </CustomBuildStep>
     <CustomBuildStep>
       <Outputs>$(IntDir)vc$(PlatformToolsetVersion).pdb</Outputs>
