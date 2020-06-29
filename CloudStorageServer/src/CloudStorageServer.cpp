@@ -31,7 +31,13 @@ namespace web
 		clientStream >> login;
 		clientStream >> directory;
 
+		currentPath.append(usersDirectory);
 		currentPath.append(login);
+
+		if (!filesystem::exists(currentPath))
+		{
+			filesystem::create_directories(currentPath);
+		}
 
 		findDirectory(currentPath, directory);
 
