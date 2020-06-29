@@ -1,3 +1,5 @@
+#include "pch.h"
+
 #include "MainWindow.h"
 
 int __stdcall wWinMain(HINSTANCE hInstance, HINSTANCE, PWSTR pCmdLine, int nCmdShow)

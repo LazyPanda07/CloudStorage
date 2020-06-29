@@ -74,21 +74,25 @@
     <LinkIncremental>true</LinkIncremental>
     <OutDir>$(SolutionDir)bin\$(Configuration)-$(Platform)\$(ProjectName)\</OutDir>
     <IntDir>$(SolutionDir)bin\int\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
+    <CustomBuildBeforeTargets>ClCompile</CustomBuildBeforeTargets>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)bin\$(Configuration)-$(Platform)\$(ProjectName)\</OutDir>
     <IntDir>$(SolutionDir)bin\int\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
+    <CustomBuildBeforeTargets>ClCompile</CustomBuildBeforeTargets>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
     <OutDir>$(SolutionDir)bin\$(Configuration)-$(Platform)\$(ProjectName)\</OutDir>
     <IntDir>$(SolutionDir)bin\int\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
+    <CustomBuildBeforeTargets>ClCompile</CustomBuildBeforeTargets>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)bin\$(Configuration)-$(Platform)\$(ProjectName)\</OutDir>
     <IntDir>$(SolutionDir)bin\int\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
+    <CustomBuildBeforeTargets>ClCompile</CustomBuildBeforeTargets>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -97,11 +101,21 @@
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile>$(SolutionDir)bin\$(Configuration)-$(Platform)\pch\pch.pch</PrecompiledHeaderOutputFile>
+      <AdditionalIncludeDirectories>$(SolutionDir)pch\src</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
+    <CustomBuildStep>
+      <Command>IF EXIST $(SolutionDir)bin\int\$(Configuration)-$(Platform)\pch\vc$(PlatformToolsetVersion).pdb COPY /Y $(SolutionDir)bin\int\$(Configuration)-$(Platform)\pch\vc$(PlatformToolsetVersion).pdb $(IntDir)
+IF EXIST $(SolutionDir)bin\int\$(Configuration)-$(Platform)\pch\vc$(PlatformToolsetVersion).idb COPY /Y $(SolutionDir)bin\int\$(Configuration)-$(Platform)\pch\vc$(PlatformToolsetVersion).idb $(IntDir)
+</Command>
+      <Outputs>$(IntDir)vc$(PlatformToolsetVersion).pdb</Outputs>
+    </CustomBuildStep>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -112,6 +126,10 @@
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile>$(SolutionDir)bin\$(Configuration)-$(Platform)\pch\pch.pch</PrecompiledHeaderOutputFile>
+      <AdditionalIncludeDirectories>$(SolutionDir)pch\src</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -119,6 +137,12 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
+    <CustomBuildStep>
+      <Command>IF EXIST $(SolutionDir)bin\int\$(Configuration)-$(Platform)\pch\vc$(PlatformToolsetVersion).pdb COPY /Y $(SolutionDir)bin\int\$(Configuration)-$(Platform)\pch\vc$(PlatformToolsetVersion).pdb $(IntDir)
+IF EXIST $(SolutionDir)bin\int\$(Configuration)-$(Platform)\pch\vc$(PlatformToolsetVersion).idb COPY /Y $(SolutionDir)bin\int\$(Configuration)-$(Platform)\pch\vc$(PlatformToolsetVersion).idb $(IntDir)
+</Command>
+      <Outputs>$(IntDir)vc$(PlatformToolsetVersion).pdb</Outputs>
+    </CustomBuildStep>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -127,11 +151,21 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile>$(SolutionDir)bin\$(Configuration)-$(Platform)\pch\pch.pch</PrecompiledHeaderOutputFile>
+      <AdditionalIncludeDirectories>$(SolutionDir)pch\src</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
+    <CustomBuildStep>
+      <Command>IF EXIST $(SolutionDir)bin\int\$(Configuration)-$(Platform)\pch\vc$(PlatformToolsetVersion).pdb COPY /Y $(SolutionDir)bin\int\$(Configuration)-$(Platform)\pch\vc$(PlatformToolsetVersion).pdb $(IntDir)
+IF EXIST $(SolutionDir)bin\int\$(Configuration)-$(Platform)\pch\vc$(PlatformToolsetVersion).idb COPY /Y $(SolutionDir)bin\int\$(Configuration)-$(Platform)\pch\vc$(PlatformToolsetVersion).idb $(IntDir)
+</Command>
+      <Outputs>$(IntDir)vc$(PlatformToolsetVersion).pdb</Outputs>
+    </CustomBuildStep>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -142,6 +176,10 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile>$(SolutionDir)bin\$(Configuration)-$(Platform)\pch\pch.pch</PrecompiledHeaderOutputFile>
+      <AdditionalIncludeDirectories>$(SolutionDir)pch\src</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -149,6 +187,12 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
+    <CustomBuildStep>
+      <Command>IF EXIST $(SolutionDir)bin\int\$(Configuration)-$(Platform)\pch\vc$(PlatformToolsetVersion).pdb COPY /Y $(SolutionDir)bin\int\$(Configuration)-$(Platform)\pch\vc$(PlatformToolsetVersion).pdb $(IntDir)
+IF EXIST $(SolutionDir)bin\int\$(Configuration)-$(Platform)\pch\vc$(PlatformToolsetVersion).idb COPY /Y $(SolutionDir)bin\int\$(Configuration)-$(Platform)\pch\vc$(PlatformToolsetVersion).idb $(IntDir)
+</Command>
+      <Outputs>$(IntDir)vc$(PlatformToolsetVersion).pdb</Outputs>
+    </CustomBuildStep>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\MainWindow.cpp" />
@@ -156,6 +200,11 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\MainWindow.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\pch\pch.vcxproj">
+      <Project>{00878fb3-d378-4955-954a-b005d0e232fc}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

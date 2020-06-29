@@ -9,6 +9,9 @@ namespace UI
 	private:
 		HWND mainWindow;
 
+		HWND getFilesButton;
+		HWND list;
+
 	private:
 		MainWindow();
 
