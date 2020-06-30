@@ -202,6 +202,7 @@ IF EXIST $(SolutionDir)bin\int\$(Configuration)-$(Platform)\pch\vc$(PlatformTool
   <ItemGroup>
     <ClInclude Include="src\HTTPNetwork.h" />
     <ClInclude Include="src\MainWindow.h" />
+    <ClInclude Include="src\UIConstants.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\HTTP\HTTP.vcxproj">

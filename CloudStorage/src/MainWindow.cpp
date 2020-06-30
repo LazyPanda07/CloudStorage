@@ -6,17 +6,13 @@
 #include "HTTPParser.h"
 #include "IOSocketStream.h"
 #include "UtilityFunction.h"
+#include "UIConstants.h"
 
 #pragma comment (lib, "HTTP.lib")
 #pragma comment (lib, "SocketStreams.lib")
 #pragma comment (lib, "Log.lib")
 
 using namespace std;
-
-enum ButtonsEvents
-{
-	getFilesE = 0xfff
-};
 
 LRESULT __stdcall MainWindowProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam);
 
@@ -27,6 +23,7 @@ namespace UI
 	MainWindow::MainWindow()
 	{
 		WNDCLASSEXW wndClass = {};
+		POINT monitorCenter = utility::centerCoordinates(mainWindowUI::mainWindowWidth, mainWindowUI::mainWindowHeight);
 		wndClass.cbSize = sizeof(WNDCLASSEXW);
 		wndClass.lpfnWndProc = MainWindowProcedure;
 		wndClass.hbrBackground = CreateSolidBrush(RGB(255, 255, 255));
@@ -42,8 +39,8 @@ namespace UI
 			wndClass.lpszClassName,
 			L"Cloud Storage",
 			WS_OVERLAPPEDWINDOW | WS_VISIBLE,
-			CW_USEDEFAULT, CW_USEDEFAULT,
-			CW_USEDEFAULT, CW_USEDEFAULT,
+			monitorCenter.x, monitorCenter.y,
+			mainWindowUI::mainWindowWidth, mainWindowUI::mainWindowHeight,
 			nullptr,
 			HMENU(),
 			nullptr,
@@ -59,7 +56,7 @@ namespace UI
 			0, 0,
 			200, 20,
 			mainWindow,
-			HMENU(getFilesE),
+			HMENU(buttons::refresh),
 			nullptr,
 			nullptr
 		);
@@ -104,7 +101,7 @@ LRESULT __stdcall MainWindowProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM
 
 		switch (wparam)
 		{
-		case getFilesE:
+		case UI::buttons::refresh:
 			getFiles(list);
 
 			break;
@@ -112,6 +109,28 @@ LRESULT __stdcall MainWindowProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM
 		}
 
 		return 0;
+
+#pragma region CustomEvents
+	case UI::events::getFiles:
+		getFiles(list);
+
+		return 0;
+	case UI::events::uploadFile:
+
+		return 0;
+	case UI::events::uploadFiles:
+
+		return 0;
+	case UI::events::downloadFile:
+
+		return 0;
+	case UI::events::downLoadFiles:
+
+		return 0;
+	case UI::events::networkEventsCount:
+
+		return 0;
+#pragma endregion
 
 	case WM_CREATE:
 		list = reinterpret_cast<HWND>(wparam);
@@ -154,7 +173,7 @@ void getFiles(HWND list)
 		MessageBoxW
 		(
 			GetParent(list),
-			to_wstring(body).data(),
+			utility::to_wstring(body).data(),
 			L"Ошибка",
 			MB_OK
 		);
@@ -177,7 +196,7 @@ void getFiles(HWND list)
 
 		for (const auto& i : data)
 		{
-			SendMessageW(list, LB_ADDSTRING, NULL, reinterpret_cast<LPARAM>(to_wstring(i).data()));
+			SendMessageW(list, LB_ADDSTRING, NULL, reinterpret_cast<LPARAM>(utility::to_wstring(i).data()));
 		}
 	}
 }
