@@ -37,3 +37,6 @@ bin/
 
 # log files
 *.log
+
+# Users folders
+Data/
