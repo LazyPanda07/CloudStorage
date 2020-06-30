@@ -15,6 +15,8 @@ int main(int argc, char** argv)
 		web::CloudStorageServer server;
 		string command;
 
+		server.start();
+
 		while (true)
 		{
 			cin >> command;

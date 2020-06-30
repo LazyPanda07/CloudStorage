@@ -1,6 +1,15 @@
 #include "pch.h"
 
+#include "HTTPNetwork.h"
 #include "MainWindow.h"
+#include "HTTPBuilder.h"
+#include "HTTPParser.h"
+#include "IOSocketStream.h"
+#include "UtilityFunction.h"
+
+#pragma comment (lib, "HTTP.lib")
+#pragma comment (lib, "SocketStreams.lib")
+#pragma comment (lib, "Log.lib")
 
 using namespace std;
 
@@ -121,6 +130,54 @@ LRESULT __stdcall MainWindowProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM
 
 void getFiles(HWND list)
 {
+	streams::IOSocketStream<char> clientStream(new buffers::IOSocketBuffer<char>(new web::HTTPNetwork()));
+	string request = web::HTTPBuilder().postRequest().headers
+	(
+		"Files request", "Show all files in directory",
+		"Login", "Admin",
+		"Directory", "Home"
+	).build();
+	string response;
+	vector<string> data;
 
-	//SendMessageW(list, LB_ADDSTRING, NULL, reinterpret_cast<LPARAM>(files[i].data()));
+	clientStream << request;
+	clientStream >> response;
+
+	clientStream << responses::okResponse;
+
+	web::HTTPParser parser(response);
+	const string& error = parser.getHeaders().at("Error");
+	const string& body = parser.getBody();
+
+	if (error == "1")
+	{
+		MessageBoxW
+		(
+			GetParent(list),
+			to_wstring(body).data(),
+			L"Îøèáêà",
+			MB_OK
+		);
+	}
+	else
+	{
+		string tem;
+
+		for (const auto& i : body)
+		{
+			if (i == ':')
+			{
+				data.push_back(move(tem));
+			}
+			else
+			{
+				tem += i;
+			}
+		}
+
+		for (const auto& i : data)
+		{
+			SendMessageW(list, LB_ADDSTRING, NULL, reinterpret_cast<LPARAM>(to_wstring(i).data()));
+		}
+	}
 }

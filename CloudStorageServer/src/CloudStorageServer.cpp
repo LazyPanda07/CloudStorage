@@ -26,6 +26,7 @@ namespace web
 		string request;
 		string login;
 		string directory;
+		string end;
 
 		clientStream >> request;
 		clientStream >> login;
@@ -39,7 +40,10 @@ namespace web
 			filesystem::create_directories(currentPath);
 		}
 
-		findDirectory(currentPath, directory);
+		if (directory != "Home")
+		{
+			findDirectory(currentPath, directory);
+		}
 
 		if (request == filesRequests::showAllFilesInDirectory)
 		{
@@ -53,6 +57,8 @@ namespace web
 		{
 
 		}
+
+		clientStream >> end;
 	}
 
 	CloudStorageServer::CloudStorageServer() : BaseTCPServer(cloudStorageServerPort, false)
@@ -71,16 +77,25 @@ void showAllFilesInDirectory(streams::IOSocketStream<char>& clientStream, const 
 		result += i.path().filename().string() + ":";
 	}
 
-	if (result.empty())
+	try
 	{
-		clientStream << responses::failResponse;
-		clientStream << filesResponses::emptyDirectory;
+		if (result.empty())
+		{
+			clientStream << responses::failResponse;
+			clientStream << filesResponses::emptyDirectory;
+		}
+		else
+		{
+			clientStream << responses::okResponse;
+			clientStream << result;
+		}
 	}
-	else
+	catch (const web::WebException& e)
 	{
-		clientStream << responses::okResponse;
-		clientStream << result;
+		cout << e.what() << endl;
 	}
+
+	
 }
 
 void findDirectory(filesystem::path& currentPath, const string& directory)

@@ -106,8 +106,11 @@ void showAllFilesInDirectory(streams::IOSocketStream<char>& clientStream, const 
 	bool error;
 	string response;
 
+	//поток вывода для string_view стандартный вместо кастомного
+
 	try
 	{
+		filesStream << filesRequests::showAllFilesInDirectory;
 		filesStream << login;
 		filesStream << directory;
 
@@ -133,8 +136,8 @@ void showAllFilesInDirectory(streams::IOSocketStream<char>& clientStream, const 
 
 		clientStream << response;
 	}
-	catch (const web::WebException&)
+	catch (const web::WebException& e)
 	{
-
+		cout << e.what() << endl;
 	}
 }
