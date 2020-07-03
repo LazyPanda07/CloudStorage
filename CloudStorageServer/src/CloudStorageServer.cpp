@@ -49,11 +49,11 @@ namespace web
 		{
 			showAllFilesInDirectory(clientStream, currentPath);
 		}
-		else if (request == filesRequests::uploadFile)
+		else if (request == filesRequests::uploadFiles)
 		{
 
 		}
-		else if (request == filesRequests::downloadFile)
+		else if (request == filesRequests::downloadFiles)
 		{
 
 		}

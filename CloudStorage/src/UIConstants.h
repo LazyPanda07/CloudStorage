@@ -47,9 +47,7 @@ namespace UI
 		enum networkEvents
 		{
 			getFiles = buttons::authorizationScreenButtonsCount + 1,
-			uploadFile,
 			uploadFiles,
-			downloadFile,
 			downLoadFiles,
 			networkEventsCount
 		};

@@ -30,6 +30,8 @@ constexpr int_fast32_t sizeColumnIndex = 3;
 
 LRESULT __stdcall MainWindowProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam);
 
+LRESULT __stdcall DragAndDrop(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam, UINT_PTR uIdSubclass, DWORD_PTR dwRefData);
+
 void getFiles(HWND list, bool showError);
 
 void createColumns(HWND list);
@@ -103,7 +105,11 @@ namespace UI
 			nullptr
 		);
 
+		DragAcceptFiles(list, true);
+		SetWindowSubclass(list, &DragAndDrop, 1, 0);
+
 		createColumns(list);
+
 		SendMessageW(mainWindow, WM_CREATE, reinterpret_cast<WPARAM>(list), NULL);
 	}
 
@@ -150,15 +156,7 @@ LRESULT __stdcall MainWindowProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM
 
 		return 0;
 
-	case UI::events::uploadFile:
-
-		return 0;
-
 	case UI::events::uploadFiles:
-
-		return 0;
-
-	case UI::events::downloadFile:
 
 		return 0;
 
@@ -186,12 +184,42 @@ LRESULT __stdcall MainWindowProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM
 	}
 }
 
+LRESULT __stdcall DragAndDrop(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam, UINT_PTR uIdSubclass, DWORD_PTR dwRefData)
+{
+	switch (msg)
+	{
+	case WM_DROPFILES:
+	{
+		vector<wstring> data;
+		HDROP drop = reinterpret_cast<HDROP>(wparam);
+
+		UINT count = DragQueryFileW(drop, 0xFFFFFFFF, nullptr, NULL);
+
+		data.resize(count);
+
+		for (size_t i = 0; i < count; i++)
+		{
+			data[i].resize(DragQueryFileW(drop, i, nullptr, data[i].size()));
+
+			DragQueryFileW(drop, i, data[i].data(), data[i].size());
+		}
+
+		SendMessageW(GetParent(hwnd), UI::events::uploadFiles, reinterpret_cast<WPARAM>(&data), NULL);
+	}
+
+	return 0;
+
+	default:
+		return DefSubclassProc(hwnd, msg, wparam, lparam);
+	}
+}
+
 void getFiles(HWND list, bool showError)
 {
 	streams::IOSocketStream<char> clientStream(new buffers::IOSocketBuffer<char>(new web::HTTPNetwork()));
 	string request = web::HTTPBuilder().postRequest().headers
 	(
-		"Files request", "Show all files in directory",
+		typeRequests::filesType, filesRequests::showAllFilesInDirectory,
 		"Login", "Admin",
 		"Directory", "Home"
 	).build();

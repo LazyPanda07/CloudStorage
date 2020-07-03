@@ -39,7 +39,7 @@ namespace web
 				{
 					HTTPParser parser(request);
 					const map<string, string>& headers = parser.getHeaders();
-					auto it = headers.find("Account request");
+					auto it = headers.find(typeRequests::accountType);
 
 					if (it != end(headers))
 					{
@@ -47,7 +47,7 @@ namespace web
 					}
 					else
 					{
-						it = headers.find("Files request");
+						it = headers.find(typeRequests::filesType);
 
 						if (it != end(headers))
 						{
@@ -55,13 +55,13 @@ namespace web
 
 							if (request == filesRequests::showAllFilesInDirectory)
 							{
-								showAllFilesInDirectory(clientStream, headers.find("Login")->second, headers.find("Directory")->second);
+								showAllFilesInDirectory(clientStream, headers.at("Login"), headers.at("Directory"));
 							}
-							else if (request == filesRequests::uploadFile)
+							else if (request == filesRequests::uploadFiles)
 							{
-
+								
 							}
-							if (request == filesRequests::downloadFile)
+							if (request == filesRequests::downloadFiles)
 							{
 
 							}
@@ -105,8 +105,6 @@ void showAllFilesInDirectory(streams::IOSocketStream<char>& clientStream, const 
 	string serverResponse;
 	bool error;
 	string response;
-
-	//поток вывода для string_view стандартный вместо кастомного
 
 	try
 	{

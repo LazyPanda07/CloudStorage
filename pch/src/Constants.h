@@ -12,6 +12,12 @@ inline constexpr std::string_view usersDirectory = "Data";
 
 inline constexpr uint_fast16_t HTTPPacketSize = 4096;
 
+namespace typeRequests
+{
+	inline const std::string accountType = "Account request";
+	inline const std::string filesType = "Files request";
+}
+
 namespace accountRequest
 {
 	inline constexpr std::string_view authorization = "Authorization";
@@ -20,8 +26,8 @@ namespace accountRequest
 
 namespace filesRequests
 {
-	inline constexpr std::string_view uploadFile = "Upload file";
-	inline constexpr std::string_view downloadFile = "Download file";
+	inline constexpr std::string_view uploadFiles = "Upload file";
+	inline constexpr std::string_view downloadFiles = "Download file";
 	inline constexpr std::string_view showAllFilesInDirectory = "Show all files in directory";
 }
 
