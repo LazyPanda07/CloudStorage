@@ -8,21 +8,41 @@
 #include "UtilityFunction.h"
 #include "UIConstants.h"
 
+#include <Richedit.h>
+#include <commctrl.h>
+
+#pragma comment (lib, "Comctl32.lib")
+
 #pragma comment (lib, "HTTP.lib")
 #pragma comment (lib, "SocketStreams.lib")
 #pragma comment (lib, "Log.lib")
 
+#pragma comment(linker,"\"/manifestdependency:type='win32' \
+name='Microsoft.Windows.Common-Controls' version='6.0.0.0' \
+processorArchitecture='*' publicKeyToken='6595b64144ccf1df' language='*'\"")
+
 using namespace std;
+
+constexpr int_fast32_t nameColumnIndex = 0;
+constexpr int_fast32_t dateColumnIndex = 1;
+constexpr int_fast32_t typeColumnIndex = 2;
+constexpr int_fast32_t sizeColumnIndex = 3;
 
 LRESULT __stdcall MainWindowProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam);
 
-void getFiles(HWND list);
+void getFiles(HWND list, bool showError);
+
+void createColumns(HWND list);
+
+void updateNameColumn(HWND list, const vector<wstring>& data);
 
 namespace UI
 {
 	MainWindow::MainWindow()
 	{
 		WNDCLASSEXW wndClass = {};
+		INITCOMMONCONTROLSEX init;
+		init.dwICC = ICC_LISTVIEW_CLASSES;
 		POINT monitorCenter = utility::centerCoordinates(mainWindowUI::mainWindowWidth, mainWindowUI::mainWindowHeight);
 		wndClass.cbSize = sizeof(WNDCLASSEXW);
 		wndClass.lpfnWndProc = MainWindowProcedure;
@@ -32,6 +52,7 @@ namespace UI
 		wndClass.hIcon = LoadIconW(nullptr, IDI_APPLICATION);
 
 		RegisterClassExW(&wndClass);
+		InitCommonControlsEx(&init);
 
 		mainWindow = CreateWindowExW
 		(
@@ -47,14 +68,21 @@ namespace UI
 			nullptr
 		);
 
-		getFilesButton = CreateWindowExW
+		RECT mainWindowSizes;
+
+		GetClientRect(mainWindow, &mainWindowSizes);
+
+		const LONG width = mainWindowSizes.right - mainWindowSizes.left;
+		const LONG height = mainWindowSizes.bottom - mainWindowSizes.top;
+
+		refreshButton = CreateWindowExW
 		(
 			NULL,
 			L"BUTTON",
-			L"Получить список файлов",
+			L"Обновить список файлов",
 			WS_CHILDWINDOW | WS_VISIBLE,
 			0, 0,
-			200, 20,
+			toolbar::toolbarButtonWidth, toolbar::toolbarButtonHeight,
 			mainWindow,
 			HMENU(buttons::refresh),
 			nullptr,
@@ -64,17 +92,18 @@ namespace UI
 		list = CreateWindowExW
 		(
 			WS_EX_CLIENTEDGE,
-			L"LISTBOX",
+			WC_LISTVIEW,
 			nullptr,
-			WS_CHILDWINDOW | WS_VISIBLE | LBS_SORT | LBS_EXTENDEDSEL | LBS_MULTIPLESEL | WS_VSCROLL | LBS_NOINTEGRALHEIGHT,
-			400, 0,
-			200, 500,
+			WS_CHILDWINDOW | WS_VISIBLE | LVS_EDITLABELS | LVS_REPORT,
+			0, toolbar::toolbarHeight,
+			width, height - toolbar::toolbarHeight,
 			mainWindow,
 			HMENU(),
 			nullptr,
 			nullptr
 		);
 
+		createColumns(list);
 		SendMessageW(mainWindow, WM_CREATE, reinterpret_cast<WPARAM>(list), NULL);
 	}
 
@@ -89,6 +118,11 @@ namespace UI
 
 		return instance;
 	}
+
+	HWND MainWindow::getHWND() const
+	{
+		return mainWindow;
+	}
 }
 
 LRESULT __stdcall MainWindowProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
@@ -102,7 +136,7 @@ LRESULT __stdcall MainWindowProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM
 		switch (wparam)
 		{
 		case UI::buttons::refresh:
-			getFiles(list);
+			getFiles(list, true);
 
 			break;
 
@@ -112,21 +146,26 @@ LRESULT __stdcall MainWindowProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM
 
 #pragma region CustomEvents
 	case UI::events::getFiles:
-		getFiles(list);
+		getFiles(list, false);
 
 		return 0;
+
 	case UI::events::uploadFile:
 
 		return 0;
+
 	case UI::events::uploadFiles:
 
 		return 0;
+
 	case UI::events::downloadFile:
 
 		return 0;
+
 	case UI::events::downLoadFiles:
 
 		return 0;
+
 	case UI::events::networkEventsCount:
 
 		return 0;
@@ -147,7 +186,7 @@ LRESULT __stdcall MainWindowProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM
 	}
 }
 
-void getFiles(HWND list)
+void getFiles(HWND list, bool showError)
 {
 	streams::IOSocketStream<char> clientStream(new buffers::IOSocketBuffer<char>(new web::HTTPNetwork()));
 	string request = web::HTTPBuilder().postRequest().headers
@@ -157,7 +196,7 @@ void getFiles(HWND list)
 		"Directory", "Home"
 	).build();
 	string response;
-	vector<string> data;
+	vector<wstring> data;
 
 	clientStream << request;
 	clientStream >> response;
@@ -168,7 +207,28 @@ void getFiles(HWND list)
 	const string& error = parser.getHeaders().at("Error");
 	const string& body = parser.getBody();
 
-	if (error == "1")
+	if (error == "0")
+	{
+		string tem;
+
+		for (const auto& i : body)
+		{
+			if (i == ':')
+			{
+				data.push_back(utility::to_wstring(tem));
+
+				tem.clear();
+			}
+			else
+			{
+				tem += i;
+			}
+		}
+	}
+
+	updateNameColumn(list, data);
+
+	if (error == "1" && showError)
 	{
 		MessageBoxW
 		(
@@ -178,25 +238,70 @@ void getFiles(HWND list)
 			MB_OK
 		);
 	}
-	else
+}
+
+void createColumns(HWND list)
+{
+	HWND parent = GetParent(list);
+	array<LVCOLUMNW, UI::mainWindowUI::columnsInList> columns = {};
+	RECT mainWindowSizes;
+	RECT listSizes;
+
+	GetClientRect(parent, &mainWindowSizes);
+	GetClientRect(list, &listSizes);
+
+	LONG width = mainWindowSizes.right - mainWindowSizes.left;
+
+	array<LONG, UI::mainWindowUI::columnsInList> columnsSizes = { width * 0.4, width * 0.2, width * 0.2, width * 0.2 };
+
+	columns[0].pszText = const_cast<wchar_t*>(L"Имя");
+	columns[1].pszText = const_cast<wchar_t*>(L"Дата изменения");
+	columns[2].pszText = const_cast<wchar_t*>(L"Тип");
+	columns[3].pszText = const_cast<wchar_t*>(L"Размер");
+
+	for (size_t i = 0; i < columns.size(); i++)
 	{
-		string tem;
+		columns[i].mask = LVCF_FMT | LVCF_WIDTH | LVCF_TEXT | LVCF_SUBITEM;
+		columns[i].iSubItem = i;
+		columns[i].fmt = LVCFMT_LEFT;
+		columns[i].cx = columnsSizes[i];
 
-		for (const auto& i : body)
-		{
-			if (i == ':')
-			{
-				data.push_back(move(tem));
-			}
-			else
-			{
-				tem += i;
-			}
-		}
-
-		for (const auto& i : data)
-		{
-			SendMessageW(list, LB_ADDSTRING, NULL, reinterpret_cast<LPARAM>(utility::to_wstring(i).data()));
-		}
+		SendMessageW(list, LVM_INSERTCOLUMN, static_cast<WPARAM>(i), reinterpret_cast<LPARAM>(&columns[i]));
 	}
+
+	InvalidateRect(list, &listSizes, TRUE);
+}
+
+void updateNameColumn(HWND list, const vector<wstring>& data)
+{
+	bool success = false;
+
+	do
+	{
+		LVITEMW item = {};
+		item.iSubItem = nameColumnIndex;
+
+		success = SendMessageW(list, LVM_GETITEMW, NULL, reinterpret_cast<LPARAM>(&item));
+
+		SendMessageW(list, LVM_DELETEITEM, item.iItem, NULL);
+	} while (success);
+
+	LVITEMW lvi = {};
+
+	RECT rect;
+
+	GetClientRect(list, &rect);
+
+	lvi.mask = LVIF_TEXT;
+
+	for (size_t i = 0; i < data.size(); i++)
+	{
+		lvi.pszText = const_cast<wchar_t*>(data[i].data());
+		lvi.iItem = i;
+		lvi.iSubItem = nameColumnIndex;
+
+		SendMessageW(list, LVM_INSERTITEM, NULL, reinterpret_cast<LPARAM>(&lvi));
+	}
+
+	InvalidateRect(list, &rect, TRUE);
 }

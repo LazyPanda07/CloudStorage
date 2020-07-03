@@ -9,7 +9,7 @@ namespace UI
 	private:
 		HWND mainWindow;
 
-		HWND getFilesButton;
+		HWND refreshButton;
 		HWND list;
 
 	private:
@@ -19,5 +19,7 @@ namespace UI
 
 	public:
 		static MainWindow& get();
+
+		HWND getHWND() const;
 	};
 }
