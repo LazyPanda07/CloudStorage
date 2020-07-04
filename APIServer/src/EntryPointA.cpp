@@ -7,7 +7,7 @@ using namespace std;
 
 int main(int argc, char** argv)
 {
-	Log::init();
+	Log::init(false);
 	SetConsoleOutputCP(1251);
 
 	try

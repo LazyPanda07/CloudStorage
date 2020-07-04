@@ -6,7 +6,7 @@
 
 int __stdcall wWinMain(HINSTANCE hInstance, HINSTANCE, PWSTR pCmdLine, int nCmdShow)
 {
-	Log::init();
+	Log::init(false);
 
 	UI::MainWindow& instance = UI::MainWindow::get();
 
