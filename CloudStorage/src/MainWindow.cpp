@@ -23,10 +23,10 @@ processorArchitecture='*' publicKeyToken='6595b64144ccf1df' language='*'\"")
 
 using namespace std;
 
-constexpr int_fast32_t nameColumnIndex = 0;
-constexpr int_fast32_t dateColumnIndex = 1;
-constexpr int_fast32_t typeColumnIndex = 2;
-constexpr int_fast32_t sizeColumnIndex = 3;
+constexpr int nameColumnIndex = 0;
+constexpr int dateColumnIndex = 1;
+constexpr int typeColumnIndex = 2;
+constexpr int sizeColumnIndex = 3;
 
 LRESULT __stdcall MainWindowProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam);
 
@@ -225,6 +225,8 @@ void getFiles(HWND list, bool showError)
 	).build();
 	string response;
 	vector<wstring> data;
+	
+	utility::insertSizeHeaderToHTTPMessage(request);
 
 	clientStream << request;
 	clientStream >> response;

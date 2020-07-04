@@ -2,6 +2,7 @@
 
 #include "HTTPNetwork.h"
 #include "Log.h"
+#include "HTTPParser.h"
 
 using namespace std;
 
@@ -12,7 +13,7 @@ namespace web
 		Log::error(message);
 	}
 
-	int_fast32_t HTTPNetwork::sendData(const dataContainer& data)
+	int HTTPNetwork::sendData(const dataContainer& data)
 	{
 		try
 		{
@@ -25,13 +26,47 @@ namespace web
 		}
 	}
 
-	int_fast32_t HTTPNetwork::receiveData(dataContainer& data)
+	int HTTPNetwork::receiveData(dataContainer& data)
 	{
 		try
 		{
 			data.resize(HTTPPacketSize);
 
-			return recv(parent::clientSocket, data.data(), data.size(), NULL);
+			int size = 0;
+			int lastPacket = 0;
+			int totalReceive = 0;
+
+			do
+			{
+				lastPacket = recv(parent::clientSocket, data.data() + totalReceive, data.size(), NULL);
+
+				if (!lastPacket)
+				{
+					throw WebException();
+				}
+
+				totalReceive += lastPacket;
+
+				if (totalReceive > 25 && !size)
+				{
+					HTTPParser parser(data);
+					const map<string, string>& headers = parser.getHeaders();
+
+					size = atoi(headers.at("Total-HTTP-Message-Size").data());
+
+					if (data.size() < size)
+					{
+						data.resize(size);
+					}
+				}
+				else if (!size)
+				{
+					continue;
+				}
+
+			} while (totalReceive < size);
+
+			return totalReceive;
 		}
 		catch (const WebException& e)
 		{
@@ -45,7 +80,7 @@ namespace web
 
 	}
 
-	int_fast32_t HTTPNetwork::sendData(const string_view& data)
+	int HTTPNetwork::sendData(const string_view& data)
 	{
 		try
 		{
@@ -58,13 +93,47 @@ namespace web
 		}
 	}
 
-	int_fast32_t HTTPNetwork::receiveData(string& data)
+	int HTTPNetwork::receiveData(string& data)
 	{
 		try
 		{
 			data.resize(HTTPPacketSize);
 
-			return recv(parent::clientSocket, data.data(), data.size(), NULL);
+			int size = 0;
+			int lastPacket = 0;
+			int totalReceive = 0;
+
+			do
+			{
+				lastPacket = recv(parent::clientSocket, data.data() + totalReceive, data.size(), NULL);
+
+				if (!lastPacket)
+				{
+					throw WebException();
+				}
+
+				totalReceive += lastPacket;
+
+				if (totalReceive > 25 && !size)
+				{
+					HTTPParser parser(data);
+					const map<string, string>& headers = parser.getHeaders();
+
+					size = atoi(headers.at("Total-HTTP-Message-Size").data());
+
+					if (data.size() < size)
+					{
+						data.resize(size);
+					}
+				}
+				else if (!size)
+				{	
+					continue;
+				}
+
+			} while (totalReceive < size);
+
+			return totalReceive;
 		}
 		catch (const WebException& e)
 		{

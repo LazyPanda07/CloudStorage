@@ -1,10 +1,14 @@
 #include "pch.h"
 
 #include "UtilityFunction.h"
+#include "Constants.h"
 
 #include <Windows.h>
 
 using namespace std;
+
+//returns size of customHTTPHeaderSize.size() + HTTPMessage.size() + sizeof(\r\n) + digits of size itself
+string calculateHTTPMessageSize(const string& HTTPMessage);
 
 namespace utility
 {
@@ -86,4 +90,20 @@ namespace utility
 
 		return { static_cast<LONG>(x - width * 0.5), static_cast<LONG>(y - height * 0.5) };
 	}
+
+	void insertSizeHeaderToHTTPMessage(string& HTTPMessage)
+	{
+		string totalHTTPMessageSize = customHTTPHeaderSize.data() + calculateHTTPMessageSize(HTTPMessage) + "\r\n";
+		HTTPMessage.insert(begin(HTTPMessage) + HTTPMessage.find("\r\n") + 2, begin(totalHTTPMessageSize), end(totalHTTPMessageSize));
+	}
+}
+
+string calculateHTTPMessageSize(const string& HTTPMessage)
+{
+	int iSize = HTTPMessage.size() + customHTTPHeaderSize.size() + 2;
+	string sSize = ::to_string(iSize);
+	iSize += sSize.size();
+	sSize = ::to_string(iSize);
+
+	return sSize;
 }

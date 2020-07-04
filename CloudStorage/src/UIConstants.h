@@ -6,19 +6,19 @@ namespace UI
 {
 	namespace mainWindowUI
 	{
-		inline constexpr int_fast32_t mainWindowWidth = 1280;
-		inline constexpr int_fast32_t mainWindowHeight = 800;
+		inline constexpr int mainWindowWidth = 1280;
+		inline constexpr int mainWindowHeight = 800;
 
-		inline constexpr int_fast32_t columnsInList = 4;
+		inline constexpr int columnsInList = 4;
 	}
 
 	namespace toolbar
 	{
-		inline constexpr int_fast32_t toolbarWidth = mainWindowUI::mainWindowWidth;
-		inline constexpr int_fast32_t toolbarHeight = 20;
-		inline constexpr int_fast32_t toolbarButtonWidth = 200;
-		inline constexpr int_fast32_t toolbarButtonHeight = toolbarHeight;
-		inline constexpr int_fast32_t toolbarTopOffset = 10;
+		inline constexpr int toolbarWidth = mainWindowUI::mainWindowWidth;
+		inline constexpr int toolbarHeight = 20;
+		inline constexpr int toolbarButtonWidth = 200;
+		inline constexpr int toolbarButtonHeight = toolbarHeight;
+		inline constexpr int toolbarTopOffset = 10;
 	}
 
 	namespace buttons

@@ -10,7 +10,9 @@ inline constexpr std::string_view cloudStorageServerPort = "12500";
 
 inline constexpr std::string_view usersDirectory = "Data";
 
-inline constexpr uint_fast16_t HTTPPacketSize = 4096;
+inline constexpr short HTTPPacketSize = 4096;
+
+inline constexpr std::string_view customHTTPHeaderSize = "Total-HTTP-Message-Size: ";
 
 namespace typeRequests
 {

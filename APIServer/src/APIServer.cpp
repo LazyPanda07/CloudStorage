@@ -5,6 +5,7 @@
 #include "IOSocketStream.h"
 #include "HTTPParser.h"
 #include "HTTPBuilder.h"
+#include "UtilityFunction.h"
 
 #include "HTTPNetwork.h"
 #include "FilesNetwork.h"
@@ -131,6 +132,8 @@ void showAllFilesInDirectory(streams::IOSocketStream<char>& clientStream, const 
 			"Content-Type", "text/plain; charset=utf-8",
 			"Error", error
 		).build(&serverResponse);
+
+		utility::insertSizeHeaderToHTTPMessage(response);
 
 		clientStream << response;
 	}
