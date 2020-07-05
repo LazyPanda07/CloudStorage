@@ -293,7 +293,7 @@ void uploadFile(streams::IOSocketStream<char>& clientStream, const wstring& file
 	string response;
 	bool isLast;
 
-	ifstream in(file);
+	ifstream in(file, ios::binary);
 
 	fileData.resize(filePacketSize);
 
