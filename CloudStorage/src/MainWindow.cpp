@@ -34,6 +34,10 @@ LRESULT __stdcall DragAndDrop(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam,
 
 void getFiles(HWND list, streams::IOSocketStream<char>& clientStream, bool showError);
 
+void uploadFile(streams::IOSocketStream<char>& clientStream, const vector<wstring>& files);
+
+void uploadFile(streams::IOSocketStream<char>& clientStream, const wstring& filePath);
+
 void createColumns(HWND list);
 
 void updateNameColumn(HWND list, const vector<wstring>& data);
@@ -157,7 +161,7 @@ LRESULT __stdcall MainWindowProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM
 
 		return 0;
 
-	case UI::events::uploadFiles:
+	case UI::events::uploadFile:
 
 		return 0;
 
@@ -200,12 +204,12 @@ LRESULT __stdcall DragAndDrop(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam,
 
 		for (size_t i = 0; i < count; i++)
 		{
-			data[i].resize(DragQueryFileW(drop, i, nullptr, data[i].size()));
+			data[i].resize(DragQueryFileW(drop, i, nullptr, data[i].size()) + 1);
 
 			DragQueryFileW(drop, i, data[i].data(), data[i].size());
 		}
 
-		SendMessageW(GetParent(hwnd), UI::events::uploadFiles, reinterpret_cast<WPARAM>(&data), NULL);
+		SendMessageW(GetParent(hwnd), UI::events::uploadFile, reinterpret_cast<WPARAM>(&data), NULL);
 	}
 
 	return 0;
@@ -219,13 +223,13 @@ void getFiles(HWND list, streams::IOSocketStream<char>& clientStream, bool showE
 {
 	string request = web::HTTPBuilder().postRequest().headers
 	(
-		typeRequests::filesType, filesRequests::showAllFilesInDirectory,
+		requestType::filesType, filesRequests::showAllFilesInDirectory,
 		"Login", "Admin",
 		"Directory", "Home"
 	).build();
 	string response;
 	vector<wstring> data;
-	
+
 	utility::insertSizeHeaderToHTTPMessage(request);
 
 	clientStream << request;
@@ -268,6 +272,70 @@ void getFiles(HWND list, streams::IOSocketStream<char>& clientStream, bool showE
 			MB_OK
 		);
 	}
+}
+
+void uploadFile(streams::IOSocketStream<char>& clientStream, const vector<wstring>& files)
+{
+	for (const auto& i : files)
+	{
+		uploadFile(clientStream, i);
+	}
+}
+
+void uploadFile(streams::IOSocketStream<char>& clientStream, const wstring& filePath)
+{
+	const filesystem::path file(filePath);
+	uintmax_t fileSize = filesystem::file_size(file);
+
+	string fileData(filePacketSize, '\0');
+	string lastPacket;
+	string response;
+	bool isLast;
+
+	ifstream in(file);
+
+	do
+	{
+		const string* data;
+		uintmax_t offset = in.tellg();
+
+		if (fileSize - offset >= filePacketSize)
+		{
+			in.read(fileData.data(), fileData.size());
+
+			data = &fileData;
+			isLast = false;
+		}
+		else
+		{
+			lastPacket.resize(fileSize - offset);
+
+			in.read(lastPacket.data(), lastPacket.size());
+
+			data = &lastPacket;
+			isLast = true;
+		}
+
+		string message = web::HTTPBuilder().postRequest().headers
+		(
+			requestType::filesType, filesRequests::uploadFile,
+			"Login", "Admin",
+			"Directory", "Home",
+			"File-Name", file.filename().string(),
+			"Range", offset,
+			"Content-Range", data->size(),
+			isLast ? "Total-File-Size" : "Reserved", isLast ? fileSize : 0
+		).build(data);
+
+		utility::insertSizeHeaderToHTTPMessage(message);
+
+		clientStream << message;
+
+	} while (!isLast);
+
+	in.close();
+
+	clientStream >> response;
 }
 
 void createColumns(HWND list)

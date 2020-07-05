@@ -11,10 +11,11 @@ inline constexpr std::string_view cloudStorageServerPort = "12500";
 inline constexpr std::string_view usersDirectory = "Data";
 
 inline constexpr short HTTPPacketSize = 4096;
+inline constexpr int filePacketSize = 1 * 1024 * 1024 * 1024;	//1 MB
 
 inline constexpr std::string_view customHTTPHeaderSize = "Total-HTTP-Message-Size: ";
 
-namespace typeRequests
+namespace requestType
 {
 	inline const std::string accountType = "Account request";
 	inline const std::string filesType = "Files request";
@@ -28,7 +29,7 @@ namespace accountRequest
 
 namespace filesRequests
 {
-	inline constexpr std::string_view uploadFiles = "Upload file";
+	inline constexpr std::string_view uploadFile = "Upload file";
 	inline constexpr std::string_view downloadFiles = "Download file";
 	inline constexpr std::string_view showAllFilesInDirectory = "Show all files in directory";
 }

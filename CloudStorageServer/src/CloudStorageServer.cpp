@@ -54,7 +54,7 @@ namespace web
 				{
 					showAllFilesInDirectory(clientStream, currentPath);
 				}
-				else if (request == filesRequests::uploadFiles)
+				else if (request == filesRequests::uploadFile)
 				{
 
 				}

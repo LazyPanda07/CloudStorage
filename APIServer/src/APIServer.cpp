@@ -41,7 +41,7 @@ namespace web
 				{
 					HTTPParser parser(request);
 					const map<string, string>& headers = parser.getHeaders();
-					auto it = headers.find(typeRequests::accountType);
+					auto it = headers.find(requestType::accountType);
 
 					if (it != end(headers))
 					{
@@ -49,7 +49,7 @@ namespace web
 					}
 					else
 					{
-						it = headers.find(typeRequests::filesType);
+						it = headers.find(requestType::filesType);
 
 						if (it != end(headers))
 						{
@@ -59,7 +59,7 @@ namespace web
 							{
 								showAllFilesInDirectory(clientStream, filesStream, headers.at("Login"), headers.at("Directory"));
 							}
-							else if (request == filesRequests::uploadFiles)
+							else if (request == filesRequests::uploadFile)
 							{
 
 							}
