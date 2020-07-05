@@ -32,7 +32,7 @@ LRESULT __stdcall MainWindowProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM
 
 LRESULT __stdcall DragAndDrop(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam, UINT_PTR uIdSubclass, DWORD_PTR dwRefData);
 
-void getFiles(HWND list, bool showError);
+void getFiles(HWND list, streams::IOSocketStream<char>& clientStream, bool showError);
 
 void createColumns(HWND list);
 
@@ -134,6 +134,7 @@ namespace UI
 LRESULT __stdcall MainWindowProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 {
 	static HWND list;
+	static streams::IOSocketStream<char> clientStream(new buffers::IOSocketBuffer<char>(new web::HTTPNetwork()));
 
 	switch (msg)
 	{
@@ -142,7 +143,7 @@ LRESULT __stdcall MainWindowProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM
 		switch (wparam)
 		{
 		case UI::buttons::refresh:
-			getFiles(list, true);
+			getFiles(list, clientStream, true);
 
 			break;
 
@@ -152,7 +153,7 @@ LRESULT __stdcall MainWindowProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM
 
 #pragma region CustomEvents
 	case UI::events::getFiles:
-		getFiles(list, false);
+		getFiles(list, clientStream, false);
 
 		return 0;
 
@@ -214,9 +215,8 @@ LRESULT __stdcall DragAndDrop(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam,
 	}
 }
 
-void getFiles(HWND list, bool showError)
+void getFiles(HWND list, streams::IOSocketStream<char>& clientStream, bool showError)
 {
-	streams::IOSocketStream<char> clientStream(new buffers::IOSocketBuffer<char>(new web::HTTPNetwork()));
 	string request = web::HTTPBuilder().postRequest().headers
 	(
 		typeRequests::filesType, filesRequests::showAllFilesInDirectory,

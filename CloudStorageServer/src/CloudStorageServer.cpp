@@ -22,43 +22,52 @@ namespace web
 	void CloudStorageServer::clientConnection(SOCKET clientSocket, sockaddr addr)
 	{
 		streams::IOSocketStream<char> clientStream(new buffers::IOSocketBuffer<char>(new FilesNetwork(clientSocket)));
-		filesystem::path currentPath(filesystem::current_path());
-		string request;
-		string login;
-		string directory;
-		string end;
 
-		clientStream >> request;
-		clientStream >> login;
-		clientStream >> directory;
-
-		currentPath.append(usersDirectory);
-		currentPath.append(login);
-
-		if (!filesystem::exists(currentPath))
+		while (true)
 		{
-			filesystem::create_directories(currentPath);
-		}
+			try
+			{
+				filesystem::path currentPath(filesystem::current_path());
+				string request;
+				string login;
+				string directory;
+				string end;
 
-		if (directory != "Home")
-		{
-			findDirectory(currentPath, directory);
-		}
+				clientStream >> request;
+				clientStream >> login;
+				clientStream >> directory;
 
-		if (request == filesRequests::showAllFilesInDirectory)
-		{
-			showAllFilesInDirectory(clientStream, currentPath);
-		}
-		else if (request == filesRequests::uploadFiles)
-		{
+				currentPath.append(usersDirectory);
+				currentPath.append(login);
 
-		}
-		else if (request == filesRequests::downloadFiles)
-		{
+				if (!filesystem::exists(currentPath))
+				{
+					filesystem::create_directories(currentPath);
+				}
 
-		}
+				if (directory != "Home")
+				{
+					findDirectory(currentPath, directory);
+				}
 
-		clientStream >> end;
+				if (request == filesRequests::showAllFilesInDirectory)
+				{
+					showAllFilesInDirectory(clientStream, currentPath);
+				}
+				else if (request == filesRequests::uploadFiles)
+				{
+
+				}
+				else if (request == filesRequests::downloadFiles)
+				{
+
+				}
+			}
+			catch (const WebException&)
+			{
+				return;
+			}
+		}
 	}
 
 	CloudStorageServer::CloudStorageServer() : BaseTCPServer(cloudStorageServerPort, false)

@@ -19,13 +19,14 @@ using namespace std;
 
 bool checkHTTP(const string& request);
 
-void showAllFilesInDirectory(streams::IOSocketStream<char>& clientStream, const string& login, const string& directory);
+void showAllFilesInDirectory(streams::IOSocketStream<char>& clientStream, streams::IOSocketStream<char>& filesStream, const string& login, const string& directory);
 
 namespace web
 {
 	void APIServer::clientConnection(SOCKET clientSocket, sockaddr addr)
 	{
 		streams::IOSocketStream<char> clientStream(new buffers::IOSocketBuffer<char>(new HTTPNetwork(clientSocket)));
+		streams::IOSocketStream<char> filesStream(new buffers::IOSocketBuffer<char>(new web::FilesNetwork()));
 		HTTPNetwork network(clientSocket);
 		string request;
 		string response;
@@ -56,11 +57,11 @@ namespace web
 
 							if (request == filesRequests::showAllFilesInDirectory)
 							{
-								showAllFilesInDirectory(clientStream, headers.at("Login"), headers.at("Directory"));
+								showAllFilesInDirectory(clientStream, filesStream, headers.at("Login"), headers.at("Directory"));
 							}
 							else if (request == filesRequests::uploadFiles)
 							{
-								
+
 							}
 							if (request == filesRequests::downloadFiles)
 							{
@@ -73,13 +74,13 @@ namespace web
 						}
 						else
 						{
-							return;
+							continue;
 						}
 					}
 				}
 				else
 				{
-					return;
+					continue;
 				}
 			}
 			catch (const WebException&)
@@ -100,9 +101,8 @@ bool checkHTTP(const string& request)
 	return request.find("HTTP") != string::npos ? true : false;
 }
 
-void showAllFilesInDirectory(streams::IOSocketStream<char>& clientStream, const string& login, const string& directory)
+void showAllFilesInDirectory(streams::IOSocketStream<char>& clientStream, streams::IOSocketStream<char>& filesStream, const string& login, const string& directory)
 {
-	streams::IOSocketStream<char> filesStream(new buffers::IOSocketBuffer<char>(new web::FilesNetwork()));
 	string serverResponse;
 	bool error;
 	string response;

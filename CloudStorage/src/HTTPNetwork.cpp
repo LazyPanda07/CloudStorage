@@ -40,9 +40,13 @@ namespace web
 			{
 				lastPacket = recv(parent::clientSocket, data.data() + totalReceive, data.size(), NULL);
 
-				if (!lastPacket)
+				if (lastPacket < 0)
 				{
 					throw WebException();
+				}
+				else if (lastPacket == 0)
+				{
+					return totalReceive;
 				}
 
 				totalReceive += lastPacket;
@@ -107,9 +111,13 @@ namespace web
 			{
 				lastPacket = recv(parent::clientSocket, data.data() + totalReceive, data.size(), NULL);
 
-				if (!lastPacket)
+				if (lastPacket < 0)
 				{
 					throw WebException();
+				}
+				else if (lastPacket == 0)
+				{
+					return totalReceive;
 				}
 
 				totalReceive += lastPacket;
@@ -127,7 +135,7 @@ namespace web
 					}
 				}
 				else if (!size)
-				{	
+				{
 					continue;
 				}
 
