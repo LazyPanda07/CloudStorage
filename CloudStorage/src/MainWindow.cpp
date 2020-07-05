@@ -287,12 +287,14 @@ void uploadFile(streams::IOSocketStream<char>& clientStream, const wstring& file
 	const filesystem::path file(filePath);
 	uintmax_t fileSize = filesystem::file_size(file);
 
-	string fileData(filePacketSize, '\0');
+	string fileData;
 	string lastPacket;
 	string response;
 	bool isLast;
 
 	ifstream in(file);
+
+	fileData.resize(filePacketSize);
 
 	do
 	{
@@ -323,7 +325,7 @@ void uploadFile(streams::IOSocketStream<char>& clientStream, const wstring& file
 			"Directory", "Home",
 			"File-Name", file.filename().string(),
 			"Range", offset,
-			"Content-Range", data->size(),
+			"Content-Length", data->size(),
 			isLast ? "Total-File-Size" : "Reserved", isLast ? fileSize : 0
 		).build(data);
 
