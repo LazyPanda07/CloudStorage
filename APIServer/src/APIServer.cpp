@@ -85,7 +85,7 @@ namespace web
 					continue;
 				}
 			}
-			catch (const WebException&)
+			catch (const WebException& e)
 			{
 
 			}

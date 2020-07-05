@@ -162,6 +162,7 @@ LRESULT __stdcall MainWindowProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM
 		return 0;
 
 	case UI::events::uploadFile:
+		uploadFile(clientStream, *reinterpret_cast<vector<wstring>*>(&wparam));
 
 		return 0;
 
