@@ -21,6 +21,8 @@ bool checkHTTP(const string& request);
 
 void showAllFilesInDirectory(streams::IOSocketStream<char>& clientStream, streams::IOSocketStream<char>& filesStream, const string& login, const string& directory);
 
+void uploadFile(streams::IOSocketStream<char>& clientStream, streams::IOSocketStream<char>& filesStream, const string& data, const map<string, string>& headers);
+
 namespace web
 {
 	void APIServer::clientConnection(SOCKET clientSocket, sockaddr addr)
@@ -61,7 +63,7 @@ namespace web
 							}
 							else if (request == filesRequests::uploadFile)
 							{
-
+								uploadFile(clientStream, filesStream, parser.getBody(), headers);
 							}
 							if (request == filesRequests::downloadFiles)
 							{
@@ -140,5 +142,36 @@ void showAllFilesInDirectory(streams::IOSocketStream<char>& clientStream, stream
 	catch (const web::WebException& e)
 	{
 		cout << e.what() << endl;
+	}
+}
+
+void uploadFile(streams::IOSocketStream<char>& clientStream, streams::IOSocketStream<char>& filesStream, const string& data, const map<string, string>& headers)
+{
+	const string& fileName = headers.at("File-Name");
+	const string& login = headers.at("Login");
+	const string& directory = headers.at("Directory");
+	uintmax_t offset = stoull(headers.at("Range"));
+	auto it = headers.find("Total-File-Size");
+	bool needResponse = it != end(headers);
+
+	filesStream << filesRequests::uploadFile;
+	filesStream << login;
+	filesStream << directory;
+
+	filesStream << fileName;
+	filesStream << offset;
+	filesStream << data;
+	filesStream << needResponse;
+
+	if (needResponse)
+	{
+		const string& uploadSize = it->second;
+		string response;
+		
+		filesStream << uploadSize;
+
+		filesStream >> response;
+
+		clientStream << response;
 	}
 }

@@ -56,7 +56,7 @@ namespace web
 					HTTPParser parser(data);
 					const map<string, string>& headers = parser.getHeaders();
 
-					size = atoi(headers.at("Total-HTTP-Message-Size").data());
+					size = stoi(headers.at("Total-HTTP-Message-Size"));
 
 					if (data.size() < size)
 					{
@@ -127,7 +127,7 @@ namespace web
 					HTTPParser parser(data);
 					const map<string, string>& headers = parser.getHeaders();
 
-					size = atoi(headers.at("Total-HTTP-Message-Size").data());
+					size = stoi(headers.at("Total-HTTP-Message-Size"));
 
 					if (data.size() < size)
 					{
