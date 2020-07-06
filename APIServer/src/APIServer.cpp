@@ -87,7 +87,7 @@ namespace web
 			}
 			catch (const WebException& e)
 			{
-				
+
 			}
 		}
 	}
@@ -167,7 +167,7 @@ void uploadFile(streams::IOSocketStream<char>& clientStream, streams::IOSocketSt
 	{
 		const string& uploadSize = it->second;
 		string response;
-		
+
 		filesStream << uploadSize;
 
 		filesStream >> response;
