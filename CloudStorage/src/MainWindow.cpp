@@ -27,15 +27,15 @@ LRESULT __stdcall MainWindowProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM
 
 LRESULT __stdcall DragAndDrop(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam, UINT_PTR uIdSubclass, DWORD_PTR dwRefData);
 
-void getFiles(HWND list, streams::IOSocketStream<char>& clientStream, bool showError);
+void getFiles(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, bool showError);
 
 void uploadFile(streams::IOSocketStream<char>& clientStream, const vector<wstring>& files);
 
 void uploadFile(streams::IOSocketStream<char>& clientStream, const wstring& filePath);
 
-void createColumns(HWND list);
+void createColumns(UI::MainWindow& ref);
 
-void updateNameColumn(HWND list, const vector<wstring>& data);
+void updateNameColumn(UI::MainWindow& ref, const vector<wstring>& data);
 
 namespace UI
 {
@@ -107,7 +107,7 @@ namespace UI
 		DragAcceptFiles(list, true);
 		SetWindowSubclass(list, &DragAndDrop, 1, 0);
 
-		createColumns(list);
+		createColumns(*this);
 
 		SendMessageW(list, LVM_SETEXTENDEDLISTVIEWSTYLE, LVS_EX_FULLROWSELECT, LVS_EX_FULLROWSELECT);
 	}
@@ -134,6 +134,8 @@ namespace UI
 	MainWindow::~MainWindow()
 	{
 		DestroyWindow(mainWindow);
+		DestroyWindow(refreshButton);
+		DestroyWindow(list);
 	}
 
 	MainWindow& MainWindow::get()
@@ -183,7 +185,7 @@ LRESULT __stdcall MainWindowProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM
 		switch (wparam)
 		{
 		case UI::buttons::refresh:
-			getFiles(ptr->getList(), clientStream, true);
+			getFiles(*ptr, clientStream, true);
 
 			break;
 
@@ -193,7 +195,7 @@ LRESULT __stdcall MainWindowProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM
 
 #pragma region CustomEvents
 	case UI::events::getFilesE:
-		getFiles(ptr->getList(), clientStream, false);
+		getFiles(*ptr, clientStream, false);
 
 		return 0;
 
@@ -260,7 +262,7 @@ LRESULT __stdcall DragAndDrop(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam,
 	}
 }
 
-void getFiles(HWND list, streams::IOSocketStream<char>& clientStream, bool showError)
+void getFiles(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, bool showError)
 {
 	string request = web::HTTPBuilder().postRequest().headers
 	(
@@ -301,13 +303,13 @@ void getFiles(HWND list, streams::IOSocketStream<char>& clientStream, bool showE
 		}
 	}
 
-	updateNameColumn(list, data);
+	updateNameColumn(ref, data);
 
 	if (error == "1" && showError)
 	{
 		MessageBoxW
 		(
-			GetParent(list),
+			ref.getMainWindow(),
 			utility::to_wstring(body).data(),
 			L"Œ¯Ë·Í‡",
 			MB_OK
@@ -400,15 +402,14 @@ void uploadFile(streams::IOSocketStream<char>& clientStream, const wstring& file
 	}
 }
 
-void createColumns(HWND list)
+void createColumns(UI::MainWindow& ref)
 {
-	HWND parent = GetParent(list);
 	array<LVCOLUMNW, UI::mainWindowUI::columnsInList> columns = {};
 	RECT mainWindowSizes;
 	RECT listSizes;
 
-	GetClientRect(parent, &mainWindowSizes);
-	GetClientRect(list, &listSizes);
+	GetClientRect(ref.getMainWindow(), &mainWindowSizes);
+	GetClientRect(ref.getList(), &listSizes);
 
 	LONG width = mainWindowSizes.right - mainWindowSizes.left;
 
@@ -432,13 +433,13 @@ void createColumns(HWND list)
 		columns[i].fmt = LVCFMT_LEFT;
 		columns[i].cx = columnsSizes[i];
 
-		SendMessageW(list, LVM_INSERTCOLUMN, static_cast<WPARAM>(i), reinterpret_cast<LPARAM>(&columns[i]));
+		SendMessageW(ref.getList(), LVM_INSERTCOLUMN, static_cast<WPARAM>(i), reinterpret_cast<LPARAM>(&columns[i]));
 	}
 
-	InvalidateRect(list, &listSizes, true);
+	InvalidateRect(ref.getList(), &listSizes, true);
 }
 
-void updateNameColumn(HWND list, const vector<wstring>& data)
+void updateNameColumn(UI::MainWindow& ref, const vector<wstring>& data)
 {
 	bool success = false;
 
@@ -447,16 +448,16 @@ void updateNameColumn(HWND list, const vector<wstring>& data)
 		LVITEMW item = {};
 		item.iSubItem = UI::mainWindowUI::nameColumnIndex;
 
-		success = SendMessageW(list, LVM_GETITEMW, NULL, reinterpret_cast<LPARAM>(&item));
+		success = SendMessageW(ref.getList(), LVM_GETITEMW, NULL, reinterpret_cast<LPARAM>(&item));
 
-		SendMessageW(list, LVM_DELETEITEM, item.iItem, NULL);
+		SendMessageW(ref.getList(), LVM_DELETEITEM, item.iItem, NULL);
 	} while (success);
 
 	LVITEMW lvi = {};
 
 	RECT rect;
 
-	GetClientRect(list, &rect);
+	GetClientRect(ref.getList(), &rect);
 
 	lvi.mask = LVIF_TEXT;
 
@@ -466,8 +467,8 @@ void updateNameColumn(HWND list, const vector<wstring>& data)
 		lvi.iItem = i;
 		lvi.iSubItem = UI::mainWindowUI::nameColumnIndex;
 
-		SendMessageW(list, LVM_INSERTITEM, NULL, reinterpret_cast<LPARAM>(&lvi));
+		SendMessageW(ref.getList(), LVM_INSERTITEM, NULL, reinterpret_cast<LPARAM>(&lvi));
 	}
 
-	InvalidateRect(list, &rect, TRUE);
+	InvalidateRect(ref.getList(), &rect, TRUE);
 }
