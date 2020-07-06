@@ -10,6 +10,16 @@ namespace UI
 		inline constexpr int mainWindowHeight = 800;
 
 		inline constexpr int columnsInList = 4;
+
+		constexpr int nameColumnIndex = 0;
+		constexpr int dateColumnIndex = 1;
+		constexpr int typeColumnIndex = 2;
+		constexpr int sizeColumnIndex = 3;
+
+		constexpr double nameColumnCoefficientWidth = 0.35;
+		constexpr double dateColumnCoefficientWidth = 0.1;
+		constexpr double typeColumnCoefficientWidth = 0.1;
+		constexpr double sizeColumnCoefficientWidth = 0.1;
 	}
 
 	namespace toolbar
@@ -46,10 +56,16 @@ namespace UI
 	{
 		enum networkEvents
 		{
-			getFiles = buttons::authorizationScreenButtonsCount + 1,
-			uploadFile,
-			downLoadFiles,
+			getFilesE = buttons::authorizationScreenButtonsCount + 1,
+			uploadFileE,
+			downLoadFilesE,
 			networkEventsCount
+		};
+
+		enum initEvents
+		{
+			initMainWindowPtrE = networkEventsCount + 1,
+			initEventsCount
 		};
 	}
 }

@@ -23,11 +23,6 @@ processorArchitecture='*' publicKeyToken='6595b64144ccf1df' language='*'\"")
 
 using namespace std;
 
-constexpr int nameColumnIndex = 0;
-constexpr int dateColumnIndex = 1;
-constexpr int typeColumnIndex = 2;
-constexpr int sizeColumnIndex = 3;
-
 LRESULT __stdcall MainWindowProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam);
 
 LRESULT __stdcall DragAndDrop(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam, UINT_PTR uIdSubclass, DWORD_PTR dwRefData);
@@ -114,7 +109,26 @@ namespace UI
 
 		createColumns(list);
 
-		SendMessageW(mainWindow, WM_CREATE, reinterpret_cast<WPARAM>(list), NULL);
+		SendMessageW(list, LVM_SETEXTENDEDLISTVIEWSTYLE, LVS_EX_FULLROWSELECT, LVS_EX_FULLROWSELECT);
+	}
+
+	HWND MainWindow::getHWND(elementsEnum id) const
+	{
+		switch (id)
+		{
+		case UI::MainWindow::elementsEnum::mainWindow:
+			return mainWindow;
+
+		case UI::MainWindow::elementsEnum::refreshButton:
+			return refreshButton;
+
+		case UI::MainWindow::elementsEnum::list:
+			return list;
+
+		default:
+
+			return NULL;
+		}
 	}
 
 	MainWindow::~MainWindow()
@@ -129,16 +143,38 @@ namespace UI
 		return instance;
 	}
 
-	HWND MainWindow::getHWND() const
+	void MainWindow::resize()
 	{
-		return mainWindow;
+		RECT sizes;
+
+		GetClientRect(mainWindow, &sizes);
+
+		LONG width = sizes.right - sizes.left;
+		LONG height = sizes.bottom - sizes.top;
+
+		SetWindowPos(list, HWND_BOTTOM, 0, toolbar::toolbarHeight, width, height - toolbar::toolbarHeight, SWP_SHOWWINDOW);
+	}
+
+	HWND MainWindow::getMainWindow() const
+	{
+		return this->getHWND(elementsEnum::mainWindow);
+	}
+
+	HWND MainWindow::getRefreshButton() const
+	{
+		return this->getHWND(elementsEnum::refreshButton);
+	}
+
+	HWND MainWindow::getList() const
+	{
+		return this->getHWND(elementsEnum::list);
 	}
 }
 
 LRESULT __stdcall MainWindowProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 {
-	static HWND list;
 	static streams::IOSocketStream<char> clientStream(new buffers::IOSocketBuffer<char>(new web::HTTPNetwork()));
+	static UI::MainWindow* ptr = nullptr;
 
 	switch (msg)
 	{
@@ -147,7 +183,7 @@ LRESULT __stdcall MainWindowProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM
 		switch (wparam)
 		{
 		case UI::buttons::refresh:
-			getFiles(list, clientStream, true);
+			getFiles(ptr->getList(), clientStream, true);
 
 			break;
 
@@ -156,27 +192,31 @@ LRESULT __stdcall MainWindowProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM
 		return 0;
 
 #pragma region CustomEvents
-	case UI::events::getFiles:
-		getFiles(list, clientStream, false);
+	case UI::events::getFilesE:
+		getFiles(ptr->getList(), clientStream, false);
 
 		return 0;
 
-	case UI::events::uploadFile:
+	case UI::events::uploadFileE:
 		uploadFile(clientStream, *reinterpret_cast<vector<wstring>*>(wparam));
 
 		return 0;
 
-	case UI::events::downLoadFiles:
+	case UI::events::downLoadFilesE:
 
 		return 0;
 
-	case UI::events::networkEventsCount:
+	case UI::events::initMainWindowPtrE:
+		ptr = reinterpret_cast<UI::MainWindow*>(wparam);
 
 		return 0;
 #pragma endregion
 
-	case WM_CREATE:
-		list = reinterpret_cast<HWND>(wparam);
+	case WM_SIZE:
+		if (ptr)
+		{
+			ptr->resize();
+		}
 
 		return 0;
 
@@ -210,7 +250,7 @@ LRESULT __stdcall DragAndDrop(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam,
 			DragQueryFileW(drop, i, data[i].data(), data[i].size());
 		}
 
-		SendMessageW(GetParent(hwnd), UI::events::uploadFile, reinterpret_cast<WPARAM>(&data), NULL);
+		SendMessageW(GetParent(hwnd), UI::events::uploadFileE, reinterpret_cast<WPARAM>(&data), NULL);
 	}
 
 	return 0;
@@ -356,7 +396,7 @@ void uploadFile(streams::IOSocketStream<char>& clientStream, const wstring& file
 	}
 	else
 	{
-		SendMessageW(FindWindowW(L"MainWindow", L"Cloud Storage"), UI::events::getFiles, NULL, NULL);
+		SendMessageW(FindWindowW(L"MainWindow", L"Cloud Storage"), UI::events::getFilesE, NULL, NULL);
 	}
 }
 
@@ -372,7 +412,13 @@ void createColumns(HWND list)
 
 	LONG width = mainWindowSizes.right - mainWindowSizes.left;
 
-	array<LONG, UI::mainWindowUI::columnsInList> columnsSizes = { width * 0.4, width * 0.2, width * 0.2, width * 0.2 };
+	const array<LONG, UI::mainWindowUI::columnsInList> columnsSizes =
+	{
+		width * UI::mainWindowUI::nameColumnCoefficientWidth,
+		width * UI::mainWindowUI::dateColumnCoefficientWidth,
+		width * UI::mainWindowUI::typeColumnCoefficientWidth,
+		width * UI::mainWindowUI::sizeColumnCoefficientWidth
+	};
 
 	columns[0].pszText = const_cast<wchar_t*>(L"Имя");
 	columns[1].pszText = const_cast<wchar_t*>(L"Дата изменения");
@@ -389,7 +435,7 @@ void createColumns(HWND list)
 		SendMessageW(list, LVM_INSERTCOLUMN, static_cast<WPARAM>(i), reinterpret_cast<LPARAM>(&columns[i]));
 	}
 
-	InvalidateRect(list, &listSizes, TRUE);
+	InvalidateRect(list, &listSizes, true);
 }
 
 void updateNameColumn(HWND list, const vector<wstring>& data)
@@ -399,7 +445,7 @@ void updateNameColumn(HWND list, const vector<wstring>& data)
 	do
 	{
 		LVITEMW item = {};
-		item.iSubItem = nameColumnIndex;
+		item.iSubItem = UI::mainWindowUI::nameColumnIndex;
 
 		success = SendMessageW(list, LVM_GETITEMW, NULL, reinterpret_cast<LPARAM>(&item));
 
@@ -418,7 +464,7 @@ void updateNameColumn(HWND list, const vector<wstring>& data)
 	{
 		lvi.pszText = const_cast<wchar_t*>(data[i].data());
 		lvi.iItem = i;
-		lvi.iSubItem = nameColumnIndex;
+		lvi.iSubItem = UI::mainWindowUI::nameColumnIndex;
 
 		SendMessageW(list, LVM_INSERTITEM, NULL, reinterpret_cast<LPARAM>(&lvi));
 	}

@@ -35,5 +35,8 @@
     <ClInclude Include="src\UIConstants.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
+    <ClInclude Include="src\UIInterfaces\IResizable.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
