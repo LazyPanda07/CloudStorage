@@ -65,7 +65,7 @@ namespace web
 							{
 								uploadFile(clientStream, filesStream, parser.getBody(), headers);
 							}
-							if (request == filesRequests::downloadFiles)
+							if (request == filesRequests::downloadFile)
 							{
 
 							}

@@ -27,11 +27,15 @@ LRESULT __stdcall MainWindowProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM
 
 LRESULT __stdcall DragAndDrop(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam, UINT_PTR uIdSubclass, DWORD_PTR dwRefData);
 
-void getFiles(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, bool showError);
+void getFiles(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, vector<wstring>& filesNames, bool showError);
 
 void uploadFile(streams::IOSocketStream<char>& clientStream, const vector<wstring>& files);
 
 void uploadFile(streams::IOSocketStream<char>& clientStream, const wstring& filePath);
+
+void downloadFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, const vector<wstring>& filesNames);
+
+void downloadFile(const wstring& fileName, streams::IOSocketStream<char>& clientStream);
 
 void createColumns(UI::MainWindow& ref);
 
@@ -90,6 +94,20 @@ namespace UI
 			nullptr
 		);
 
+		downloadButton = CreateWindowExW
+		(
+			NULL,
+			L"BUTTON",
+			L"Скачать файл",
+			WS_CHILDWINDOW | WS_VISIBLE,
+			toolbar::toolbarButtonWidth, 0,
+			toolbar::toolbarButtonWidth, toolbar::toolbarButtonHeight,
+			mainWindow,
+			HMENU(buttons::download),
+			nullptr,
+			nullptr
+		);
+
 		list = CreateWindowExW
 		(
 			WS_EX_CLIENTEDGE,
@@ -122,6 +140,9 @@ namespace UI
 		case UI::MainWindow::elementsEnum::refreshButton:
 			return refreshButton;
 
+		case UI::MainWindow::elementsEnum::downloadButton:
+			return downloadButton;
+
 		case UI::MainWindow::elementsEnum::list:
 			return list;
 
@@ -135,6 +156,7 @@ namespace UI
 	{
 		DestroyWindow(mainWindow);
 		DestroyWindow(refreshButton);
+		DestroyWindow(downloadButton);
 		DestroyWindow(list);
 	}
 
@@ -167,6 +189,11 @@ namespace UI
 		return this->getHWND(elementsEnum::refreshButton);
 	}
 
+	HWND MainWindow::getDownloadButton() const
+	{
+		return this->getHWND(elementsEnum::downloadButton);
+	}
+
 	HWND MainWindow::getList() const
 	{
 		return this->getHWND(elementsEnum::list);
@@ -177,6 +204,7 @@ LRESULT __stdcall MainWindowProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM
 {
 	static streams::IOSocketStream<char> clientStream(new buffers::IOSocketBuffer<char>(new web::HTTPNetwork()));
 	static UI::MainWindow* ptr = nullptr;
+	static vector<wstring> filesNames;
 
 	switch (msg)
 	{
@@ -185,17 +213,21 @@ LRESULT __stdcall MainWindowProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM
 		switch (wparam)
 		{
 		case UI::buttons::refresh:
-			getFiles(*ptr, clientStream, true);
+			getFiles(*ptr, clientStream, filesNames, true);
 
 			break;
 
+		case UI::buttons::download:
+			downloadFile(*ptr, clientStream, filesNames);
+
+			break;
 		}
 
 		return 0;
 
 #pragma region CustomEvents
 	case UI::events::getFilesE:
-		getFiles(*ptr, clientStream, false);
+		getFiles(*ptr, clientStream, filesNames, false);
 
 		return 0;
 
@@ -205,6 +237,7 @@ LRESULT __stdcall MainWindowProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM
 		return 0;
 
 	case UI::events::downLoadFilesE:
+		downloadFile(*ptr, clientStream, filesNames);
 
 		return 0;
 
@@ -262,7 +295,7 @@ LRESULT __stdcall DragAndDrop(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam,
 	}
 }
 
-void getFiles(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, bool showError)
+void getFiles(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, vector<wstring>& filesNames, bool showError)
 {
 	string request = web::HTTPBuilder().postRequest().headers
 	(
@@ -271,7 +304,7 @@ void getFiles(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, 
 		"Directory", "Home"
 	).build();
 	string response;
-	vector<wstring> data;
+	filesNames.clear();
 
 	utility::insertSizeHeaderToHTTPMessage(request);
 
@@ -292,7 +325,7 @@ void getFiles(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, 
 		{
 			if (i == ':')
 			{
-				data.push_back(utility::to_wstring(tem));
+				filesNames.push_back(utility::to_wstring(tem));
 
 				tem.clear();
 			}
@@ -303,7 +336,7 @@ void getFiles(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, 
 		}
 	}
 
-	updateNameColumn(ref, data);
+	updateNameColumn(ref, filesNames);
 
 	if (error == "1" && showError)
 	{
@@ -399,6 +432,74 @@ void uploadFile(streams::IOSocketStream<char>& clientStream, const wstring& file
 	else
 	{
 		SendMessageW(FindWindowW(L"MainWindow", L"Cloud Storage"), UI::events::getFilesE, NULL, NULL);
+	}
+}
+
+void downloadFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, const vector<wstring>& filesNames)
+{
+	int id = SendMessageW(ref.getList(), LVM_GETNEXTITEM, -1, LVNI_SELECTED);
+
+	while (id != -1)
+	{
+		downloadFile(filesNames[id], clientStream);
+
+		id = SendMessageW(ref.getList(), LVM_GETNEXTITEM, id, LVNI_SELECTED);
+	}
+}
+
+void downloadFile(const wstring& fileName, streams::IOSocketStream<char>& clientStream)
+{
+	uintmax_t offset = 0;
+	uintmax_t totalFileSize;
+	const string sFileName = utility::to_string(fileName);
+	bool lastPacket;
+	string response;
+
+	ofstream out(sFileName, ios::binary);
+
+	while (true)
+	{
+		string request = web::HTTPBuilder().postRequest().headers
+		(
+			requestType::filesType, filesRequests::downloadFile,
+			"Login", "Admin",
+			"Directory", "Home",
+			"File-Name", sFileName,
+			"Range", offset
+		).build();
+
+		utility::insertSizeHeaderToHTTPMessage(request);
+
+		clientStream << request;
+
+		clientStream >> response;
+
+		web::HTTPParser parser(response);
+		const map<string, string>& headers = parser.getHeaders();
+		auto it = headers.find("Total-File-Size");
+		lastPacket = it != end(headers);
+		const string& data = parser.getBody();
+
+		out.write(data.data(), data.size());
+
+		offset = out.tellp();
+
+		if (lastPacket)
+		{
+			totalFileSize = stoull(it->second);
+			break;
+		}
+	}
+
+	out.close();
+
+	if (filesystem::file_size(filesystem::current_path().append(sFileName)) == totalFileSize)
+	{
+		MessageBoxW(nullptr,filesResponses::successDownloadFile.data(),L"Ошибка",MB_OK);
+	}
+	else
+	{
+		MessageBoxW(nullptr,filesResponses::failDownloadFile.data(),L"Ошибка",MB_OK);
 	}
 }
 

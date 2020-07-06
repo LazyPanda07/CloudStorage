@@ -36,6 +36,7 @@ namespace UI
 		enum toolbarButtons
 		{
 			refresh = 0xfff,
+			download,
 			toolbarButtonsCount
 		};
 

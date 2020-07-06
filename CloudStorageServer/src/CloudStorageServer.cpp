@@ -60,7 +60,7 @@ namespace web
 				{
 					uploadFile(clientStream, currentPath);
 				}
-				else if (request == filesRequests::downloadFiles)
+				else if (request == filesRequests::downloadFile)
 				{
 
 				}

@@ -30,7 +30,7 @@ namespace accountRequest
 namespace filesRequests
 {
 	inline constexpr std::string_view uploadFile = "Upload file";
-	inline constexpr std::string_view downloadFiles = "Download file";
+	inline constexpr std::string_view downloadFile = "Download file";
 	inline constexpr std::string_view showAllFilesInDirectory = "Show all files in directory";
 }
 
@@ -46,4 +46,6 @@ namespace filesResponses
 	inline constexpr std::string_view emptyDirectory = "Directory is empty";
 	inline constexpr std::string_view successUploadFile = "File successfully uploaded";
 	inline constexpr std::string_view failUploadFile = "Fail while file upload";
+	inline constexpr std::wstring_view successDownloadFile = L"File successfully downloaded";
+	inline constexpr std::wstring_view failDownloadFile = L"Fail while file download";
 }

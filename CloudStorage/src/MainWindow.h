@@ -12,6 +12,7 @@ namespace UI
 		{
 			mainWindow,
 			refreshButton,
+			downloadButton,
 			list
 		};
 
@@ -19,6 +20,7 @@ namespace UI
 		HWND mainWindow;
 
 		HWND refreshButton;
+		HWND downloadButton;
 		HWND list;
 
 	private:
@@ -36,6 +38,8 @@ namespace UI
 		HWND getMainWindow() const;
 
 		HWND getRefreshButton() const;
+
+		HWND getDownloadButton() const;
 
 		HWND getList() const;
 	};
