@@ -44,4 +44,6 @@ namespace responses
 namespace filesResponses
 {
 	inline constexpr std::string_view emptyDirectory = "Directory is empty";
+	inline constexpr std::string_view successUploadFile = "File successfully uploaded";
+	inline constexpr std::string_view failUploadFile = "Fail while file upload";
 }

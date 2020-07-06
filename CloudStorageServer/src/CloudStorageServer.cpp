@@ -15,6 +15,8 @@ using namespace std;
 
 void showAllFilesInDirectory(streams::IOSocketStream<char>& clientStream, const filesystem::path& currentPath);
 
+void uploadFile(streams::IOSocketStream<char>& clientStream, const filesystem::path& currentPath);
+
 void findDirectory(filesystem::path& currentPath, const string& directory);
 
 namespace web
@@ -56,7 +58,7 @@ namespace web
 				}
 				else if (request == filesRequests::uploadFile)
 				{
-
+					uploadFile(clientStream, currentPath);
 				}
 				else if (request == filesRequests::downloadFiles)
 				{
@@ -105,6 +107,46 @@ void showAllFilesInDirectory(streams::IOSocketStream<char>& clientStream, const 
 	}
 
 	
+}
+
+void uploadFile(streams::IOSocketStream<char>& clientStream, const filesystem::path& currentPath)
+{
+	string fileName;
+	uintmax_t offset;
+	string data;
+	bool needResponse;
+
+	clientStream >> fileName;
+	clientStream >> offset;
+	clientStream >> data;
+	clientStream >> needResponse;
+
+	ofstream out(filesystem::path(currentPath).append(fileName), ios::binary | ios::app);
+
+	out.seekp(offset);
+
+	out.write(data.data(), data.size());
+
+	out.close();
+
+	if (needResponse)
+	{
+		uintmax_t uploadSize;
+		uintmax_t downloadSize = filesystem::file_size(filesystem::path(currentPath).append(fileName));
+
+		clientStream >> uploadSize;
+
+		if (uploadSize == downloadSize)
+		{
+			clientStream << responses::okResponse;
+			clientStream << filesResponses::successUploadFile;
+		}
+		else
+		{
+			clientStream << responses::failResponse;
+			clientStream << filesResponses::failUploadFile;
+		}
+	}
 }
 
 void findDirectory(filesystem::path& currentPath, const string& directory)

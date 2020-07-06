@@ -165,12 +165,23 @@ void uploadFile(streams::IOSocketStream<char>& clientStream, streams::IOSocketSt
 
 	if (needResponse)
 	{
-		const string& uploadSize = it->second;
-		string response;
+		uintmax_t uploadSize = stoull(it->second);
+		string responseMessage;
+		string isSuccess;
 
 		filesStream << uploadSize;
 
-		filesStream >> response;
+		filesStream >> isSuccess;
+		filesStream >> responseMessage;
+
+		string response = web::HTTPBuilder().responseCode(web::ResponseCodes::ok).headers
+		(
+			"Error", isSuccess == responses::okResponse ? false : true,
+			"Content-Length", responseMessage.size(),
+			"Content-Type", "text/plain; charset=utf-8"
+		).build(&responseMessage);
+
+		utility::insertSizeHeaderToHTTPMessage(response);
 
 		clientStream << response;
 	}

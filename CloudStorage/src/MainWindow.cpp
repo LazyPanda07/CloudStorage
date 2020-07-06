@@ -339,6 +339,25 @@ void uploadFile(streams::IOSocketStream<char>& clientStream, const wstring& file
 	in.close();
 
 	clientStream >> response;
+
+	web::HTTPParser parser(response);
+
+	const string& error = parser.getHeaders().at("Error");
+
+	if (error == "1")
+	{
+		MessageBoxW
+		(
+			FindWindowW(L"MainWindow", L"Cloud Storage"),
+			utility::to_wstring(parser.getBody()).data(),
+			L"Ошибка",
+			MB_OK
+		);
+	}
+	else
+	{
+		SendMessageW(FindWindowW(L"MainWindow", L"Cloud Storage"), UI::events::getFiles, NULL, NULL);
+	}
 }
 
 void createColumns(HWND list)
