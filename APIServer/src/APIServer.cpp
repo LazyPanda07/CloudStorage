@@ -23,6 +23,8 @@ void showAllFilesInDirectory(streams::IOSocketStream<char>& clientStream, stream
 
 void uploadFile(streams::IOSocketStream<char>& clientStream, streams::IOSocketStream<char>& filesStream, const string& data, const map<string, string>& headers);
 
+void downloadFile(streams::IOSocketStream<char>& clientStream, streams::IOSocketStream<char>& filesStream, const map<string, string>& headers);
+
 namespace web
 {
 	void APIServer::clientConnection(SOCKET clientSocket, sockaddr addr)
@@ -67,7 +69,7 @@ namespace web
 							}
 							if (request == filesRequests::downloadFile)
 							{
-
+								downloadFile(clientStream, filesStream, headers);
 							}
 							else
 							{
@@ -185,4 +187,40 @@ void uploadFile(streams::IOSocketStream<char>& clientStream, streams::IOSocketSt
 
 		clientStream << response;
 	}
+}
+
+void downloadFile(streams::IOSocketStream<char>& clientStream, streams::IOSocketStream<char>& filesStream, const map<string, string>& headers)
+{
+	const string& fileName = headers.at("File-Name");
+	const string& login = headers.at("Login");
+	const string& directory = headers.at("Directory");
+	bool isLast;
+	string data;
+	uintmax_t offset = stoull(headers.at("Range"));
+	uintmax_t totalFileSize;
+
+	filesStream << filesRequests::downloadFile;
+	filesStream << login;
+	filesStream << directory;
+
+	filesStream << fileName;
+	filesStream << offset;
+
+	filesStream >> data;
+	filesStream >> isLast;
+
+	if (isLast)
+	{
+		filesStream >> totalFileSize;
+	}
+
+	string response = web::HTTPBuilder().responseCode(web::ResponseCodes::ok).headers
+	(
+		isLast ? "Total-File-Size" : "Reserved", isLast ? totalFileSize : 0,
+		"Content-Length", data.size()
+	).build(&data);
+
+	utility::insertSizeHeaderToHTTPMessage(response);
+
+	clientStream << response;
 }
