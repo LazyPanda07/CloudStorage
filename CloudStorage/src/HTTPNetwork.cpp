@@ -38,7 +38,7 @@ namespace web
 
 			do
 			{
-				lastPacket = recv(parent::clientSocket, data.data() + totalReceive, data.size(), NULL);
+				lastPacket = recv(parent::clientSocket, data.data() + totalReceive, data.size() - totalReceive, NULL);
 
 				if (lastPacket < 0)
 				{
@@ -109,7 +109,7 @@ namespace web
 
 			do
 			{
-				lastPacket = recv(parent::clientSocket, data.data() + totalReceive, data.size(), NULL);
+				lastPacket = recv(parent::clientSocket, data.data() + totalReceive, data.size() - totalReceive, NULL);
 
 				if (lastPacket < 0)
 				{

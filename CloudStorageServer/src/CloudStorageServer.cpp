@@ -17,6 +17,8 @@ void showAllFilesInDirectory(streams::IOSocketStream<char>& clientStream, const 
 
 void uploadFile(streams::IOSocketStream<char>& clientStream, const filesystem::path& currentPath);
 
+void downloadFile(streams::IOSocketStream<char>& clientStream, const filesystem::path& currentPath);
+
 void findDirectory(filesystem::path& currentPath, const string& directory);
 
 namespace web
@@ -62,7 +64,7 @@ namespace web
 				}
 				else if (request == filesRequests::downloadFile)
 				{
-
+					downloadFile(clientStream, currentPath);
 				}
 			}
 			catch (const WebException&)
@@ -82,7 +84,7 @@ void showAllFilesInDirectory(streams::IOSocketStream<char>& clientStream, const 
 {
 	string result;
 	filesystem::directory_iterator it(currentPath);
-	
+
 	for (const auto& i : it)
 	{
 		result += i.path().filename().string() + ":";
@@ -106,7 +108,7 @@ void showAllFilesInDirectory(streams::IOSocketStream<char>& clientStream, const 
 		cout << e.what() << endl;
 	}
 
-	
+
 }
 
 void uploadFile(streams::IOSocketStream<char>& clientStream, const filesystem::path& currentPath)
@@ -146,6 +148,48 @@ void uploadFile(streams::IOSocketStream<char>& clientStream, const filesystem::p
 			clientStream << responses::failResponse;
 			clientStream << filesResponses::failUploadFile;
 		}
+	}
+}
+
+void downloadFile(streams::IOSocketStream<char>& clientStream, const filesystem::path& currentPath)
+{
+	string fileName;
+	uintmax_t offset;
+	uintmax_t size;
+	string data;
+	bool isLast;
+
+	clientStream >> fileName;
+	clientStream >> offset;
+
+	filesystem::path filePath(filesystem::path(currentPath).append(fileName));
+	size = filesystem::file_size(filePath);
+
+	ifstream in(filePath, ios::binary);
+
+	in.seekg(offset);
+
+	if (size - offset >= filePacketSize)
+	{
+		data.resize(filePacketSize);
+		isLast = false;
+	}
+	else
+	{
+		data.resize(size - offset);
+		isLast = true;
+	}
+
+	in.read(data.data(), data.size());
+
+	in.close();
+
+	clientStream << data;
+	clientStream << isLast;
+
+	if (isLast)
+	{
+		clientStream << size;
 	}
 }
 

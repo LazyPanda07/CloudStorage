@@ -495,11 +495,15 @@ void downloadFile(const wstring& fileName, streams::IOSocketStream<char>& client
 
 	if (filesystem::file_size(filesystem::current_path().append(sFileName)) == totalFileSize)
 	{
-		MessageBoxW(nullptr,filesResponses::successDownloadFile.data(),L"Ошибка",MB_OK);
+		wstring message = fileName + L"\r\n" + filesResponses::successDownloadFile.data();
+
+		MessageBoxW(nullptr, message.data(), L"Успех", MB_OK);
 	}
 	else
 	{
-		MessageBoxW(nullptr,filesResponses::failDownloadFile.data(),L"Ошибка",MB_OK);
+		wstring message = fileName + L"\r\n" + filesResponses::failDownloadFile.data();
+
+		MessageBoxW(nullptr, message.data(), L"Ошибка", MB_OK);
 	}
 }
 
