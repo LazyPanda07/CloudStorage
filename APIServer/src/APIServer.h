@@ -12,5 +12,6 @@ namespace web
 	public:
 		APIServer();
 
+		~APIServer() = default;
 	};
 }

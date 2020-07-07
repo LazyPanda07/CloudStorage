@@ -3,6 +3,9 @@
 #include "MainWindow.h"
 #include "Log.h"
 #include "UIConstants.h"
+#include "INIParser.h"
+
+#pragma comment (lib, "INIParser.lib")
 
 int __stdcall wWinMain(HINSTANCE hInstance, HINSTANCE, PWSTR pCmdLine, int nCmdShow)
 {

@@ -12,5 +12,6 @@ namespace web
 	public:
 		FilesNetwork(SOCKET clientSocket);
 
+		~FilesNetwork() = default;
 	};
 }

@@ -104,7 +104,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <PrecompiledHeaderOutputFile>$(SolutionDir)bin\$(Configuration)-$(Platform)\pch\pch.pch</PrecompiledHeaderOutputFile>
-      <AdditionalIncludeDirectories>$(SolutionDir)pch\src;$(SolutionDir)Log\src;$(SolutionDir)SocketStreams\src;$(SolutionDir)HTTP\src</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)pch\src;$(SolutionDir)Log\src;$(SolutionDir)SocketStreams\src;$(SolutionDir)HTTP\src;$(SolutionDir)INIParser\src</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -129,7 +129,7 @@ IF EXIST $(SolutionDir)bin\int\$(Configuration)-$(Platform)\pch\vc$(PlatformTool
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <PrecompiledHeaderOutputFile>$(SolutionDir)bin\$(Configuration)-$(Platform)\pch\pch.pch</PrecompiledHeaderOutputFile>
-      <AdditionalIncludeDirectories>$(SolutionDir)pch\src;$(SolutionDir)Log\src;$(SolutionDir)SocketStreams\src;$(SolutionDir)HTTP\src</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)pch\src;$(SolutionDir)Log\src;$(SolutionDir)SocketStreams\src;$(SolutionDir)HTTP\src;$(SolutionDir)INIParser\src</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -154,7 +154,7 @@ IF EXIST $(SolutionDir)bin\int\$(Configuration)-$(Platform)\pch\vc$(PlatformTool
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <PrecompiledHeaderOutputFile>$(SolutionDir)bin\$(Configuration)-$(Platform)\pch\pch.pch</PrecompiledHeaderOutputFile>
-      <AdditionalIncludeDirectories>$(SolutionDir)pch\src;$(SolutionDir)Log\src;$(SolutionDir)SocketStreams\src;$(SolutionDir)HTTP\src</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)pch\src;$(SolutionDir)Log\src;$(SolutionDir)SocketStreams\src;$(SolutionDir)HTTP\src;$(SolutionDir)INIParser\src</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -179,7 +179,7 @@ IF EXIST $(SolutionDir)bin\int\$(Configuration)-$(Platform)\pch\vc$(PlatformTool
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <PrecompiledHeaderOutputFile>$(SolutionDir)bin\$(Configuration)-$(Platform)\pch\pch.pch</PrecompiledHeaderOutputFile>
-      <AdditionalIncludeDirectories>$(SolutionDir)pch\src;$(SolutionDir)Log\src;$(SolutionDir)SocketStreams\src;$(SolutionDir)HTTP\src</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)pch\src;$(SolutionDir)Log\src;$(SolutionDir)SocketStreams\src;$(SolutionDir)HTTP\src;$(SolutionDir)INIParser\src</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -208,6 +208,9 @@ IF EXIST $(SolutionDir)bin\int\$(Configuration)-$(Platform)\pch\vc$(PlatformTool
   <ItemGroup>
     <ProjectReference Include="..\HTTP\HTTP.vcxproj">
       <Project>{cd88b391-b7b9-47d5-af8d-153fcb2b5a2b}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\INIParser\INIParser.vcxproj">
+      <Project>{ce5f5455-0e8a-49e8-be46-0a12ed898352}</Project>
     </ProjectReference>
     <ProjectReference Include="..\Log\Log.vcxproj">
       <Project>{89755e92-d5a7-4fa6-b227-7ddc3bba9aa1}</Project>

@@ -8,6 +8,9 @@ inline constexpr std::string_view APIServerPort = "8500";
 inline constexpr std::string_view cloudStorageServerIp = "31.207.173.47";
 inline constexpr std::string_view cloudStorageServerPort = "12500";
 
+inline constexpr std::string_view dataBaseServerIp = "31.207.173.47";
+inline constexpr std::string_view dataBaseServerPort = "14500";
+
 inline constexpr std::string_view usersDirectory = "Data";
 
 inline constexpr short HTTPPacketSize = 4096;

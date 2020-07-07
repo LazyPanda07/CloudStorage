@@ -21,6 +21,6 @@ namespace web
 
 		int receiveData(std::string& data) override;
 
-		~HTTPNetwork();
+		~HTTPNetwork() = default;
 	};
 }

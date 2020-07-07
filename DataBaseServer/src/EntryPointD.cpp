@@ -1,7 +1,7 @@
 #include "pch.h"
 
-#include "APIServer.h"
 #include "Log.h"
+#include "DataBaseServer.h"
 #include "INIParser.h"
 
 #pragma comment (lib, "INIParser.lib")
@@ -11,11 +11,10 @@ using namespace std;
 int main(int argc, char** argv)
 {
 	Log::init(false);
-	SetConsoleOutputCP(1251);
 
 	try
 	{
-		web::APIServer server;
+		web::DataBaseServer server;
 		string command;
 
 		server.start();

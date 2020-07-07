@@ -2,6 +2,9 @@
 
 #include "CloudStorageServer.h"
 #include "Log.h"
+#include "INIParser.h"
+
+#pragma comment (lib, "INIParser.lib")
 
 using namespace std;
 

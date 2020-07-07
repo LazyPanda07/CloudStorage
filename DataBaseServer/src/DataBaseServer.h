@@ -4,14 +4,14 @@
 
 namespace web
 {
-	class CloudStorageServer : public BaseTCPServer
+	class DataBaseServer : public BaseTCPServer
 	{
 	private:
 		void clientConnection(SOCKET clientSocket, sockaddr addr) override;
 
 	public:
-		CloudStorageServer();
+		DataBaseServer();
 
-		~CloudStorageServer() = default;
+		~DataBaseServer() = default;
 	};
 }

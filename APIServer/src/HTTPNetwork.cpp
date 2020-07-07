@@ -149,9 +149,4 @@ namespace web
 			return -1;
 		}
 	}
-
-	HTTPNetwork::~HTTPNetwork()
-	{
-		closesocket(parent::clientSocket);
-	}
 }
