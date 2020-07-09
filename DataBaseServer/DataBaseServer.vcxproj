@@ -203,9 +203,12 @@ IF EXIST $(SolutionDir)bin\int\$(Configuration)-$(Platform)\pch\vc$(PlatformTool
     </CustomBuildStep>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\DataBaseException.cpp" />
     <ClCompile Include="src\DataBaseNetwork.cpp" />
+    <ClCompile Include="src\DataBaseOperations.cpp" />
     <ClCompile Include="src\DataBaseServer.cpp" />
     <ClCompile Include="src\EntryPointD.cpp" />
+    <ClCompile Include="src\CloudDataBase.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\BaseTCPServer\BaseTCPServer.vcxproj">
@@ -225,8 +228,12 @@ IF EXIST $(SolutionDir)bin\int\$(Configuration)-$(Platform)\pch\vc$(PlatformTool
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\DataBaseConstants.h" />
+    <ClInclude Include="src\DataBaseException.h" />
     <ClInclude Include="src\DataBaseNetwork.h" />
+    <ClInclude Include="src\DataBaseOperations.h" />
     <ClInclude Include="src\DataBaseServer.h" />
+    <ClInclude Include="src\CloudDataBase.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

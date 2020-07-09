@@ -40,3 +40,8 @@ bin/
 
 # Users folders
 Data/
+
+# Data base
+*.sqlite3
+*.sqlite
+*.db

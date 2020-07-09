@@ -44,6 +44,13 @@ namespace responses
 	inline constexpr std::string_view unknownRequest = "Unknown request";
 }
 
+namespace accountResponses
+{
+	inline constexpr std::string_view failAuthorization = "Wrong login or password";
+	inline constexpr std::string_view successRegistration = "Registration was successfully";
+	inline constexpr std::string_view failRegistration = "This user already exists";
+}
+
 namespace filesResponses
 {
 	inline constexpr std::string_view emptyDirectory = "Directory is empty";
