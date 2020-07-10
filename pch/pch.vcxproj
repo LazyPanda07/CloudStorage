@@ -169,7 +169,7 @@
   <ItemGroup>
     <ClInclude Include="src\Constants.h" />
     <ClInclude Include="src\pch.h" />
-    <ClInclude Include="src\UtilityFunction.h" />
+    <ClInclude Include="src\UtilityFunctions.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\pch.cpp" />

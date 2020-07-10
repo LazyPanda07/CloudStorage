@@ -5,8 +5,10 @@
 #include "HTTPBuilder.h"
 #include "HTTPParser.h"
 #include "IOSocketStream.h"
-#include "UtilityFunction.h"
+#include "UtilityFunctions.h"
 #include "UIConstants.h"
+
+#include "Screens/AuthorizationScreen.h"
 
 #include <Richedit.h>
 #include <commctrl.h>
@@ -128,6 +130,14 @@ namespace UI
 		createColumns(*this);
 
 		SendMessageW(list, LVM_SETEXTENDEDLISTVIEWSTYLE, LVS_EX_FULLROWSELECT, LVS_EX_FULLROWSELECT);
+
+		AuthorizationScreen* test = new AuthorizationScreen(mainWindow, L"Authorization", MainWindowProcedure);
+
+		test->pubShow();
+
+		ShowWindow(refreshButton, SW_HIDE);
+		ShowWindow(downloadButton, SW_HIDE);
+		ShowWindow(list, SW_HIDE);
 	}
 
 	HWND MainWindow::getHWND(elementsEnum id) const

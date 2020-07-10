@@ -195,13 +195,17 @@ IF EXIST $(SolutionDir)bin\int\$(Configuration)-$(Platform)\pch\vc$(PlatformTool
     </CustomBuildStep>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\BaseClasses\BaseScreen.cpp" />
     <ClCompile Include="src\HTTPNetwork.cpp" />
     <ClCompile Include="src\MainWindow.cpp" />
     <ClCompile Include="src\EntryPointC.cpp" />
+    <ClCompile Include="src\Screens\AuthorizationScreen.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\BaseClasses\BaseScreen.h" />
     <ClInclude Include="src\HTTPNetwork.h" />
     <ClInclude Include="src\MainWindow.h" />
+    <ClInclude Include="src\Screens\AuthorizationScreen.h" />
     <ClInclude Include="src\UIConstants.h" />
     <ClInclude Include="src\UIInterfaces\IResizable.h" />
   </ItemGroup>

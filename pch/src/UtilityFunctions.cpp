@@ -1,6 +1,6 @@
 #include "pch.h"
 
-#include "UtilityFunction.h"
+#include "UtilityFunctions.h"
 #include "Constants.h"
 
 #include <Windows.h>

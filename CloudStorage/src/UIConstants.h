@@ -31,6 +31,26 @@ namespace UI
 		inline constexpr int toolbarTopOffset = 10;
 	}
 
+	namespace authorizationScreen
+	{
+		inline constexpr int defaultOffset = 10;
+
+		inline constexpr int screenNameStaticWidth = 100;
+		inline constexpr int screenNameStaticHeight = 20;
+
+		inline constexpr int loginEditWidth = 200;
+		inline constexpr int loginEditHeight = 20;
+
+		inline constexpr int passwordEditWidth = 200;
+		inline constexpr int passwordEditHeight = 20;
+
+		inline constexpr int enterButtonWidth = 80;
+		inline constexpr int enterButtonHeight = 20;
+
+		inline constexpr int toRegistrationScreenButtonWidth = 120;
+		inline constexpr int toRegistrationScreenButtonHeight = 20;
+	}
+
 	namespace buttons
 	{
 		enum toolbarButtons

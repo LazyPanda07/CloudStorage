@@ -5,7 +5,7 @@
 #include "IOSocketStream.h"
 #include "HTTPParser.h"
 #include "HTTPBuilder.h"
-#include "UtilityFunction.h"
+#include "UtilityFunctions.h"
 
 #include "HTTPNetwork.h"
 #include "FilesNetwork.h"
