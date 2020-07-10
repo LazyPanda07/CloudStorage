@@ -1,7 +1,8 @@
-#include "pch.h"
+﻿#include "pch.h"
 
 #include "AuthorizationScreen.h"
 #include "UtilityFunctions.h"
+#include "Commctrl.h"
 #include "../UIConstants.h"
 
 using namespace std;
@@ -35,7 +36,7 @@ namespace UI
 		(
 			NULL,
 			L"STATIC",
-			L"�����������",
+			L"Авторизация",
 			WS_CHILDWINDOW | SS_CENTER | SS_SIMPLE,
 			centerWrapper.x + authorizationScreen::loginEditWidth / 4,
 			centerWrapper.y - authorizationScreen::defaultOffset - authorizationScreen::loginEditHeight,
@@ -83,7 +84,7 @@ namespace UI
 		(
 			NULL,
 			L"BUTTON",
-			nullptr,
+			L"Вход",
 			WS_CHILDWINDOW,
 			centerWrapper.x,
 			centerWrapper.y + authorizationScreen::defaultOffset * 2 + authorizationScreen::loginEditHeight + authorizationScreen::passwordEditHeight,
@@ -99,7 +100,7 @@ namespace UI
 		(
 			NULL,
 			L"BUTTON",
-			nullptr,
+			L"Регистрация",
 			WS_CHILDWINDOW,
 			centerWrapper.x + authorizationScreen::enterButtonWidth,
 			centerWrapper.y + authorizationScreen::defaultOffset * 2 + authorizationScreen::loginEditHeight + authorizationScreen::passwordEditHeight,
@@ -110,6 +111,11 @@ namespace UI
 			nullptr,
 			nullptr
 		);
+
+		SendMessageW(login, EM_SETCUEBANNER, TRUE, reinterpret_cast<LPARAM>(L"Логин"));
+		SendMessageW(password, EM_SETCUEBANNER, TRUE, reinterpret_cast<LPARAM>(L"Пароль"));
+
+		SendMessageW(password, EM_SETPASSWORDCHAR, static_cast<WPARAM>(L'●'), NULL);
 	}
 
 	void AuthorizationScreen::resize()
