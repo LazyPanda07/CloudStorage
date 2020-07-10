@@ -9,6 +9,7 @@
 
 #include "HTTPNetwork.h"
 #include "FilesNetwork.h"
+#include "DataBaseNetwork.h"
 
 #pragma comment (lib, "BaseTCPServer.lib")
 #pragma comment (lib, "SocketStreams.lib")
@@ -30,7 +31,8 @@ namespace web
 	void APIServer::clientConnection(SOCKET clientSocket, sockaddr addr)
 	{
 		streams::IOSocketStream<char> clientStream(new buffers::IOSocketBuffer<char>(new HTTPNetwork(clientSocket)));
-		streams::IOSocketStream<char> filesStream(new buffers::IOSocketBuffer<char>(new web::FilesNetwork()));
+		streams::IOSocketStream<char> filesStream(new buffers::IOSocketBuffer<char>(new FilesNetwork()));
+		streams::IOSocketStream<char> dataBaseStream(new buffers::IOSocketBuffer<char>(new DataBaseNetwork()));
 		HTTPNetwork network(clientSocket);
 		string request;
 		string response;
