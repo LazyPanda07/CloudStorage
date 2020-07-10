@@ -33,6 +33,9 @@ namespace UI
 
 	namespace authorizationScreen
 	{
+		inline constexpr int loginLimitCharacters = 16;
+		inline constexpr int passwordLimitCharacters = 16;
+
 		inline constexpr int defaultOffset = 10;
 
 		inline constexpr int screenNameStaticWidth = 100;
@@ -69,6 +72,7 @@ namespace UI
 		enum authorizationScreenButtons
 		{
 			authorization = registrationScreenButtonsCount + 1,
+			toRegistrationScreen,
 			authorizationScreenButtonsCount
 		};
 	}

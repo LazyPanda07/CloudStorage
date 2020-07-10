@@ -92,7 +92,7 @@ namespace UI
 			authorizationScreen::enterButtonWidth,
 			authorizationScreen::enterButtonHeight,
 			BaseScreen::wrapper,
-			HMENU(),
+			HMENU(UI::buttons::authorization),
 			nullptr,
 			nullptr
 		);
@@ -108,7 +108,7 @@ namespace UI
 			authorizationScreen::toRegistrationScreenButtonWidth,
 			authorizationScreen::toRegistrationScreenButtonHeight,
 			BaseScreen::wrapper,
-			HMENU(),
+			HMENU(UI::buttons::toRegistrationScreen),
 			nullptr,
 			nullptr
 		);
@@ -116,12 +116,25 @@ namespace UI
 		SendMessageW(login, EM_SETCUEBANNER, TRUE, reinterpret_cast<LPARAM>(L"Логин"));
 		SendMessageW(password, EM_SETCUEBANNER, TRUE, reinterpret_cast<LPARAM>(L"Пароль"));
 
+		SendMessageW(login, EM_LIMITTEXT, UI::authorizationScreen::loginLimitCharacters, NULL);
+		SendMessageW(password, EM_LIMITTEXT, UI::authorizationScreen::passwordLimitCharacters, NULL);
+
 		SendMessageW(password, EM_SETPASSWORDCHAR, static_cast<WPARAM>(L'●'), NULL);
 	}
 
 	void AuthorizationScreen::resize()
 	{
 
+	}
+
+	HWND AuthorizationScreen::getLoginEdit() const
+	{
+		return login;
+	}
+
+	HWND AuthorizationScreen::getPasswordEdit() const
+	{
+		return password;
 	}
 
 	AuthorizationScreen::~AuthorizationScreen()

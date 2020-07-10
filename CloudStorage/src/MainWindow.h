@@ -15,7 +15,9 @@ namespace UI
 			mainWindow,
 			refreshButton,
 			downloadButton,
-			list
+			list,
+			loginEdit,
+			passwordEdit
 		};
 
 	private:
@@ -42,5 +44,9 @@ namespace UI
 		HWND getDownloadButton() const;
 
 		HWND getList() const;
+
+		HWND getLoginEdit() const;
+
+		HWND getPasswordEdit() const;
 	};
 }

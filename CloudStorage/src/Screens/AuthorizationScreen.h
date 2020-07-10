@@ -27,6 +27,10 @@ namespace UI
 
 		void resize() override;
 
+		HWND getLoginEdit() const;
+
+		HWND getPasswordEdit() const;
+
 		~AuthorizationScreen();
 	};
 }

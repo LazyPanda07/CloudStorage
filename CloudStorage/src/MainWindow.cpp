@@ -36,7 +36,9 @@ void uploadFile(streams::IOSocketStream<char>& clientStream, const wstring& file
 
 void downloadFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, const vector<wstring>& filesNames);
 
-void downloadFile(const wstring& fileName, streams::IOSocketStream<char>& clientStream);
+void downloadFile(streams::IOSocketStream<char>& clientStream, const wstring& fileName);
+
+wstring authorization(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream);
 
 void updateNameColumn(UI::MainWindow& ref, const vector<wstring>& data);
 
@@ -95,6 +97,12 @@ namespace UI
 		case UI::MainWindow::elementsEnum::list:
 			return static_cast<CloudStorageScreen*>(currentScreen)->getList();
 
+		case UI::MainWindow::elementsEnum::loginEdit:
+			return static_cast<AuthorizationScreen*>(currentScreen)->getLoginEdit();
+
+		case UI::MainWindow::elementsEnum::passwordEdit:
+			return static_cast<AuthorizationScreen*>(currentScreen)->getPasswordEdit();
+
 		default:
 			return nullptr;
 		}
@@ -139,6 +147,16 @@ namespace UI
 	{
 		return this->getHWND(elementsEnum::list);
 	}
+
+	HWND MainWindow::getLoginEdit() const
+	{
+		return this->getHWND(elementsEnum::loginEdit);
+	}
+
+	HWND MainWindow::getPasswordEdit() const
+	{
+		return this->getHWND(elementsEnum::passwordEdit);
+	}
 }
 
 LRESULT __stdcall MainWindowProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
@@ -161,6 +179,11 @@ LRESULT __stdcall MainWindowProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM
 
 		case UI::buttons::download:
 			downloadFile(*ptr, clientStream, filesNames);
+
+			break;
+
+		case UI::buttons::authorization:
+			authorization(*ptr, clientStream);
 
 			break;
 		}
@@ -353,13 +376,13 @@ void downloadFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStre
 
 	while (id != -1)
 	{
-		downloadFile(filesNames[id], clientStream);
+		downloadFile(clientStream, filesNames[id]);
 
 		id = SendMessageW(ref.getList(), LVM_GETNEXTITEM, id, LVNI_SELECTED);
 	}
 }
 
-void downloadFile(const wstring& fileName, streams::IOSocketStream<char>& clientStream)
+void downloadFile(streams::IOSocketStream<char>& clientStream, const wstring& fileName)
 {
 	uintmax_t offset = 0;
 	uintmax_t totalFileSize;
@@ -416,6 +439,50 @@ void downloadFile(const wstring& fileName, streams::IOSocketStream<char>& client
 		wstring message = fileName + L"\r\n" + filesResponses::failDownloadFile.data();
 
 		MessageBoxW(nullptr, message.data(), L"Ошибка", MB_OK);
+	}
+}
+
+wstring authorization(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream)
+{
+	wstring wLogin;
+	wstring wPassword;
+	string response;
+
+	HWND loginEdit = ref.getLoginEdit();
+	HWND passwordEdit = ref.getPasswordEdit();
+
+	wLogin.resize(GetWindowTextLengthW(loginEdit));
+	wPassword.resize(GetWindowTextLengthW(passwordEdit));
+
+	GetWindowTextW(loginEdit, wLogin.data(), wLogin.size() + 1);
+	GetWindowTextW(passwordEdit, wPassword.data(), wPassword.size() + 1);
+
+	string login = utility::to_string(wLogin);
+	string password = utility::to_string(wPassword);
+	string body = "login=" + login + "&" + "password=" + password;
+
+	string request = web::HTTPBuilder().postRequest().headers
+	(
+		requestType::accountType, accountRequest::authorization
+	).build(&body);
+
+	utility::insertSizeHeaderToHTTPMessage(request);
+
+	clientStream << request;
+
+	clientStream >> response;
+
+	web::HTTPParser parser(response);
+
+	if (parser.getHeaders().at("Error") == "0")
+	{
+		return wLogin;
+	}
+	else
+	{
+		MessageBoxW(nullptr, utility::to_wstring(parser.getBody()).data(), L"Ошибка", MB_OK);
+
+		return wstring();
 	}
 }
 
