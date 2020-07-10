@@ -212,12 +212,14 @@ IF EXIST $(SolutionDir)bin\int\$(Configuration)-$(Platform)\pch\vc$(PlatformTool
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\APIServer.cpp" />
+    <ClCompile Include="src\DataBaseNetwork.cpp" />
     <ClCompile Include="src\EntryPointA.cpp" />
     <ClCompile Include="src\FilesNetwork.cpp" />
     <ClCompile Include="src\HTTPNetwork.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\APIServer.h" />
+    <ClInclude Include="src\DataBaseNetwork.h" />
     <ClInclude Include="src\FilesNetwork.h" />
     <ClInclude Include="src\HTTPNetwork.h" />
   </ItemGroup>

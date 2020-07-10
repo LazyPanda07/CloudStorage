@@ -26,6 +26,10 @@ void uploadFile(streams::IOSocketStream<char>& clientStream, streams::IOSocketSt
 
 void downloadFile(streams::IOSocketStream<char>& clientStream, streams::IOSocketStream<char>& filesStream, const map<string, string>& headers);
 
+void authorization(streams::IOSocketStream<char>& clientStream, streams::IOSocketStream<char>& dataBaseStream, const string& data);
+
+tuple<string, string> userDataParse(const string& data);
+
 namespace web
 {
 	void APIServer::clientConnection(SOCKET clientSocket, sockaddr addr)
@@ -51,6 +55,20 @@ namespace web
 
 					if (it != end(headers))
 					{
+						const string& request = it->second;
+
+						if (request == accountRequest::authorization)
+						{
+							authorization(clientStream, dataBaseStream, parser.getBody());
+						}
+						else if (request == accountRequest::registration)
+						{
+
+						}
+						else
+						{
+							continue;
+						}
 
 					}
 					else
@@ -75,7 +93,7 @@ namespace web
 							}
 							else
 							{
-
+								continue;
 							}
 						}
 						else
@@ -225,4 +243,42 @@ void downloadFile(streams::IOSocketStream<char>& clientStream, streams::IOSocket
 	utility::insertSizeHeaderToHTTPMessage(response);
 
 	clientStream << response;
+}
+
+void authorization(streams::IOSocketStream<char>& clientStream, streams::IOSocketStream<char>& dataBaseStream, const string& data)
+{
+	auto [login, password] = userDataParse(data);
+	string response;
+	bool error = false;
+
+	dataBaseStream << accountRequest::authorization;
+	dataBaseStream << login;
+	dataBaseStream << password;
+
+	dataBaseStream >> response;
+
+	error = response != responses::okResponse;
+
+	response = web::HTTPBuilder().responseCode(web::ResponseCodes::ok).headers
+	(
+		"Error", error
+	).build(error ? &response : nullptr);
+
+	utility::insertSizeHeaderToHTTPMessage(response);
+
+	clientStream << response;
+}
+
+tuple<string, string> userDataParse(const string& data)
+{
+	if (data.find('&') == string::npos)
+	{
+		return { string(), string() };
+	}
+
+	return
+	{
+		string(begin(data) + data.find('=') + 1, begin(data) + data.find('&')),	//login
+		string(begin(data) + data.rfind('=') + 1, end(data))	//password
+	};
 }
