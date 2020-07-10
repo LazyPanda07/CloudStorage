@@ -196,6 +196,7 @@ IF EXIST $(SolutionDir)bin\int\$(Configuration)-$(Platform)\pch\vc$(PlatformTool
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\BaseClasses\BaseScreen.cpp" />
+    <ClCompile Include="src\Screens\CloudStorageScreen.cpp" />
     <ClCompile Include="src\HTTPNetwork.cpp" />
     <ClCompile Include="src\MainWindow.cpp" />
     <ClCompile Include="src\EntryPointC.cpp" />
@@ -206,6 +207,7 @@ IF EXIST $(SolutionDir)bin\int\$(Configuration)-$(Platform)\pch\vc$(PlatformTool
     <ClInclude Include="src\HTTPNetwork.h" />
     <ClInclude Include="src\MainWindow.h" />
     <ClInclude Include="src\Screens\AuthorizationScreen.h" />
+    <ClInclude Include="src\Screens\CloudStorageScreen.h" />
     <ClInclude Include="src\UIConstants.h" />
     <ClInclude Include="src\UIInterfaces\IResizable.h" />
   </ItemGroup>

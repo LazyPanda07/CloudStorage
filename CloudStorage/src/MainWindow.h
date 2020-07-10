@@ -1,7 +1,9 @@
 #pragma once
 
 #include <Windows.h>
+
 #include "UIInterfaces/IResizable.h"
+#include "BaseClasses/BaseScreen.h"
 
 namespace UI
 {
@@ -19,9 +21,7 @@ namespace UI
 	private:
 		HWND mainWindow;
 
-		HWND refreshButton;
-		HWND downloadButton;
-		HWND list;
+		BaseScreen* currentScreen;
 
 	private:
 		MainWindow();

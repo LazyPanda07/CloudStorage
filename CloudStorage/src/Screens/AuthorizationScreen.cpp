@@ -27,7 +27,8 @@ namespace UI
 		DestroyWindow(toRegistrationScreenButton);
 	}
 
-	AuthorizationScreen::AuthorizationScreen(HWND parentWindow, const wstring& wrapperClassName, WNDPROC procedure) : BaseScreen(parentWindow, wrapperClassName, procedure)
+	AuthorizationScreen::AuthorizationScreen(HWND parentWindow, const wstring& wrapperClassName, WNDPROC procedure)
+		: BaseScreen(parentWindow, wrapperClassName, procedure)
 	{
 		POINT centerWrapper = utility::centerCoordinates(authorizationScreen::loginEditWidth, authorizationScreen::loginEditHeight, BaseScreen::wrapper);
 		centerWrapper.y -= centerWrapper.y / 2;

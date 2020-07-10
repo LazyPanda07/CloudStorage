@@ -9,6 +9,7 @@
 #include "UIConstants.h"
 
 #include "Screens/AuthorizationScreen.h"
+#include "Screens/CloudStorageScreen.h"
 
 #include <Richedit.h>
 #include <commctrl.h>
@@ -27,8 +28,6 @@ using namespace std;
 
 LRESULT __stdcall MainWindowProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam);
 
-LRESULT __stdcall DragAndDrop(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam, UINT_PTR uIdSubclass, DWORD_PTR dwRefData);
-
 void getFiles(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, vector<wstring>& filesNames, bool showError);
 
 void uploadFile(streams::IOSocketStream<char>& clientStream, const vector<wstring>& files);
@@ -39,18 +38,17 @@ void downloadFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStre
 
 void downloadFile(const wstring& fileName, streams::IOSocketStream<char>& clientStream);
 
-void createColumns(UI::MainWindow& ref);
-
 void updateNameColumn(UI::MainWindow& ref, const vector<wstring>& data);
 
 namespace UI
 {
-	MainWindow::MainWindow()
+	MainWindow::MainWindow() : currentScreen(nullptr)
 	{
-		WNDCLASSEXW wndClass = {};
 		INITCOMMONCONTROLSEX init;
+		WNDCLASSEXW wndClass = {};
+		POINT monitorCenter = utility::centerCoordinates(UI::mainWindowUI::mainWindowWidth, UI::mainWindowUI::mainWindowHeight);
+
 		init.dwICC = ICC_LISTVIEW_CLASSES;
-		POINT monitorCenter = utility::centerCoordinates(mainWindowUI::mainWindowWidth, mainWindowUI::mainWindowHeight);
 		wndClass.cbSize = sizeof(WNDCLASSEXW);
 		wndClass.lpfnWndProc = MainWindowProcedure;
 		wndClass.hbrBackground = CreateSolidBrush(RGB(255, 255, 255));
@@ -59,7 +57,6 @@ namespace UI
 		wndClass.hIcon = LoadIconW(nullptr, IDI_APPLICATION);
 
 		RegisterClassExW(&wndClass);
-		InitCommonControlsEx(&init);
 
 		mainWindow = CreateWindowExW
 		(
@@ -68,76 +65,18 @@ namespace UI
 			L"Cloud Storage",
 			WS_OVERLAPPEDWINDOW | WS_VISIBLE,
 			monitorCenter.x, monitorCenter.y,
-			mainWindowUI::mainWindowWidth, mainWindowUI::mainWindowHeight,
+			UI::mainWindowUI::mainWindowWidth, UI::mainWindowUI::mainWindowHeight,
 			nullptr,
 			HMENU(),
 			nullptr,
 			nullptr
 		);
 
-		RECT mainWindowSizes;
+		InitCommonControlsEx(&init);
 
-		GetClientRect(mainWindow, &mainWindowSizes);
+		currentScreen = new AuthorizationScreen(mainWindow, L"Authorization", MainWindowProcedure);
 
-		const LONG width = mainWindowSizes.right - mainWindowSizes.left;
-		const LONG height = mainWindowSizes.bottom - mainWindowSizes.top;
-
-		refreshButton = CreateWindowExW
-		(
-			NULL,
-			L"BUTTON",
-			L"Обновить список файлов",
-			WS_CHILDWINDOW | WS_VISIBLE,
-			0, 0,
-			toolbar::toolbarButtonWidth, toolbar::toolbarButtonHeight,
-			mainWindow,
-			HMENU(buttons::refresh),
-			nullptr,
-			nullptr
-		);
-
-		downloadButton = CreateWindowExW
-		(
-			NULL,
-			L"BUTTON",
-			L"Скачать файл",
-			WS_CHILDWINDOW | WS_VISIBLE,
-			toolbar::toolbarButtonWidth, 0,
-			toolbar::toolbarButtonWidth, toolbar::toolbarButtonHeight,
-			mainWindow,
-			HMENU(buttons::download),
-			nullptr,
-			nullptr
-		);
-
-		list = CreateWindowExW
-		(
-			WS_EX_CLIENTEDGE,
-			WC_LISTVIEW,
-			nullptr,
-			WS_CHILDWINDOW | WS_VISIBLE | LVS_EDITLABELS | LVS_REPORT,
-			0, toolbar::toolbarHeight,
-			width, height - toolbar::toolbarHeight,
-			mainWindow,
-			HMENU(),
-			nullptr,
-			nullptr
-		);
-
-		DragAcceptFiles(list, true);
-		SetWindowSubclass(list, &DragAndDrop, 1, 0);
-
-		createColumns(*this);
-
-		SendMessageW(list, LVM_SETEXTENDEDLISTVIEWSTYLE, LVS_EX_FULLROWSELECT, LVS_EX_FULLROWSELECT);
-
-		AuthorizationScreen* test = new AuthorizationScreen(mainWindow, L"Authorization", MainWindowProcedure);
-
-		test->pubShow();
-
-		ShowWindow(refreshButton, SW_HIDE);
-		ShowWindow(downloadButton, SW_HIDE);
-		ShowWindow(list, SW_HIDE);
+		currentScreen->pubShow();
 	}
 
 	HWND MainWindow::getHWND(elementsEnum id) const
@@ -148,26 +87,22 @@ namespace UI
 			return mainWindow;
 
 		case UI::MainWindow::elementsEnum::refreshButton:
-			return refreshButton;
+			return static_cast<CloudStorageScreen*>(currentScreen)->getRefreshButton();
 
 		case UI::MainWindow::elementsEnum::downloadButton:
-			return downloadButton;
+			return static_cast<CloudStorageScreen*>(currentScreen)->getDownloadButton();
 
 		case UI::MainWindow::elementsEnum::list:
-			return list;
+			return static_cast<CloudStorageScreen*>(currentScreen)->getList();
 
 		default:
-
-			return NULL;
+			return nullptr;
 		}
 	}
 
 	MainWindow::~MainWindow()
 	{
 		DestroyWindow(mainWindow);
-		DestroyWindow(refreshButton);
-		DestroyWindow(downloadButton);
-		DestroyWindow(list);
 	}
 
 	MainWindow& MainWindow::get()
@@ -179,14 +114,10 @@ namespace UI
 
 	void MainWindow::resize()
 	{
-		RECT sizes;
-
-		GetClientRect(mainWindow, &sizes);
-
-		LONG width = sizes.right - sizes.left;
-		LONG height = sizes.bottom - sizes.top;
-
-		SetWindowPos(list, HWND_BOTTOM, 0, toolbar::toolbarHeight, width, height - toolbar::toolbarHeight, SWP_SHOWWINDOW);
+		if (currentScreen)
+		{
+			currentScreen->resize();
+		}
 	}
 
 	HWND MainWindow::getMainWindow() const
@@ -215,6 +146,7 @@ LRESULT __stdcall MainWindowProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM
 	static streams::IOSocketStream<char> clientStream(new buffers::IOSocketBuffer<char>(new web::HTTPNetwork()));
 	static UI::MainWindow* ptr = nullptr;
 	static vector<wstring> filesNames;
+	static UI::BaseScreen* currentScreen = nullptr;
 
 	switch (msg)
 	{
@@ -272,36 +204,6 @@ LRESULT __stdcall MainWindowProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM
 
 	default:
 		return DefWindowProcW(hwnd, msg, wparam, lparam);
-	}
-}
-
-LRESULT __stdcall DragAndDrop(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam, UINT_PTR uIdSubclass, DWORD_PTR dwRefData)
-{
-	switch (msg)
-	{
-	case WM_DROPFILES:
-	{
-		vector<wstring> data;
-		HDROP drop = reinterpret_cast<HDROP>(wparam);
-
-		UINT count = DragQueryFileW(drop, 0xFFFFFFFF, nullptr, NULL);
-
-		data.resize(count);
-
-		for (size_t i = 0; i < count; i++)
-		{
-			data[i].resize(DragQueryFileW(drop, i, nullptr, data[i].size()) + 1);
-
-			DragQueryFileW(drop, i, data[i].data(), data[i].size());
-		}
-
-		SendMessageW(GetParent(hwnd), UI::events::uploadFileE, reinterpret_cast<WPARAM>(&data), NULL);
-	}
-
-	return 0;
-
-	default:
-		return DefSubclassProc(hwnd, msg, wparam, lparam);
 	}
 }
 
@@ -515,43 +417,6 @@ void downloadFile(const wstring& fileName, streams::IOSocketStream<char>& client
 
 		MessageBoxW(nullptr, message.data(), L"Ошибка", MB_OK);
 	}
-}
-
-void createColumns(UI::MainWindow& ref)
-{
-	array<LVCOLUMNW, UI::mainWindowUI::columnsInList> columns = {};
-	RECT mainWindowSizes;
-	RECT listSizes;
-
-	GetClientRect(ref.getMainWindow(), &mainWindowSizes);
-	GetClientRect(ref.getList(), &listSizes);
-
-	LONG width = mainWindowSizes.right - mainWindowSizes.left;
-
-	const array<LONG, UI::mainWindowUI::columnsInList> columnsSizes =
-	{
-		width * UI::mainWindowUI::nameColumnCoefficientWidth,
-		width * UI::mainWindowUI::dateColumnCoefficientWidth,
-		width * UI::mainWindowUI::typeColumnCoefficientWidth,
-		width * UI::mainWindowUI::sizeColumnCoefficientWidth
-	};
-
-	columns[0].pszText = const_cast<wchar_t*>(L"Имя");
-	columns[1].pszText = const_cast<wchar_t*>(L"Дата изменения");
-	columns[2].pszText = const_cast<wchar_t*>(L"Тип");
-	columns[3].pszText = const_cast<wchar_t*>(L"Размер");
-
-	for (size_t i = 0; i < columns.size(); i++)
-	{
-		columns[i].mask = LVCF_FMT | LVCF_WIDTH | LVCF_TEXT | LVCF_SUBITEM;
-		columns[i].iSubItem = i;
-		columns[i].fmt = LVCFMT_LEFT;
-		columns[i].cx = columnsSizes[i];
-
-		SendMessageW(ref.getList(), LVM_INSERTCOLUMN, static_cast<WPARAM>(i), reinterpret_cast<LPARAM>(&columns[i]));
-	}
-
-	InvalidateRect(ref.getList(), &listSizes, true);
 }
 
 void updateNameColumn(UI::MainWindow& ref, const vector<wstring>& data)

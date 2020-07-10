@@ -53,6 +53,11 @@ namespace UI
 		this->destroy();
 	}
 
+	HWND BaseScreen::getParent() const
+	{
+		return parentWindow;
+	}
+
 	BaseScreen::~BaseScreen()
 	{
 		this->pubDestroy();
