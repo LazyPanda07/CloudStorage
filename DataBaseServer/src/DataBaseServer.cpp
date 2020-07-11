@@ -70,4 +70,9 @@ namespace web
 	{
 
 	}
+
+	void DataBaseServer::setDataBaseServerPort(string&& port) noexcept
+	{
+		dataBaseServerPort = move(port);
+	}
 }

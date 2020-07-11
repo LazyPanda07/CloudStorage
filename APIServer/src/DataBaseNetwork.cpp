@@ -17,4 +17,14 @@ namespace web
 	{
 
 	}
+
+	void DataBaseNetwork::setDataBaseServerIp(string&& ip) noexcept
+	{
+		dataBaseServerIp = move(ip);
+	}
+
+	void DataBaseNetwork::setDataBaseServerPort(string&& port) noexcept
+	{
+		dataBaseServerPort = move(port);
+	}
 }

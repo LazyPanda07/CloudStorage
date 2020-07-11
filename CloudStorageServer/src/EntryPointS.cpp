@@ -3,6 +3,7 @@
 #include "CloudStorageServer.h"
 #include "Log.h"
 #include "INIParser.h"
+#include "Constants.h"
 
 #pragma comment (lib, "INIParser.lib")
 
@@ -12,6 +13,10 @@ int main(int argc, char** argv)
 {
 	Log::init(false);
 	SetConsoleOutputCP(1251);
+
+	utility::INIParser parser(settingsFile);
+
+	web::CloudStorageServer::setCloudStorageServerPort(parser.getKeyValue("CloudStorageServer", "ServerPort"));
 
 	try
 	{

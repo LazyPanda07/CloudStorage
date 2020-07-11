@@ -3,6 +3,7 @@
 #include "Log.h"
 #include "DataBaseServer.h"
 #include "INIParser.h"
+#include "Constants.h"
 
 #pragma comment (lib, "INIParser.lib")
 
@@ -11,6 +12,11 @@ using namespace std;
 int main(int argc, char** argv)
 {
 	Log::init(false);
+	SetConsoleOutputCP(1251);
+
+	utility::INIParser parser(settingsFile);
+
+	web::DataBaseServer::setDataBaseServerPort(parser.getKeyValue("DataBaseServer", "ServerPort"));
 
 	try
 	{

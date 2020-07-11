@@ -78,6 +78,11 @@ namespace web
 	{
 
 	}
+
+	void CloudStorageServer::setCloudStorageServerPort(string&& port) noexcept
+	{
+		cloudStorageServerPort = move(port);
+	}
 }
 
 void showAllFilesInDirectory(streams::IOSocketStream<char>& clientStream, const filesystem::path& currentPath)

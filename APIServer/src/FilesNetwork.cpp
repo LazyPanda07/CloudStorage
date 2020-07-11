@@ -17,4 +17,14 @@ namespace web
 	{
 
 	}
+
+	void FilesNetwork::setCloudStorageServerIp(string&& ip) noexcept
+	{
+		cloudStorageServerIp = move(ip);
+	}
+
+	void FilesNetwork::setCloudStorageServerPort(string&& port) noexcept
+	{
+		cloudStorageServerPort = move(port);
+	}
 }

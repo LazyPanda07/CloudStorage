@@ -1,5 +1,6 @@
 #include "pch.h"
 
+#include "HTTPNetwork.h"
 #include "MainWindow.h"
 #include "Log.h"
 #include "UIConstants.h"
@@ -10,6 +11,11 @@
 int __stdcall wWinMain(HINSTANCE hInstance, HINSTANCE, PWSTR pCmdLine, int nCmdShow)
 {
 	Log::init(false);
+
+	utility::INIParser parser(settingsFile);
+
+	web::HTTPNetwork::setAPIServerIp(parser.getKeyValue("APIServer", "ServerIp"));
+	web::HTTPNetwork::setAPIServerPort(parser.getKeyValue("APIServer", "ServerPort"));
 
 	UI::MainWindow& instance = UI::MainWindow::get();
 

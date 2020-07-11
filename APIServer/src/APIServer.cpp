@@ -117,6 +117,11 @@ namespace web
 	{
 
 	}
+
+	void APIServer::setAPIServerPort(string&& port) noexcept
+	{
+		APIServerPort = move(port);
+	}
 }
 
 bool checkHTTP(const string& request)

@@ -149,4 +149,14 @@ namespace web
 			return -1;
 		}
 	}
+
+	void HTTPNetwork::setAPIServerIp(string&& ip) noexcept
+	{
+		HTTPNetwork::APIServerIp = move(ip);
+	}
+
+	void HTTPNetwork::setAPIServerPort(string&& port) noexcept
+	{
+		HTTPNetwork::APIServerPort = move(port);
+	}
 }

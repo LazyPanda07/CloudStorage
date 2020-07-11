@@ -2,14 +2,7 @@
 
 #include <string>
 
-inline constexpr std::string_view APIServerIp = "31.207.173.47";
-inline constexpr std::string_view APIServerPort = "8500";
-
-inline constexpr std::string_view cloudStorageServerIp = "31.207.173.47";
-inline constexpr std::string_view cloudStorageServerPort = "12500";
-
-inline constexpr std::string_view dataBaseServerIp = "31.207.173.47";
-inline constexpr std::string_view dataBaseServerPort = "14500";
+inline constexpr std::string_view settingsFile = "settings.ini";
 
 inline constexpr std::string_view usersDirectory = "Data";
 

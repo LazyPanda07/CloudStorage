@@ -13,8 +13,13 @@ namespace web
 	private:
 		void clientConnection(SOCKET clientSocket, sockaddr addr) override;
 
+	private:
+		static inline std::string dataBaseServerPort;
+
 	public:
 		DataBaseServer();
+
+		static void setDataBaseServerPort(std::string&& port) noexcept;
 
 		~DataBaseServer() = default;
 	};
