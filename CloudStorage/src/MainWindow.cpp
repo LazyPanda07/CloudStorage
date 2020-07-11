@@ -47,6 +47,8 @@ void downloadFile(streams::IOSocketStream<char>& clientStream, const wstring& fi
 
 wstring authorization(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream);
 
+wstring registration(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream);
+
 void initCloudStorageScreen(UI::MainWindow& ref);
 
 void initRegistrationScreen(UI::MainWindow& ref);
@@ -250,7 +252,16 @@ LRESULT __stdcall MainWindowProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM
 			break;
 
 		case UI::buttons::registration:
-			
+			login = registration(*ptr, clientStream);
+
+			if (login.size())
+			{
+				initCloudStorageScreen(*ptr);
+
+				ptr->getCurrentScreen()->pubShow();
+
+				SendMessageW(ptr->getMainWindow(), UI::events::getFilesE, NULL, NULL);
+			}
 
 			break;
 
@@ -632,6 +643,71 @@ wstring authorization(UI::MainWindow& ref, streams::IOSocketStream<char>& client
 	{
 		SetWindowTextW(authorizationLoginEdit, L"");
 		SetWindowTextW(authorizationPasswordEdit, L"");
+
+		MessageBoxW(nullptr, utility::to_wstring(parser.getBody()).data(), L"Ошибка", MB_OK);
+
+		return wstring();
+	}
+}
+
+wstring registration(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream)
+{
+	wstring wLogin;
+	wstring wPassword;
+	wstring wRepeatPassword;
+	string response;
+
+	HWND registrationLoginEdit = ref.getRegistrationLoginEdit();
+	HWND registrationPasswordEdit = ref.getRegistrationPasswordEdit();
+	HWND registrationRepeatPasswordEdit = ref.getRegistrationRepeatPasswordEdit();
+
+	wLogin.resize(GetWindowTextLengthW(registrationLoginEdit));
+	wPassword.resize(GetWindowTextLengthW(registrationPasswordEdit));
+	wRepeatPassword.resize(GetWindowTextLengthW(registrationRepeatPasswordEdit));
+
+	GetWindowTextW(registrationLoginEdit, wLogin.data(), wLogin.size() + 1);
+	GetWindowTextW(registrationPasswordEdit, wPassword.data(), wPassword.size() + 1);
+	GetWindowTextW(registrationRepeatPasswordEdit, wRepeatPassword.data(), wRepeatPassword.size() + 1);
+
+	if (wPassword != wRepeatPassword)
+	{
+		SetWindowTextW(registrationLoginEdit, L"");
+		SetWindowTextW(registrationPasswordEdit, L"");
+		SetWindowTextW(registrationRepeatPasswordEdit, L"");
+
+		MessageBoxW(nullptr, L"Пароли не совпадают", L"Ошибка", MB_OK);
+
+		return wstring();
+	}
+
+	string login = utility::to_string(wLogin);
+	string password = utility::to_string(wPassword);
+
+	string body = "login=" + login + "&" + "password=" + password;
+
+	string request = web::HTTPBuilder().postRequest().headers
+	(
+		requestType::accountType, accountRequest::registration,
+		"Content-Length", body.size()
+	).build(&body);
+
+	utility::insertSizeHeaderToHTTPMessage(request);
+
+	clientStream << request;
+
+	clientStream >> response;
+
+	web::HTTPParser parser(response);
+
+	if (parser.getHeaders().at("Error") == "0")
+	{
+		return wLogin;
+	}
+	else
+	{
+		SetWindowTextW(registrationLoginEdit, L"");
+		SetWindowTextW(registrationPasswordEdit, L"");
+		SetWindowTextW(registrationRepeatPasswordEdit, L"");
 
 		MessageBoxW(nullptr, utility::to_wstring(parser.getBody()).data(), L"Ошибка", MB_OK);
 
