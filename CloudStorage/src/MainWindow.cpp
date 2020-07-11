@@ -28,6 +28,10 @@ using namespace std;
 
 LRESULT __stdcall MainWindowProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam);
 
+LRESULT __stdcall AuthorizationScreenProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam);
+
+LRESULT __stdcall CloudStorageScreenProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam);
+
 void getFiles(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, vector<wstring>& filesNames, bool showError);
 
 void uploadFile(streams::IOSocketStream<char>& clientStream, const vector<wstring>& files);
@@ -78,7 +82,7 @@ namespace UI
 
 		InitCommonControlsEx(&init);
 
-		currentScreen = new AuthorizationScreen(mainWindow, L"Authorization", MainWindowProcedure);
+		currentScreen = new AuthorizationScreen(mainWindow, L"Authorization", AuthorizationScreenProcedure);
 
 		currentScreen->pubShow();
 	}
@@ -181,7 +185,6 @@ LRESULT __stdcall MainWindowProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM
 	switch (msg)
 	{
 	case WM_COMMAND:
-
 		switch (wparam)
 		{
 		case UI::buttons::refresh:
@@ -243,6 +246,51 @@ LRESULT __stdcall MainWindowProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM
 
 	case WM_DESTROY:
 		PostQuitMessage(0);
+
+		return 0;
+
+	default:
+		return DefWindowProcW(hwnd, msg, wparam, lparam);
+	}
+}
+
+LRESULT __stdcall AuthorizationScreenProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
+{
+	switch (msg)
+	{
+	case WM_COMMAND:
+		switch (wparam)
+		{
+		case UI::buttons::authorization:
+			SendMessageW(GetParent(hwnd), WM_COMMAND, UI::buttons::authorization, NULL);
+
+			break;
+
+		case UI::buttons::toRegistrationScreen:
+			SendMessageW(GetParent(hwnd), WM_COMMAND, UI::buttons::toRegistrationScreen, NULL);
+
+			break;
+		}
+
+		return 0;
+
+	default:
+		return DefWindowProcW(hwnd, msg, wparam, lparam);
+	}
+}
+
+LRESULT __stdcall CloudStorageScreenProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
+{
+	switch (msg)
+	{
+	case WM_COMMAND:
+		switch (wparam)
+		{
+		case UI::buttons::registration:
+			SendMessageW(GetParent(hwnd), WM_COMMAND, UI::buttons::registration, NULL);
+
+			break;
+		}
 
 		return 0;
 
@@ -515,7 +563,7 @@ void initCloudStorageScreen(UI::MainWindow& ref)
 {
 	ref.getCurrentScreen().pubDestroy();
 
-	ref.setCurrentScreen(new UI::CloudStorageScreen(ref.getMainWindow(), L"CloudStorage", MainWindowProcedure));
+	ref.setCurrentScreen(new UI::CloudStorageScreen(ref.getMainWindow(), L"CloudStorage", CloudStorageScreenProcedure));
 }
 
 void updateNameColumn(UI::MainWindow& ref, const vector<wstring>& data)

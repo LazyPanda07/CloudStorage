@@ -13,11 +13,15 @@ namespace UI
 		enum class elementsEnum
 		{
 			mainWindow,
+#pragma region CloudStorageScreen
 			refreshButton,
 			downloadButton,
 			list,
+#pragma endregion
+#pragma region AuthorizationScreen
 			loginEdit,
 			passwordEdit
+#pragma endregion
 		};
 
 	private:

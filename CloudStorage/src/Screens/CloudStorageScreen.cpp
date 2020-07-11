@@ -23,9 +23,7 @@ namespace UI
 
 	void CloudStorageScreen::destroy()
 	{
-		DestroyWindow(refreshButton);
-		DestroyWindow(downloadButton);
-		DestroyWindow(list);
+		
 	}
 
 	CloudStorageScreen::CloudStorageScreen(HWND parentWindow, const std::wstring& wrapperClassName, WNDPROC procedure) :

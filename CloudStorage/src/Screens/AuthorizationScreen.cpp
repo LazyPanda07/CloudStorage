@@ -20,11 +20,7 @@ namespace UI
 
 	void AuthorizationScreen::destroy()
 	{
-		DestroyWindow(screenName);
-		DestroyWindow(login);
-		DestroyWindow(password);
-		DestroyWindow(enterButton);
-		DestroyWindow(toRegistrationScreenButton);
+		
 	}
 
 	AuthorizationScreen::AuthorizationScreen(HWND parentWindow, const wstring& wrapperClassName, WNDPROC procedure)
