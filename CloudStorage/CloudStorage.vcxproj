@@ -196,22 +196,32 @@ IF EXIST $(SolutionDir)bin\int\$(Configuration)-$(Platform)\pch\vc$(PlatformTool
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\BaseClasses\BaseScreen.cpp" />
+    <ClCompile Include="src\NetworkFunctions.cpp" />
     <ClCompile Include="src\Screens\CloudStorageScreen.cpp" />
     <ClCompile Include="src\HTTPNetwork.cpp" />
     <ClCompile Include="src\MainWindow.cpp" />
     <ClCompile Include="src\EntryPointC.cpp" />
     <ClCompile Include="src\Screens\AuthorizationScreen.cpp" />
     <ClCompile Include="src\Screens\RegistrationScreen.cpp" />
+    <ClCompile Include="src\Screens\ScreenFunctions.cpp" />
+    <ClCompile Include="src\WindowProcedures\AuthorizationScreenProcedure.cpp" />
+    <ClCompile Include="src\WindowProcedures\CloudStorageScreenProcedure.cpp" />
+    <ClCompile Include="src\WindowProcedures\RegistrationScreenProcedure.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\BaseClasses\BaseScreen.h" />
     <ClInclude Include="src\HTTPNetwork.h" />
     <ClInclude Include="src\MainWindow.h" />
+    <ClInclude Include="src\NetworkFunctions.h" />
     <ClInclude Include="src\Screens\AuthorizationScreen.h" />
     <ClInclude Include="src\Screens\CloudStorageScreen.h" />
     <ClInclude Include="src\Screens\RegistrationScreen.h" />
+    <ClInclude Include="src\Screens\ScreenFunctions.h" />
     <ClInclude Include="src\UIConstants.h" />
     <ClInclude Include="src\UIInterfaces\IResizable.h" />
+    <ClInclude Include="src\WindowProcedures\AuthorizationScreenProcedure.h" />
+    <ClInclude Include="src\WindowProcedures\CloudStorageScreenProcedure.h" />
+    <ClInclude Include="src\WindowProcedures\RegistrationScreenProcedure.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\HTTP\HTTP.vcxproj">
