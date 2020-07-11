@@ -23,6 +23,11 @@ LRESULT __stdcall CloudStorageScreenProcedure(HWND hwnd, UINT msg, WPARAM wparam
 
 		return 0;
 
+	case UI::events::uploadFileE:
+		SendMessageW(GetParent(hwnd), UI::events::uploadFileE, wparam, NULL);
+
+		return 0;
+
 	default:
 		return DefWindowProcW(hwnd, msg, wparam, lparam);
 	}
