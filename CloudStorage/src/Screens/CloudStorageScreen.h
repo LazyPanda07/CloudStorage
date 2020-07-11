@@ -29,6 +29,6 @@ namespace UI
 
 		HWND getList() const;
 
-		~CloudStorageScreen();
+		~CloudStorageScreen() = default;
 	};
 }

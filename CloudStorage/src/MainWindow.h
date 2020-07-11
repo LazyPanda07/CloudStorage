@@ -19,8 +19,13 @@ namespace UI
 			list,
 #pragma endregion
 #pragma region AuthorizationScreen
-			loginEdit,
-			passwordEdit
+			authorizationLoginEdit,
+			authorizationPasswordEdit,
+#pragma endregion
+#pragma region RegistrationScreen
+			registrationLoginEdit,
+			registrationPasswordEdit,
+			registrationRepeatPasswordEdit
 #pragma endregion
 		};
 
@@ -53,8 +58,14 @@ namespace UI
 
 		HWND getList() const;
 
-		HWND getLoginEdit() const;
+		HWND getAuthorizationLoginEdit() const;
 
-		HWND getPasswordEdit() const;
+		HWND getAuthorizationPasswordEdit() const;
+
+		HWND getRegistrationLoginEdit() const;
+
+		HWND getRegistrationPasswordEdit() const;
+
+		HWND getRegistrationRepeatPasswordEdit() const;
 	};
 }

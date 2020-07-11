@@ -26,7 +26,7 @@ namespace UI
 	{
 		inline constexpr int toolbarWidth = mainWindowUI::mainWindowWidth;
 		inline constexpr int toolbarHeight = 20;
-		inline constexpr int toolbarButtonWidth = 200;
+		inline constexpr int toolbarButtonWidth = 300;
 		inline constexpr int toolbarButtonHeight = toolbarHeight;
 		inline constexpr int toolbarTopOffset = 10;
 	}
@@ -41,17 +41,43 @@ namespace UI
 		inline constexpr int screenNameStaticWidth = 100;
 		inline constexpr int screenNameStaticHeight = 20;
 
-		inline constexpr int loginEditWidth = 200;
+		inline constexpr int loginEditWidth = 300;
 		inline constexpr int loginEditHeight = 20;
 
-		inline constexpr int passwordEditWidth = 200;
+		inline constexpr int passwordEditWidth = 300;
 		inline constexpr int passwordEditHeight = 20;
 
-		inline constexpr int enterButtonWidth = 80;
+		inline constexpr int enterButtonWidth = 120;
 		inline constexpr int enterButtonHeight = 20;
 
-		inline constexpr int toRegistrationScreenButtonWidth = 120;
+		inline constexpr int toRegistrationScreenButtonWidth = 180;
 		inline constexpr int toRegistrationScreenButtonHeight = 20;
+	}
+
+	namespace registrationScreen
+	{
+		inline constexpr int loginLimitCharacters = 16;
+		inline constexpr int passwordLimitCharacters = 16;
+
+		inline constexpr int defaultOffset = 10;
+
+		inline constexpr int screenNameStaticWidth = 100;
+		inline constexpr int screenNameStaticHeight = 20;
+
+		inline constexpr int loginEditWidth = 300;
+		inline constexpr int loginEditHeight = 20;
+
+		inline constexpr int passwordEditWidth = 300;
+		inline constexpr int passwordEditHeight = 20;
+
+		inline constexpr int repeatPasswordEditWidth = 300;
+		inline constexpr int repeatPasswordEditHeight = 20;
+
+		inline constexpr int registrationButtonWidth = 180;
+		inline constexpr int registrationButtonHeight = 20;
+
+		inline constexpr int toAuthorizationScreenButtonWidth = 120;
+		inline constexpr int toAuthorizationScreenButtonHeight = 20;
 	}
 
 	namespace buttons
@@ -66,6 +92,7 @@ namespace UI
 		enum registrationScreenButtons
 		{
 			registration = toolbarButtonsCount + 1,
+			toAuthorizationScreen,
 			registrationScreenButtonsCount
 		};
 

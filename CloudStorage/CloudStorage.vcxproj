@@ -201,6 +201,7 @@ IF EXIST $(SolutionDir)bin\int\$(Configuration)-$(Platform)\pch\vc$(PlatformTool
     <ClCompile Include="src\MainWindow.cpp" />
     <ClCompile Include="src\EntryPointC.cpp" />
     <ClCompile Include="src\Screens\AuthorizationScreen.cpp" />
+    <ClCompile Include="src\Screens\RegistrationScreen.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\BaseClasses\BaseScreen.h" />
@@ -208,6 +209,7 @@ IF EXIST $(SolutionDir)bin\int\$(Configuration)-$(Platform)\pch\vc$(PlatformTool
     <ClInclude Include="src\MainWindow.h" />
     <ClInclude Include="src\Screens\AuthorizationScreen.h" />
     <ClInclude Include="src\Screens\CloudStorageScreen.h" />
+    <ClInclude Include="src\Screens\RegistrationScreen.h" />
     <ClInclude Include="src\UIConstants.h" />
     <ClInclude Include="src\UIInterfaces\IResizable.h" />
   </ItemGroup>

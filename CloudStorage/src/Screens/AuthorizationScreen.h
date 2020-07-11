@@ -27,10 +27,10 @@ namespace UI
 
 		void resize() override;
 
-		HWND getLoginEdit() const;
+		HWND getAuthorizationLoginEdit() const;
 
-		HWND getPasswordEdit() const;
+		HWND getAuthorizationPasswordEdit() const;
 
-		~AuthorizationScreen();
+		~AuthorizationScreen() = default;
 	};
 }

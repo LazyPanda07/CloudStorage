@@ -2,8 +2,9 @@
 
 #include "AuthorizationScreen.h"
 #include "UtilityFunctions.h"
-#include "Commctrl.h"
 #include "../UIConstants.h"
+
+#include <Commctrl.h>
 
 using namespace std;
 
@@ -35,10 +36,10 @@ namespace UI
 			L"STATIC",
 			L"Авторизация",
 			WS_CHILDWINDOW | SS_CENTER | SS_SIMPLE,
-			centerWrapper.x + authorizationScreen::loginEditWidth / 4,
+			centerWrapper.x + authorizationScreen::loginEditWidth / 3,
 			centerWrapper.y - authorizationScreen::defaultOffset - authorizationScreen::loginEditHeight,
 			authorizationScreen::screenNameStaticWidth,
-			authorizationScreen::toRegistrationScreenButtonHeight,
+			authorizationScreen::screenNameStaticHeight,
 			BaseScreen::wrapper,
 			HMENU(),
 			nullptr,
@@ -123,18 +124,13 @@ namespace UI
 
 	}
 
-	HWND AuthorizationScreen::getLoginEdit() const
+	HWND AuthorizationScreen::getAuthorizationLoginEdit() const
 	{
 		return login;
 	}
 
-	HWND AuthorizationScreen::getPasswordEdit() const
+	HWND AuthorizationScreen::getAuthorizationPasswordEdit() const
 	{
 		return password;
-	}
-
-	AuthorizationScreen::~AuthorizationScreen()
-	{
-
 	}
 }

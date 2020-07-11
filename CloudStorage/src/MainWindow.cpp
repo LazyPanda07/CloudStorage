@@ -10,6 +10,7 @@
 
 #include "Screens/AuthorizationScreen.h"
 #include "Screens/CloudStorageScreen.h"
+#include "Screens/RegistrationScreen.h"
 
 #include <Richedit.h>
 #include <commctrl.h>
@@ -32,6 +33,8 @@ LRESULT __stdcall AuthorizationScreenProcedure(HWND hwnd, UINT msg, WPARAM wpara
 
 LRESULT __stdcall CloudStorageScreenProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam);
 
+LRESULT __stdcall RegistrationScreenProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam);
+
 void getFiles(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, vector<wstring>& filesNames, bool showError);
 
 void uploadFile(streams::IOSocketStream<char>& clientStream, const vector<wstring>& files);
@@ -45,6 +48,8 @@ void downloadFile(streams::IOSocketStream<char>& clientStream, const wstring& fi
 wstring authorization(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream);
 
 void initCloudStorageScreen(UI::MainWindow& ref);
+
+void initRegistrationScreen(UI::MainWindow& ref);
 
 void updateNameColumn(UI::MainWindow& ref, const vector<wstring>& data);
 
@@ -103,11 +108,20 @@ namespace UI
 		case UI::MainWindow::elementsEnum::list:
 			return static_cast<CloudStorageScreen*>(currentScreen)->getList();
 
-		case UI::MainWindow::elementsEnum::loginEdit:
-			return static_cast<AuthorizationScreen*>(currentScreen)->getLoginEdit();
+		case UI::MainWindow::elementsEnum::authorizationLoginEdit:
+			return static_cast<AuthorizationScreen*>(currentScreen)->getAuthorizationLoginEdit();
 
-		case UI::MainWindow::elementsEnum::passwordEdit:
-			return static_cast<AuthorizationScreen*>(currentScreen)->getPasswordEdit();
+		case UI::MainWindow::elementsEnum::authorizationPasswordEdit:
+			return static_cast<AuthorizationScreen*>(currentScreen)->getAuthorizationPasswordEdit();
+
+		case UI::MainWindow::elementsEnum::registrationLoginEdit:
+			return static_cast<RegistrationScreen*>(currentScreen)->getRegistrationLoginEdit();
+
+		case UI::MainWindow::elementsEnum::registrationPasswordEdit:
+			return static_cast<RegistrationScreen*>(currentScreen)->getRegistrationPasswordEdit();
+
+		case UI::MainWindow::elementsEnum::registrationRepeatPasswordEdit:
+			return static_cast<RegistrationScreen*>(currentScreen)->getRegistrationRepeatPasswordEdit();
 
 		default:
 			return nullptr;
@@ -164,14 +178,29 @@ namespace UI
 		return this->getHWND(elementsEnum::list);
 	}
 
-	HWND MainWindow::getLoginEdit() const
+	HWND MainWindow::getAuthorizationLoginEdit() const
 	{
-		return this->getHWND(elementsEnum::loginEdit);
+		return this->getHWND(elementsEnum::authorizationLoginEdit);
 	}
 
-	HWND MainWindow::getPasswordEdit() const
+	HWND MainWindow::getAuthorizationPasswordEdit() const
 	{
-		return this->getHWND(elementsEnum::passwordEdit);
+		return this->getHWND(elementsEnum::authorizationPasswordEdit);
+	}
+
+	HWND MainWindow::getRegistrationLoginEdit() const
+	{
+		return this->getHWND(elementsEnum::registrationLoginEdit);
+	}
+
+	HWND MainWindow::getRegistrationPasswordEdit() const
+	{
+		return this->getHWND(elementsEnum::registrationPasswordEdit);
+	}
+
+	HWND MainWindow::getRegistrationRepeatPasswordEdit() const
+	{
+		return this->getHWND(elementsEnum::registrationRepeatPasswordEdit);
 	}
 }
 
@@ -208,6 +237,23 @@ LRESULT __stdcall MainWindowProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM
 
 				SendMessageW(ptr->getMainWindow(), UI::events::getFilesE, NULL, NULL);
 			}
+
+			break;
+
+		case UI::buttons::toRegistrationScreen:
+			initRegistrationScreen(*ptr);
+
+			ptr->getCurrentScreen().pubShow();
+
+			break;
+
+		case UI::buttons::registration:
+			
+
+			break;
+
+		case UI::buttons::toAuthorizationScreen:
+
 
 			break;
 		}
@@ -286,8 +332,38 @@ LRESULT __stdcall CloudStorageScreenProcedure(HWND hwnd, UINT msg, WPARAM wparam
 	case WM_COMMAND:
 		switch (wparam)
 		{
+		case UI::buttons::refresh:
+			SendMessageW(GetParent(hwnd), WM_COMMAND, UI::buttons::refresh, NULL);
+
+			break;
+
+		case UI::buttons::download:
+			SendMessageW(GetParent(hwnd), WM_COMMAND, UI::buttons::download, NULL);
+
+			break;
+		}
+
+		return 0;
+
+	default:
+		return DefWindowProcW(hwnd, msg, wparam, lparam);
+	}
+}
+
+LRESULT __stdcall RegistrationScreenProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
+{
+	switch (msg)
+	{
+	case WM_COMMAND:
+		switch (wparam)
+		{
 		case UI::buttons::registration:
 			SendMessageW(GetParent(hwnd), WM_COMMAND, UI::buttons::registration, NULL);
+
+			break;
+
+		case UI::buttons::toAuthorizationScreen:
+			SendMessageW(GetParent(hwnd), WM_COMMAND, UI::buttons::toAuthorizationScreen, NULL);
 
 			break;
 		}
@@ -517,14 +593,14 @@ wstring authorization(UI::MainWindow& ref, streams::IOSocketStream<char>& client
 	wstring wPassword;
 	string response;
 
-	HWND loginEdit = ref.getLoginEdit();
-	HWND passwordEdit = ref.getPasswordEdit();
+	HWND authorizationLoginEdit = ref.getAuthorizationLoginEdit();
+	HWND authorizationPasswordEdit = ref.getAuthorizationPasswordEdit();
 
-	wLogin.resize(GetWindowTextLengthW(loginEdit));
-	wPassword.resize(GetWindowTextLengthW(passwordEdit));
+	wLogin.resize(GetWindowTextLengthW(authorizationLoginEdit));
+	wPassword.resize(GetWindowTextLengthW(authorizationPasswordEdit));
 
-	GetWindowTextW(loginEdit, wLogin.data(), wLogin.size() + 1);
-	GetWindowTextW(passwordEdit, wPassword.data(), wPassword.size() + 1);
+	GetWindowTextW(authorizationLoginEdit, wLogin.data(), wLogin.size() + 1);
+	GetWindowTextW(authorizationPasswordEdit, wPassword.data(), wPassword.size() + 1);
 
 	string login = utility::to_string(wLogin);
 	string password = utility::to_string(wPassword);
@@ -550,8 +626,8 @@ wstring authorization(UI::MainWindow& ref, streams::IOSocketStream<char>& client
 	}
 	else
 	{
-		SetWindowTextW(loginEdit, L"");
-		SetWindowTextW(passwordEdit, L"");
+		SetWindowTextW(authorizationLoginEdit, L"");
+		SetWindowTextW(authorizationPasswordEdit, L"");
 
 		MessageBoxW(nullptr, utility::to_wstring(parser.getBody()).data(), L"Œ¯Ë·Í‡", MB_OK);
 
@@ -564,6 +640,13 @@ void initCloudStorageScreen(UI::MainWindow& ref)
 	ref.getCurrentScreen().pubDestroy();
 
 	ref.setCurrentScreen(new UI::CloudStorageScreen(ref.getMainWindow(), L"CloudStorage", CloudStorageScreenProcedure));
+}
+
+void initRegistrationScreen(UI::MainWindow& ref)
+{
+	ref.getCurrentScreen().pubDestroy();
+
+	ref.setCurrentScreen(new UI::RegistrationScreen(ref.getMainWindow(), L"Registration", RegistrationScreenProcedure));
 }
 
 void updateNameColumn(UI::MainWindow& ref, const vector<wstring>& data)
