@@ -26,7 +26,7 @@ namespace UI
 	{
 		inline constexpr int toolbarWidth = mainWindowUI::mainWindowWidth;
 		inline constexpr int toolbarHeight = 20;
-		inline constexpr int toolbarButtonWidth = 300;
+		inline constexpr int toolbarButtonWidth = 200;
 		inline constexpr int toolbarButtonHeight = toolbarHeight;
 		inline constexpr int toolbarTopOffset = 10;
 	}

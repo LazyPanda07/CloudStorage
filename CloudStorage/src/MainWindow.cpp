@@ -35,15 +35,15 @@ LRESULT __stdcall CloudStorageScreenProcedure(HWND hwnd, UINT msg, WPARAM wparam
 
 LRESULT __stdcall RegistrationScreenProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam);
 
-void getFiles(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, vector<wstring>& filesNames, bool showError);
+void getFiles(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, vector<wstring>& filesNames, bool showError, const wstring& login);
 
-void uploadFile(streams::IOSocketStream<char>& clientStream, const vector<wstring>& files);
+void uploadFile(streams::IOSocketStream<char>& clientStream, const vector<wstring>& files, const wstring& login);
 
-void uploadFile(streams::IOSocketStream<char>& clientStream, const wstring& filePath);
+void uploadFile(streams::IOSocketStream<char>& clientStream, const wstring& filePath, const wstring& login);
 
-void downloadFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, const vector<wstring>& filesNames);
+void downloadFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, const vector<wstring>& filesNames, const wstring& login);
 
-void downloadFile(streams::IOSocketStream<char>& clientStream, const wstring& fileName);
+void downloadFile(streams::IOSocketStream<char>& clientStream, const wstring& fileName, const wstring& login);
 
 wstring authorization(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream);
 
@@ -221,12 +221,12 @@ LRESULT __stdcall MainWindowProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM
 		switch (wparam)
 		{
 		case UI::buttons::refresh:
-			getFiles(*ptr, clientStream, filesNames, true);
+			getFiles(*ptr, clientStream, filesNames, true, login);
 
 			break;
 
 		case UI::buttons::download:
-			downloadFile(*ptr, clientStream, filesNames);
+			downloadFile(*ptr, clientStream, filesNames, login);
 
 			break;
 
@@ -277,17 +277,17 @@ LRESULT __stdcall MainWindowProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM
 
 #pragma region CustomEvents
 	case UI::events::getFilesE:
-		getFiles(*ptr, clientStream, filesNames, false);
+		getFiles(*ptr, clientStream, filesNames, false, login);
 
 		return 0;
 
 	case UI::events::uploadFileE:
-		uploadFile(clientStream, *reinterpret_cast<vector<wstring>*>(wparam));
+		uploadFile(clientStream, *reinterpret_cast<vector<wstring>*>(wparam), login);
 
 		return 0;
 
 	case UI::events::downLoadFilesE:
-		downloadFile(*ptr, clientStream, filesNames);
+		downloadFile(*ptr, clientStream, filesNames, login);
 
 		return 0;
 
@@ -390,12 +390,12 @@ LRESULT __stdcall RegistrationScreenProcedure(HWND hwnd, UINT msg, WPARAM wparam
 	}
 }
 
-void getFiles(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, vector<wstring>& filesNames, bool showError)
+void getFiles(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, vector<wstring>& filesNames, bool showError, const wstring& login)
 {
 	string request = web::HTTPBuilder().postRequest().headers
 	(
 		requestType::filesType, filesRequests::showAllFilesInDirectory,
-		"Login", "Admin",
+		"Login", login,
 		"Directory", "Home"
 	).build();
 	string response;
@@ -445,15 +445,15 @@ void getFiles(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, 
 	}
 }
 
-void uploadFile(streams::IOSocketStream<char>& clientStream, const vector<wstring>& files)
+void uploadFile(streams::IOSocketStream<char>& clientStream, const vector<wstring>& files, const wstring& login)
 {
 	for (const auto& i : files)
 	{
-		uploadFile(clientStream, i);
+		uploadFile(clientStream, i, login);
 	}
 }
 
-void uploadFile(streams::IOSocketStream<char>& clientStream, const wstring& filePath)
+void uploadFile(streams::IOSocketStream<char>& clientStream, const wstring& filePath, const wstring& login)
 {
 	const filesystem::path file(filePath);
 	uintmax_t fileSize = filesystem::file_size(file);
@@ -492,7 +492,7 @@ void uploadFile(streams::IOSocketStream<char>& clientStream, const wstring& file
 		string message = web::HTTPBuilder().postRequest().headers
 		(
 			requestType::filesType, filesRequests::uploadFile,
-			"Login", "Admin",
+			"Login", login,
 			"Directory", "Home",
 			"File-Name", file.filename().string(),
 			"Range", offset,
@@ -530,19 +530,19 @@ void uploadFile(streams::IOSocketStream<char>& clientStream, const wstring& file
 	}
 }
 
-void downloadFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, const vector<wstring>& filesNames)
+void downloadFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, const vector<wstring>& filesNames, const wstring& login)
 {
 	int id = SendMessageW(ref.getList(), LVM_GETNEXTITEM, -1, LVNI_SELECTED);
 
 	while (id != -1)
 	{
-		downloadFile(clientStream, filesNames[id]);
+		downloadFile(clientStream, filesNames[id], login);
 
 		id = SendMessageW(ref.getList(), LVM_GETNEXTITEM, id, LVNI_SELECTED);
 	}
 }
 
-void downloadFile(streams::IOSocketStream<char>& clientStream, const wstring& fileName)
+void downloadFile(streams::IOSocketStream<char>& clientStream, const wstring& fileName, const wstring& login)
 {
 	uintmax_t offset = 0;
 	uintmax_t totalFileSize;
@@ -557,7 +557,7 @@ void downloadFile(streams::IOSocketStream<char>& clientStream, const wstring& fi
 		string request = web::HTTPBuilder().postRequest().headers
 		(
 			requestType::filesType, filesRequests::downloadFile,
-			"Login", "Admin",
+			"Login", login,
 			"Directory", "Home",
 			"File-Name", sFileName,
 			"Range", offset
