@@ -28,6 +28,8 @@ void downloadFile(streams::IOSocketStream<char>& clientStream, streams::IOSocket
 
 void authorization(streams::IOSocketStream<char>& clientStream, streams::IOSocketStream<char>& dataBaseStream, const string& data);
 
+void registration(streams::IOSocketStream<char>& clientStream, streams::IOSocketStream<char>& dataBaseStream, const string& data);
+
 tuple<string, string> userDataParse(const string& data);
 
 namespace web
@@ -61,13 +63,12 @@ namespace web
 						}
 						else if (requestType == accountRequest::registration)
 						{
-
+							registration(clientStream, dataBaseStream, parser.getBody());
 						}
 						else
 						{
 							continue;
 						}
-
 					}
 					else
 					{
@@ -251,6 +252,45 @@ void authorization(streams::IOSocketStream<char>& clientStream, streams::IOSocke
 	bool error;
 
 	dataBaseStream << accountRequest::authorization;
+	dataBaseStream << login;
+	dataBaseStream << password;
+
+	dataBaseStream >> response;
+
+	error = response != responses::okResponse;
+
+	if (error)
+	{
+		responseMessage = move(response);
+
+		response = web::HTTPBuilder().responseCode(web::ResponseCodes::ok).headers
+		(
+			"Error", error,
+			"Content-Length", responseMessage.size()
+		).build(&responseMessage);
+
+	}
+	else
+	{
+		response = web::HTTPBuilder().responseCode(web::ResponseCodes::ok).headers
+		(
+			"Error", error
+		).build();
+	}
+
+	utility::insertSizeHeaderToHTTPMessage(response);
+
+	clientStream << response;
+}
+
+void registration(streams::IOSocketStream<char>& clientStream, streams::IOSocketStream<char>& dataBaseStream, const string& data)
+{
+	auto [login, password] = userDataParse(data);
+	string response;
+	string responseMessage;
+	bool error;
+
+	dataBaseStream << accountRequest::registration;
 	dataBaseStream << login;
 	dataBaseStream << password;
 
