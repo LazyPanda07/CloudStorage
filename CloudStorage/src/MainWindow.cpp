@@ -40,6 +40,8 @@ void downloadFile(streams::IOSocketStream<char>& clientStream, const wstring& fi
 
 wstring authorization(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream);
 
+UI::BaseScreen* initCloudStorageScreen(UI::MainWindow& ref);
+
 void updateNameColumn(UI::MainWindow& ref, const vector<wstring>& data);
 
 namespace UI
@@ -120,6 +122,16 @@ namespace UI
 		return instance;
 	}
 
+	BaseScreen& MainWindow::getCurrentScreen()
+	{
+		return *currentScreen;
+	}
+
+	void MainWindow::setCurrentScreen(BaseScreen* screen)
+	{
+		currentScreen = screen;
+	}
+
 	void MainWindow::resize()
 	{
 		if (currentScreen)
@@ -165,6 +177,7 @@ LRESULT __stdcall MainWindowProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM
 	static UI::MainWindow* ptr = nullptr;
 	static vector<wstring> filesNames;
 	static UI::BaseScreen* currentScreen = nullptr;
+	static wstring login;
 
 	switch (msg)
 	{
@@ -183,7 +196,14 @@ LRESULT __stdcall MainWindowProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM
 			break;
 
 		case UI::buttons::authorization:
-			authorization(*ptr, clientStream);
+			login = authorization(*ptr, clientStream);
+
+			if (login.size())
+			{
+				currentScreen = initCloudStorageScreen(*ptr);
+
+				SendMessageW(ptr->getMainWindow(), UI::events::getFilesE, NULL, NULL);
+			}
 
 			break;
 		}
@@ -208,6 +228,7 @@ LRESULT __stdcall MainWindowProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM
 
 	case UI::events::initMainWindowPtrE:
 		ptr = reinterpret_cast<UI::MainWindow*>(wparam);
+		currentScreen = &ptr->getCurrentScreen();
 
 		return 0;
 #pragma endregion
@@ -463,7 +484,8 @@ wstring authorization(UI::MainWindow& ref, streams::IOSocketStream<char>& client
 
 	string request = web::HTTPBuilder().postRequest().headers
 	(
-		requestType::accountType, accountRequest::authorization
+		requestType::accountType, accountRequest::authorization,
+		"Content-Length", body.size()
 	).build(&body);
 
 	utility::insertSizeHeaderToHTTPMessage(request);
@@ -484,6 +506,17 @@ wstring authorization(UI::MainWindow& ref, streams::IOSocketStream<char>& client
 
 		return wstring();
 	}
+}
+
+UI::BaseScreen* initCloudStorageScreen(UI::MainWindow& ref)
+{
+	ref.getCurrentScreen().pubDestroy();
+
+	ref.setCurrentScreen(new UI::CloudStorageScreen(ref.getMainWindow(), L"CloudStorage", MainWindowProcedure));
+
+	ref.getCurrentScreen().pubShow();
+
+	return &ref.getCurrentScreen();
 }
 
 void updateNameColumn(UI::MainWindow& ref, const vector<wstring>& data)

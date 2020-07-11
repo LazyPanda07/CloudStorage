@@ -37,9 +37,7 @@ namespace web
 		streams::IOSocketStream<char> clientStream(new buffers::IOSocketBuffer<char>(new HTTPNetwork(clientSocket)));
 		streams::IOSocketStream<char> filesStream(new buffers::IOSocketBuffer<char>(new FilesNetwork()));
 		streams::IOSocketStream<char> dataBaseStream(new buffers::IOSocketBuffer<char>(new DataBaseNetwork()));
-		HTTPNetwork network(clientSocket);
 		string request;
-		string response;
 
 		while (true)
 		{
@@ -55,13 +53,13 @@ namespace web
 
 					if (it != end(headers))
 					{
-						const string& request = it->second;
+						const string& requestType = it->second;
 
-						if (request == accountRequest::authorization)
+						if (requestType == accountRequest::authorization)
 						{
 							authorization(clientStream, dataBaseStream, parser.getBody());
 						}
-						else if (request == accountRequest::registration)
+						else if (requestType == accountRequest::registration)
 						{
 
 						}
@@ -77,17 +75,17 @@ namespace web
 
 						if (it != end(headers))
 						{
-							const string& request = it->second;
+							const string& requestType = it->second;
 
-							if (request == filesRequests::showAllFilesInDirectory)
+							if (requestType == filesRequests::showAllFilesInDirectory)
 							{
 								showAllFilesInDirectory(clientStream, filesStream, headers.at("Login"), headers.at("Directory"));
 							}
-							else if (request == filesRequests::uploadFile)
+							else if (requestType == filesRequests::uploadFile)
 							{
 								uploadFile(clientStream, filesStream, parser.getBody(), headers);
 							}
-							if (request == filesRequests::downloadFile)
+							if (requestType == filesRequests::downloadFile)
 							{
 								downloadFile(clientStream, filesStream, headers);
 							}
@@ -249,7 +247,8 @@ void authorization(streams::IOSocketStream<char>& clientStream, streams::IOSocke
 {
 	auto [login, password] = userDataParse(data);
 	string response;
-	bool error = false;
+	string responseMessage;
+	bool error;
 
 	dataBaseStream << accountRequest::authorization;
 	dataBaseStream << login;
@@ -259,10 +258,24 @@ void authorization(streams::IOSocketStream<char>& clientStream, streams::IOSocke
 
 	error = response != responses::okResponse;
 
-	response = web::HTTPBuilder().responseCode(web::ResponseCodes::ok).headers
-	(
-		"Error", error
-	).build(error ? &response : nullptr);
+	if (error)
+	{
+		responseMessage = move(response);
+
+		response = web::HTTPBuilder().responseCode(web::ResponseCodes::ok).headers
+		(
+			"Error", error,
+			"Content-Length", responseMessage.size()
+		).build(&responseMessage);
+
+	}
+	else
+	{
+		response = web::HTTPBuilder().responseCode(web::ResponseCodes::ok).headers
+		(
+			"Error", error
+		).build();
+	}
 
 	utility::insertSizeHeaderToHTTPMessage(response);
 

@@ -35,6 +35,10 @@ namespace UI
 	public:
 		static MainWindow& get();
 
+		BaseScreen& getCurrentScreen();
+
+		void setCurrentScreen(BaseScreen* screen);
+
 		void resize() override;
 
 		HWND getMainWindow() const;

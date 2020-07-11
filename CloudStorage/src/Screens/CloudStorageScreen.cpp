@@ -46,7 +46,7 @@ namespace UI
 			WS_CHILDWINDOW,
 			0, 0,
 			toolbar::toolbarButtonWidth, toolbar::toolbarButtonHeight,
-			parentWindow,
+			BaseScreen::wrapper,
 			HMENU(buttons::refresh),
 			nullptr,
 			nullptr
@@ -60,7 +60,7 @@ namespace UI
 			WS_CHILDWINDOW,
 			toolbar::toolbarButtonWidth, 0,
 			toolbar::toolbarButtonWidth, toolbar::toolbarButtonHeight,
-			parentWindow,
+			BaseScreen::wrapper,
 			HMENU(buttons::download),
 			nullptr,
 			nullptr
@@ -74,7 +74,7 @@ namespace UI
 			WS_CHILDWINDOW | LVS_EDITLABELS | LVS_REPORT,
 			0, toolbar::toolbarHeight,
 			width, height - toolbar::toolbarHeight,
-			parentWindow,
+			BaseScreen::wrapper,
 			HMENU(),
 			nullptr,
 			nullptr

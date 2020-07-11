@@ -15,8 +15,6 @@ int __stdcall wWinMain(HINSTANCE hInstance, HINSTANCE, PWSTR pCmdLine, int nCmdS
 
 	SendMessageW(instance.getMainWindow(), UI::events::initMainWindowPtrE, reinterpret_cast<WPARAM>(&instance), NULL);
 
-	SendMessageW(instance.getMainWindow(), UI::events::getFilesE, NULL, NULL);
-
 	MSG msg = {};
 
 	while (GetMessageW(&msg, nullptr, NULL, NULL))
