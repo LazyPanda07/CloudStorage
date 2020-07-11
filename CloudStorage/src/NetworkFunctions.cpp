@@ -17,7 +17,7 @@ void getFiles(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, 
 	string request = web::HTTPBuilder().postRequest().headers
 	(
 		requestType::filesType, filesRequests::showAllFilesInDirectory,
-		"Login", login,
+		"Login", utility::to_string(login),
 		"Directory", "Home"
 	).build();
 	string response;
@@ -114,7 +114,7 @@ void uploadFile(streams::IOSocketStream<char>& clientStream, const wstring& file
 		string message = web::HTTPBuilder().postRequest().headers
 		(
 			requestType::filesType, filesRequests::uploadFile,
-			"Login", login,
+			"Login", utility::to_string(login),
 			"Directory", "Home",
 			"File-Name", file.filename().string(),
 			"Range", offset,
@@ -179,7 +179,7 @@ void downloadFile(streams::IOSocketStream<char>& clientStream, const wstring& fi
 		string request = web::HTTPBuilder().postRequest().headers
 		(
 			requestType::filesType, filesRequests::downloadFile,
-			"Login", login,
+			"Login", utility::to_string(login),
 			"Directory", "Home",
 			"File-Name", sFileName,
 			"Range", offset
