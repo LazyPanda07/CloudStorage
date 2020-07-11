@@ -51,6 +51,8 @@ void initCloudStorageScreen(UI::MainWindow& ref);
 
 void initRegistrationScreen(UI::MainWindow& ref);
 
+void initAuthorizationScreen(UI::MainWindow& ref);
+
 void updateNameColumn(UI::MainWindow& ref, const vector<wstring>& data);
 
 namespace UI
@@ -87,7 +89,7 @@ namespace UI
 
 		InitCommonControlsEx(&init);
 
-		currentScreen = new AuthorizationScreen(mainWindow, L"Authorization", AuthorizationScreenProcedure);
+		initAuthorizationScreen(*this);
 
 		currentScreen->pubShow();
 	}
@@ -140,9 +142,9 @@ namespace UI
 		return instance;
 	}
 
-	BaseScreen& MainWindow::getCurrentScreen()
+	BaseScreen* MainWindow::getCurrentScreen()
 	{
-		return *currentScreen;
+		return currentScreen;
 	}
 
 	void MainWindow::setCurrentScreen(BaseScreen* screen)
@@ -233,7 +235,7 @@ LRESULT __stdcall MainWindowProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM
 			{
 				initCloudStorageScreen(*ptr);
 
-				ptr->getCurrentScreen().pubShow();
+				ptr->getCurrentScreen()->pubShow();
 
 				SendMessageW(ptr->getMainWindow(), UI::events::getFilesE, NULL, NULL);
 			}
@@ -243,7 +245,7 @@ LRESULT __stdcall MainWindowProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM
 		case UI::buttons::toRegistrationScreen:
 			initRegistrationScreen(*ptr);
 
-			ptr->getCurrentScreen().pubShow();
+			ptr->getCurrentScreen()->pubShow();
 
 			break;
 
@@ -253,7 +255,9 @@ LRESULT __stdcall MainWindowProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM
 			break;
 
 		case UI::buttons::toAuthorizationScreen:
+			initAuthorizationScreen(*ptr);
 
+			ptr->getCurrentScreen()->pubShow();
 
 			break;
 		}
@@ -637,16 +641,38 @@ wstring authorization(UI::MainWindow& ref, streams::IOSocketStream<char>& client
 
 void initCloudStorageScreen(UI::MainWindow& ref)
 {
-	ref.getCurrentScreen().pubDestroy();
+	UI::BaseScreen* ptr = ref.getCurrentScreen();
+
+	if (ptr)
+	{
+		ptr->pubDestroy();
+	}
 
 	ref.setCurrentScreen(new UI::CloudStorageScreen(ref.getMainWindow(), L"CloudStorage", CloudStorageScreenProcedure));
 }
 
 void initRegistrationScreen(UI::MainWindow& ref)
 {
-	ref.getCurrentScreen().pubDestroy();
+	UI::BaseScreen* ptr = ref.getCurrentScreen();
+
+	if (ptr)
+	{
+		ptr->pubDestroy();
+	}
 
 	ref.setCurrentScreen(new UI::RegistrationScreen(ref.getMainWindow(), L"Registration", RegistrationScreenProcedure));
+}
+
+void initAuthorizationScreen(UI::MainWindow& ref)
+{
+	UI::BaseScreen* ptr = ref.getCurrentScreen();
+
+	if (ptr)
+	{
+		ptr->pubDestroy();
+	}
+
+	ref.setCurrentScreen(new UI::AuthorizationScreen(ref.getMainWindow(), L"Authorization", AuthorizationScreenProcedure));
 }
 
 void updateNameColumn(UI::MainWindow& ref, const vector<wstring>& data)

@@ -44,7 +44,7 @@ namespace UI
 	public:
 		static MainWindow& get();
 
-		BaseScreen& getCurrentScreen();
+		BaseScreen* getCurrentScreen();
 
 		void setCurrentScreen(BaseScreen* screen);
 
