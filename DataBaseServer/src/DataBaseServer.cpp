@@ -49,7 +49,7 @@ namespace web
 					clientStream >> login;
 					clientStream >> password;
 
-					if (db.registration(login, password).empty())
+					if (db.registration(login, password).size())
 					{
 						clientStream << accountResponses::failRegistration;
 					}

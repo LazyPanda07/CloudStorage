@@ -296,7 +296,7 @@ void registration(streams::IOSocketStream<char>& clientStream, streams::IOSocket
 
 	dataBaseStream >> response;
 
-	error = response != responses::okResponse;
+	error = response == accountResponses::failRegistration;
 
 	if (error)
 	{
