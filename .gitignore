@@ -45,3 +45,6 @@ Data/
 *.sqlite3
 *.sqlite
 *.db
+
+# Production release build folders
+ProductionRelease*/
