@@ -187,6 +187,21 @@ LRESULT __stdcall MainWindowProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM
 
 	switch (msg)
 	{
+	case WM_KEYUP:
+		if (wparam == VK_TAB)
+		{
+			try
+			{
+				SetFocus(dynamic_cast<UI::IIterable<HWND>&>(*ptr->getCurrentScreen()).next(GetFocus()));
+			}
+			catch (const bad_cast&)
+			{
+
+			}
+		}
+
+		return 0;
+
 	case WM_COMMAND:
 		switch (wparam)
 		{

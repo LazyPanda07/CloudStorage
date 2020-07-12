@@ -3,6 +3,7 @@
 #include "AuthorizationScreen.h"
 #include "UtilityFunctions.h"
 #include "../UIConstants.h"
+#include "../SubclassProcedures/AuthorizationScreenElementsSubclass.h"
 
 #include <Commctrl.h>
 
@@ -21,7 +22,7 @@ namespace UI
 
 	void AuthorizationScreen::destroy()
 	{
-		
+
 	}
 
 	AuthorizationScreen::AuthorizationScreen(HWND parentWindow, const wstring& wrapperClassName, WNDPROC procedure)
@@ -117,11 +118,36 @@ namespace UI
 		SendMessageW(password, EM_LIMITTEXT, UI::authorizationScreen::passwordLimitCharacters, NULL);
 
 		SendMessageW(password, EM_SETPASSWORDCHAR, static_cast<WPARAM>(L'●'), NULL);
+
+		SetWindowSubclass(login, AuthorizationScreenElementsSubclass, 0, 0);
+		SetWindowSubclass(password, AuthorizationScreenElementsSubclass, 0, 0);
+		SetWindowSubclass(enterButton, AuthorizationScreenElementsSubclass, UI::buttons::authorization, 0);
+		SetWindowSubclass(toRegistrationScreenButton, AuthorizationScreenElementsSubclass, UI::buttons::toRegistrationScreen, 0);
 	}
 
 	void AuthorizationScreen::resize()
 	{
 
+	}
+
+	const HWND& AuthorizationScreen::next(const HWND& value) const
+	{
+		if (value == login)
+		{
+			return password;
+		}
+		else if (value == password)
+		{
+			return enterButton;
+		}
+		else if (value == enterButton)
+		{
+			return toRegistrationScreenButton;
+		}
+		else if (value == toRegistrationScreenButton)
+		{
+			return login;
+		}
 	}
 
 	HWND AuthorizationScreen::getAuthorizationLoginEdit() const

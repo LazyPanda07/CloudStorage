@@ -304,6 +304,7 @@ COPY /Y $(ProjectDir)settings.ini $(SolutionDir)$(Configuration)-$(Platform)\$(P
     <ClCompile Include="src\Screens\AuthorizationScreen.cpp" />
     <ClCompile Include="src\Screens\RegistrationScreen.cpp" />
     <ClCompile Include="src\Screens\ScreenFunctions.cpp" />
+    <ClCompile Include="src\SubclassProcedures\AuthorizationScreenElementsSubclass.cpp" />
     <ClCompile Include="src\WindowProcedures\AuthorizationScreenProcedure.cpp" />
     <ClCompile Include="src\WindowProcedures\CloudStorageScreenProcedure.cpp" />
     <ClCompile Include="src\WindowProcedures\RegistrationScreenProcedure.cpp" />
@@ -317,7 +318,9 @@ COPY /Y $(ProjectDir)settings.ini $(SolutionDir)$(Configuration)-$(Platform)\$(P
     <ClInclude Include="src\Screens\CloudStorageScreen.h" />
     <ClInclude Include="src\Screens\RegistrationScreen.h" />
     <ClInclude Include="src\Screens\ScreenFunctions.h" />
+    <ClInclude Include="src\SubclassProcedures\AuthorizationScreenElementsSubclass.h" />
     <ClInclude Include="src\UIConstants.h" />
+    <ClInclude Include="src\UIInterfaces\IIterable.h" />
     <ClInclude Include="src\UIInterfaces\IResizable.h" />
     <ClInclude Include="src\WindowProcedures\AuthorizationScreenProcedure.h" />
     <ClInclude Include="src\WindowProcedures\CloudStorageScreenProcedure.h" />

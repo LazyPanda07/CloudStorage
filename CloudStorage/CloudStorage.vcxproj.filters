@@ -51,6 +51,9 @@
     <ClCompile Include="src\Screens\ScreenFunctions.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
+    <ClCompile Include="src\SubclassProcedures\AuthorizationScreenElementsSubclass.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\MainWindow.h">
@@ -90,6 +93,12 @@
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
     <ClInclude Include="src\Screens\ScreenFunctions.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="src\UIInterfaces\IIterable.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="src\SubclassProcedures\AuthorizationScreenElementsSubclass.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
   </ItemGroup>

@@ -2,11 +2,12 @@
 
 #include <Windows.h>
 
+#include "../UIInterfaces/IIterable.h"
 #include "../BaseClasses/BaseScreen.h"
 
 namespace UI
 {
-	class AuthorizationScreen : public BaseScreen
+	class AuthorizationScreen : public BaseScreen, public IIterable<HWND>
 	{
 	private:
 		HWND screenName;
@@ -26,6 +27,8 @@ namespace UI
 		AuthorizationScreen(HWND parentWindow, const std::wstring& wrapperClassName, WNDPROC procedure);
 
 		void resize() override;
+
+		const HWND& next(const HWND& value) const override;
 
 		HWND getAuthorizationLoginEdit() const;
 
