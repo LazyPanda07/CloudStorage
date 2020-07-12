@@ -123,11 +123,65 @@ namespace UI
 		SetWindowSubclass(password, AuthorizationScreenElementsSubclass, 0, 0);
 		SetWindowSubclass(enterButton, AuthorizationScreenElementsSubclass, UI::buttons::authorization, 0);
 		SetWindowSubclass(toRegistrationScreenButton, AuthorizationScreenElementsSubclass, UI::buttons::toRegistrationScreen, 0);
+
+		SetFocus(login);
 	}
 
 	void AuthorizationScreen::resize()
 	{
+		POINT centerWrapper = utility::centerCoordinates(authorizationScreen::loginEditWidth, authorizationScreen::loginEditHeight, BaseScreen::wrapper);
+		centerWrapper.y -= centerWrapper.y / 2;
 
+		SetWindowPos
+		(
+			screenName,
+			HWND_BOTTOM,
+			centerWrapper.x + authorizationScreen::loginEditWidth / 3,
+			centerWrapper.y - authorizationScreen::defaultOffset - authorizationScreen::loginEditHeight,
+			authorizationScreen::screenNameStaticWidth,
+			authorizationScreen::screenNameStaticHeight,
+			SWP_SHOWWINDOW
+		);
+		SetWindowPos
+		(
+			login,
+			HWND_BOTTOM,
+			centerWrapper.x,
+			centerWrapper.y,
+			authorizationScreen::loginEditWidth,
+			authorizationScreen::loginEditHeight,
+			SWP_SHOWWINDOW
+		);
+		SetWindowPos
+		(
+			password,
+			HWND_BOTTOM,
+			centerWrapper.x,
+			centerWrapper.y + authorizationScreen::defaultOffset + authorizationScreen::loginEditHeight,
+			authorizationScreen::passwordEditWidth,
+			authorizationScreen::passwordEditHeight,
+			SWP_SHOWWINDOW
+		);
+		SetWindowPos
+		(
+			enterButton,
+			HWND_BOTTOM,
+			centerWrapper.x,
+			centerWrapper.y + authorizationScreen::defaultOffset * 2 + authorizationScreen::loginEditHeight + authorizationScreen::passwordEditHeight,
+			authorizationScreen::enterButtonWidth,
+			authorizationScreen::enterButtonHeight,
+			SWP_SHOWWINDOW
+		);
+		SetWindowPos
+		(
+			toRegistrationScreenButton,
+			HWND_BOTTOM,
+			centerWrapper.x + authorizationScreen::enterButtonWidth,
+			centerWrapper.y + authorizationScreen::defaultOffset * 2 + authorizationScreen::loginEditHeight + authorizationScreen::passwordEditHeight,
+			authorizationScreen::toRegistrationScreenButtonWidth,
+			authorizationScreen::toRegistrationScreenButtonHeight,
+			SWP_SHOWWINDOW
+		);
 	}
 
 	const HWND& AuthorizationScreen::next(const HWND& value) const

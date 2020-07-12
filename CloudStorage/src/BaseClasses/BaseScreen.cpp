@@ -39,6 +39,20 @@ namespace UI
 		);
 	}
 
+	void BaseScreen::pubResize()
+	{
+		RECT sizes;
+
+		GetClientRect(parentWindow, &sizes);
+
+		const LONG width = sizes.right - sizes.left;
+		const LONG height = sizes.bottom - sizes.top;
+
+		SetWindowPos(wrapper, HWND_BOTTOM, 0, 0, width, height, SWP_SHOWWINDOW);
+
+		this->resize();
+	}
+
 	void BaseScreen::pubShow()
 	{
 		ShowWindow(wrapper, SW_SHOW);

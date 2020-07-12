@@ -90,7 +90,7 @@ namespace UI
 	{
 		RECT sizes;
 
-		GetClientRect(BaseScreen::parentWindow, &sizes);
+		GetClientRect(BaseScreen::wrapper, &sizes);
 
 		LONG width = sizes.right - sizes.left;
 		LONG height = sizes.bottom - sizes.top;

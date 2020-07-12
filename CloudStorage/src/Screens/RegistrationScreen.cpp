@@ -145,11 +145,75 @@ namespace UI
 		SetWindowSubclass(repeatPassword, RegistrationScreenElementsSubclass, 0, 0);
 		SetWindowSubclass(registrationButton, RegistrationScreenElementsSubclass, UI::buttons::registration, 0);
 		SetWindowSubclass(toAuthorizationScreenButton, RegistrationScreenElementsSubclass, UI::buttons::toAuthorizationScreen, 0);
+
+		SetFocus(login);
 	}
 
 	void RegistrationScreen::resize()
 	{
+		POINT centerWrapper = utility::centerCoordinates(registrationScreen::loginEditWidth, registrationScreen::loginEditHeight, BaseScreen::wrapper);
+		centerWrapper.y -= centerWrapper.y / 2;
 
+		SetWindowPos
+		(
+			screenName,
+			HWND_BOTTOM,
+			centerWrapper.x + registrationScreen::loginEditWidth / 3,
+			centerWrapper.y - registrationScreen::defaultOffset - registrationScreen::loginEditHeight,
+			registrationScreen::screenNameStaticWidth,
+			registrationScreen::screenNameStaticHeight,
+			SWP_SHOWWINDOW
+		);
+		SetWindowPos
+		(
+			login,
+			HWND_BOTTOM,
+			centerWrapper.x,
+			centerWrapper.y,
+			registrationScreen::loginEditWidth,
+			registrationScreen::loginEditHeight,
+			SWP_SHOWWINDOW
+		);
+		SetWindowPos
+		(
+			password,
+			HWND_BOTTOM,
+			centerWrapper.x,
+			centerWrapper.y + registrationScreen::defaultOffset + registrationScreen::loginEditHeight,
+			registrationScreen::passwordEditWidth,
+			registrationScreen::passwordEditHeight,
+			SWP_SHOWWINDOW
+		);
+		SetWindowPos
+		(
+			repeatPassword,
+			HWND_BOTTOM,
+			centerWrapper.x,
+			centerWrapper.y + registrationScreen::defaultOffset * 2 + registrationScreen::loginEditHeight + registrationScreen::passwordEditHeight,
+			registrationScreen::repeatPasswordEditWidth,
+			registrationScreen::repeatPasswordEditHeight,
+			SWP_SHOWWINDOW
+		);
+		SetWindowPos
+		(
+			registrationButton,
+			HWND_BOTTOM,
+			centerWrapper.x,
+			centerWrapper.y + registrationScreen::defaultOffset * 3 + registrationScreen::loginEditHeight + registrationScreen::passwordEditHeight + registrationScreen::repeatPasswordEditHeight,
+			registrationScreen::registrationButtonWidth,
+			registrationScreen::registrationButtonHeight,
+			SWP_SHOWWINDOW
+		);
+		SetWindowPos
+		(
+			toAuthorizationScreenButton,
+			HWND_BOTTOM,
+			centerWrapper.x + registrationScreen::registrationButtonWidth,
+			centerWrapper.y + registrationScreen::defaultOffset * 3 + registrationScreen::loginEditHeight + registrationScreen::passwordEditHeight + registrationScreen::repeatPasswordEditHeight,
+			registrationScreen::toAuthorizationScreenButtonWidth,
+			registrationScreen::toAuthorizationScreenButtonHeight,
+			SWP_SHOWWINDOW
+		);
 	}
 
 	const HWND& RegistrationScreen::next(const HWND& value) const

@@ -128,7 +128,7 @@ namespace UI
 	{
 		if (currentScreen)
 		{
-			currentScreen->resize();
+			currentScreen->pubResize();
 		}
 	}
 
