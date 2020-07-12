@@ -3,6 +3,7 @@
 #include "RegistrationScreen.h"
 #include "UtilityFunctions.h"
 #include "../UIConstants.h"
+#include "../SubclassProcedures/RegistrationScreenElementsSubclass.h"
 
 #include <Commctrl.h>
 
@@ -138,11 +139,41 @@ namespace UI
 
 		SendMessageW(password, EM_SETPASSWORDCHAR, static_cast<WPARAM>(L'●'), NULL);
 		SendMessageW(repeatPassword, EM_SETPASSWORDCHAR, static_cast<WPARAM>(L'●'), NULL);
+
+		SetWindowSubclass(login, RegistrationScreenElementsSubclass, 0, 0);
+		SetWindowSubclass(password, RegistrationScreenElementsSubclass, 0, 0);
+		SetWindowSubclass(repeatPassword, RegistrationScreenElementsSubclass, 0, 0);
+		SetWindowSubclass(registrationButton, RegistrationScreenElementsSubclass, UI::buttons::registration, 0);
+		SetWindowSubclass(toAuthorizationScreenButton, RegistrationScreenElementsSubclass, UI::buttons::toAuthorizationScreen, 0);
 	}
 
 	void RegistrationScreen::resize()
 	{
 
+	}
+
+	const HWND& RegistrationScreen::next(const HWND& value) const
+	{
+		if (login == value)
+		{
+			return password;
+		}
+		else if (password == value)
+		{
+			return repeatPassword;
+		}
+		else if (repeatPassword == value)
+		{
+			return registrationButton;
+		}
+		else if (registrationButton == value)
+		{
+			return toAuthorizationScreenButton;
+		}
+		else if (toAuthorizationScreenButton == value)
+		{
+			return login;
+		}
 	}
 
 	HWND RegistrationScreen::getRegistrationLoginEdit() const

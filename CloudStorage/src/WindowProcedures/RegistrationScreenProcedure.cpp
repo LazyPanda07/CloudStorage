@@ -7,6 +7,14 @@ LRESULT __stdcall RegistrationScreenProcedure(HWND hwnd, UINT msg, WPARAM wparam
 {
 	switch (msg)
 	{
+	case WM_KEYUP:
+		if (wparam == VK_TAB)
+		{
+			SendMessageW(GetParent(hwnd), msg, wparam, lparam);
+		}
+
+		return 0;
+
 	case WM_COMMAND:
 		switch (wparam)
 		{
