@@ -17,6 +17,7 @@ namespace web
 	{
 		streams::IOSocketStream<char> clientStream(new buffers::IOSocketBuffer<char>(new DataBaseNetwork(clientSocket)));
 		string login;
+		//TODO: Сделать переменную currentDirectory, которая будет изменяться каждый раз, когда пользователь будет переходить по директориям
 
 		while (true)
 		{
@@ -56,6 +57,33 @@ namespace web
 					else
 					{
 						clientStream << accountResponses::successRegistration;
+					}
+				}
+				else if (request == filesRequests::showAllFilesInDirectory)
+				{
+					string directory;
+					string result;
+
+					clientStream >> directory;
+
+					vector<db::fileData> data = db.getFiles(login);
+
+					for (const auto& i : data)
+					{
+						result += i;
+					}
+
+					if (data.empty())
+					{
+						clientStream << responses::failResponse;
+
+						clientStream << filesResponses::emptyDirectory;
+					}
+					else
+					{
+						clientStream << responses::okResponse;
+
+						clientStream << result;
 					}
 				}
 			}

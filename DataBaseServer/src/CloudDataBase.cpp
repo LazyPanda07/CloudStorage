@@ -13,7 +13,7 @@ namespace db
 		int id = -1;
 		const string condition = "login = '" + login + "'";
 
-		auto callback = [](void* userData, int argc, char** argv, char** columns)
+		auto callback = [](void* userData, int argc, char** argv, char** columns) -> int
 		{
 			(*static_cast<int*>(userData)) = atoi(argv[0]);
 
@@ -37,7 +37,7 @@ namespace db
 		string login;
 		const string condition = "id = " + to_string(id);
 
-		auto callback = [](void* userData, int argc, char** argv, char** columns)
+		auto callback = [](void* userData, int argc, char** argv, char** columns) -> int
 		{
 			(*static_cast<string*>(userData)) = argv[0];
 
@@ -61,7 +61,7 @@ namespace db
 		unsigned int password;
 		const string condition = "login = '" + login + "'";
 
-		auto callback = [](void* userData, int argc, char** argv, char** columns)
+		auto callback = [](void* userData, int argc, char** argv, char** columns) -> int
 		{
 			char* end;
 			(*static_cast<unsigned int*>(userData)) = strtoul(argv[0], &end, 10);
@@ -86,7 +86,7 @@ namespace db
 		unsigned int password;
 		const string condition = "id = " + to_string(id);
 
-		auto callback = [](void* userData, int argc, char** argv, char** columns)
+		auto callback = [](void* userData, int argc, char** argv, char** columns) -> int
 		{
 			char* end;
 			(*static_cast<unsigned int*>(userData)) = strtoul(argv[0], &end, 10);
@@ -168,6 +168,46 @@ namespace db
 		}
 	}
 
+	vector<fileData> CloudDataBase::getFiles(const string& login)
+	{
+		vector<fileData> result;
+		const string condition = "userId = " + to_string(this->getId(login));
+
+		auto callback = [](void* userData, int argc, char** argv, char** columns) -> int
+		{
+			vector<fileData>& ref = *static_cast<vector<fileData>*>(userData);
+			char* end;
+
+			ref.emplace_back
+			(
+				string(argv[0]),
+				string(argv[1]),
+				string(argv[2]),
+				string(argv[3]),
+				string(argv[4]),
+				strtoul(argv[5], &end, 10)
+			);
+
+			return 0;
+		};
+
+		db.select
+		(
+			filesTable,
+			condition,
+			callback,
+			&result,
+			"fileName",	//argv[0]
+			"filePath",	//argv[1]
+			"fileExtension",	//argv[2]
+			"uploadDate",	//argv[3]
+			"dataOfChange",	//argv[4]
+			"fileSize"	//argv[5]
+		);
+
+		return result;
+	}
+
 	string CloudDataBase::registration(const string& login, const string& password) const
 	{
 		try
@@ -193,7 +233,7 @@ namespace db
 		int id = -1;
 		const string condition = "login = '" + login + "' AND password = " + to_string(customHash(password));
 
-		auto callback = [](void* userData, int argc, char** argv, char** columns)
+		auto callback = [](void* userData, int argc, char** argv, char** columns) -> int
 		{
 			(*static_cast<int*>(userData)) = atoi(argv[0]);
 
