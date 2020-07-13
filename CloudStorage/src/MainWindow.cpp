@@ -8,6 +8,7 @@
 #include "Screens/AuthorizationScreen.h"
 #include "Screens/RegistrationScreen.h"
 #include "Screens/CloudStorageScreen.h"
+#include "fileData.h"
 #include "UIConstants.h"
 #include "MainWindow.h"
 
@@ -182,7 +183,7 @@ LRESULT __stdcall MainWindowProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM
 {
 	static streams::IOSocketStream<char> clientStream(new buffers::IOSocketBuffer<char>(new web::HTTPNetwork()));
 	static UI::MainWindow* ptr = nullptr;
-	static vector<wstring> filesNames;
+	static vector<db::wFileData> filesNames;
 	static wstring login;
 
 	switch (msg)
@@ -206,7 +207,7 @@ LRESULT __stdcall MainWindowProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM
 		switch (wparam)
 		{
 		case UI::buttons::refresh:
-			getFiles(*ptr, clientStream, filesNames, true, login);
+			getFiles(*ptr, clientStream, filesNames, true);
 
 			break;
 
@@ -262,7 +263,7 @@ LRESULT __stdcall MainWindowProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM
 
 #pragma region CustomEvents
 	case UI::events::getFilesE:
-		getFiles(*ptr, clientStream, filesNames, false, login);
+		getFiles(*ptr, clientStream, filesNames, false);
 
 		return 0;
 

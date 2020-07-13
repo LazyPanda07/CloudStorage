@@ -5,10 +5,12 @@
 #include <string>
 #include <vector>
 
+#include "fileData.h"
+
 void initCloudStorageScreen(UI::MainWindow& ref);
 
 void initRegistrationScreen(UI::MainWindow& ref);
 
 void initAuthorizationScreen(UI::MainWindow& ref);
 
-void updateNameColumn(UI::MainWindow& ref, const std::vector<std::wstring>& data);
+void updateColumns(UI::MainWindow& ref, const std::vector<db::wFileData>& data);

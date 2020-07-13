@@ -7,17 +7,17 @@
 #include "Constants.h"
 #include "UtilityFunctions.h"
 #include "Screens/ScreenFunctions.h"
+#include "fileData.h"
 
 #include <commctrl.h>
 
 using namespace std;
 
-void getFiles(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, vector<wstring>& filesNames, bool showError, const wstring& login)
+void getFiles(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, vector<db::wFileData>& filesNames, bool showError)
 {
 	string request = web::HTTPBuilder().postRequest().headers
 	(
 		requestType::filesType, filesRequests::showAllFilesInDirectory,
-		"Login", utility::to_string(login),
 		"Directory", "Home"
 	).build();
 	string response;
@@ -28,32 +28,49 @@ void getFiles(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, 
 	clientStream << request;
 	clientStream >> response;
 
-	clientStream << responses::okResponse;
-
 	web::HTTPParser parser(response);
 	const string& error = parser.getHeaders().at("Error");
 	const string& body = parser.getBody();
 
 	if (error == "0")
 	{
-		string tem;
+		array<string, 6> tem;	//each index equals member position in fileData struct
+		vector<db::fileData> data;
+		size_t curIndex = 0;
 
 		for (const auto& i : body)
 		{
-			if (i == ':')
+			if (i == delimiter[0])
 			{
-				filesNames.push_back(utility::to_wstring(tem));
+				filesNames.emplace_back
+				(
+					utility::to_wstring(tem[0]),
+					utility::to_wstring(tem[1]),
+					utility::to_wstring(tem[2]),
+					utility::to_wstring(tem[3]),
+					utility::to_wstring(tem[4]),
+					stoul(tem[5])
+				);
 
-				tem.clear();
+				curIndex = 0;
+				
+				for (auto& i : tem)
+				{
+					i.clear();
+				}
+			}
+			else if (i == '|')
+			{
+				curIndex++;
 			}
 			else
 			{
-				tem += i;
+				tem[curIndex] += i;
 			}
 		}
 	}
 
-	updateNameColumn(ref, filesNames);
+	updateColumns(ref, filesNames);
 
 	if (error == "1" && showError)
 	{
@@ -152,13 +169,13 @@ void uploadFile(streams::IOSocketStream<char>& clientStream, const wstring& file
 	}
 }
 
-void downloadFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, const vector<wstring>& filesNames, const wstring& login)
+void downloadFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, const vector<db::wFileData>& filesNames, const wstring& login)
 {
 	int id = SendMessageW(ref.getList(), LVM_GETNEXTITEM, -1, LVNI_SELECTED);
 
 	while (id != -1)
 	{
-		downloadFile(clientStream, filesNames[id], login);
+		downloadFile(clientStream, filesNames[id].fileName, login);
 
 		id = SendMessageW(ref.getList(), LVM_GETNEXTITEM, id, LVNI_SELECTED);
 	}

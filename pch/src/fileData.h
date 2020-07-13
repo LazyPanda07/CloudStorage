@@ -17,4 +17,16 @@ namespace db
 
 		operator std::string () const;
 	};
+
+	struct wFileData
+	{
+		std::wstring fileName;
+		std::wstring filePath;
+		std::wstring fileExtension;
+		std::wstring uploadDate;
+		std::wstring dateOfChange;
+		unsigned int fileSize;
+
+		wFileData(std::wstring&& fileName, std::wstring&& filePath, std::wstring&& fileExtension, std::wstring&& uploadDate, std::wstring&& dateOfChange, unsigned int fileSize) noexcept;
+	};
 }

@@ -11,6 +11,8 @@ inline constexpr int filePacketSize = 1 * 1024 * 1024;	//1 MB
 
 inline constexpr std::string_view customHTTPHeaderSize = "Total-HTTP-Message-Size: ";
 
+inline constexpr std::string_view delimiter = "/";
+
 namespace requestType
 {
 	inline const std::string accountType = "Account request";

@@ -140,7 +140,7 @@ namespace db
 			"filePath", "TEXT DEFAULT 'Home' NOT NULL",
 			"fileExtension", "TEXT DEFAULT '' NOT NULL",
 			"fileSize", "INTEGER DEFAULT 0 NOT NULL",
-			"uploadData", "TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL",
+			"uploadDate", "TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL",
 			"dateOfChange", "TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL",
 			"FOREIGN KEY (userId)", "REFERENCES Users(id)"
 		);
@@ -201,7 +201,7 @@ namespace db
 			"filePath",	//argv[1]
 			"fileExtension",	//argv[2]
 			"uploadDate",	//argv[3]
-			"dataOfChange",	//argv[4]
+			"dateOfChange",	//argv[4]
 			"fileSize"	//argv[5]
 		);
 

@@ -4,6 +4,7 @@
 #include "CloudStorageScreen.h"
 #include "RegistrationScreen.h"
 #include "AuthorizationScreen.h"
+#include "UtilityFunctions.h"
 #include "../UIConstants.h"
 #include "../WindowProcedures/AuthorizationScreenProcedure.h"
 #include "../WindowProcedures/RegistrationScreenProcedure.h"
@@ -12,6 +13,10 @@
 #include <commctrl.h>
 
 using namespace std;
+
+void updateNameColumn(UI::MainWindow& ref, const vector<db::wFileData>& data);
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 void initCloudStorageScreen(UI::MainWindow& ref)
 {
@@ -49,7 +54,14 @@ void initAuthorizationScreen(UI::MainWindow& ref)
 	ref.setCurrentScreen(new UI::AuthorizationScreen(ref.getMainWindow(), L"Authorization", AuthorizationScreenProcedure));
 }
 
-void updateNameColumn(UI::MainWindow& ref, const vector<wstring>& data)
+void updateColumns(UI::MainWindow& ref, const vector<db::wFileData>& data)
+{
+	updateNameColumn(ref, data);
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+void updateNameColumn(UI::MainWindow& ref, const vector<db::wFileData>& data)
 {
 	bool success = false;
 
@@ -73,7 +85,7 @@ void updateNameColumn(UI::MainWindow& ref, const vector<wstring>& data)
 
 	for (size_t i = 0; i < data.size(); i++)
 	{
-		lvi.pszText = const_cast<wchar_t*>(data[i].data());
+		lvi.pszText = const_cast<wchar_t*>(data[i].fileName.data());
 		lvi.iItem = i;
 		lvi.iSubItem = UI::mainWindowUI::nameColumnIndex;
 
