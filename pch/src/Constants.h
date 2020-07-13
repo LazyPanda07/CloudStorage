@@ -31,6 +31,7 @@ namespace filesRequests
 	inline constexpr std::string_view uploadFile = "Upload file";
 	inline constexpr std::string_view downloadFile = "Download file";
 	inline constexpr std::string_view showAllFilesInDirectory = "Show all files in directory";
+	inline constexpr std::string_view removeFile = "Remove file";
 }
 
 namespace responses

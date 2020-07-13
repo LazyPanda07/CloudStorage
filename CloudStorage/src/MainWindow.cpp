@@ -191,7 +191,7 @@ LRESULT __stdcall MainWindowProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM
 {
 	static streams::IOSocketStream<char> clientStream(new buffers::IOSocketBuffer<char>(new web::HTTPNetwork()));
 	static UI::MainWindow* ptr = nullptr;
-	static vector<db::wFileData> filesNames;
+	static vector<db::wFileData> fileNames;
 	static wstring login;
 
 	switch (msg)
@@ -215,12 +215,17 @@ LRESULT __stdcall MainWindowProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM
 		switch (wparam)
 		{
 		case UI::buttons::refresh:
-			getFiles(*ptr, clientStream, filesNames, true);
+			getFiles(*ptr, clientStream, fileNames, true);
 
 			break;
 
 		case UI::buttons::download:
-			downloadFile(*ptr, clientStream, filesNames, login);
+			downloadFile(*ptr, clientStream, fileNames, login);
+
+			break;
+
+		case UI::buttons::remove:
+			removeFile(*ptr, clientStream, fileNames, login);
 
 			break;
 
@@ -271,7 +276,7 @@ LRESULT __stdcall MainWindowProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM
 
 #pragma region CustomEvents
 	case UI::events::getFilesE:
-		getFiles(*ptr, clientStream, filesNames, false);
+		getFiles(*ptr, clientStream, fileNames, false);
 
 		return 0;
 
@@ -281,7 +286,7 @@ LRESULT __stdcall MainWindowProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM
 		return 0;
 
 	case UI::events::downLoadFilesE:
-		downloadFile(*ptr, clientStream, filesNames, login);
+		downloadFile(*ptr, clientStream, fileNames, login);
 
 		return 0;
 

@@ -13,7 +13,7 @@
 
 using namespace std;
 
-void getFiles(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, vector<db::wFileData>& filesNames, bool showError)
+void getFiles(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, vector<db::wFileData>& fileNames, bool showError)
 {
 	string request = web::HTTPBuilder().postRequest().headers
 	(
@@ -21,7 +21,7 @@ void getFiles(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, 
 		"Directory", "Home"
 	).build();
 	string response;
-	filesNames.clear();
+	fileNames.clear();
 
 	utility::insertSizeHeaderToHTTPMessage(request);
 
@@ -42,7 +42,7 @@ void getFiles(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, 
 		{
 			if (i == dataDelimiter[0])
 			{
-				filesNames.emplace_back
+				fileNames.emplace_back
 				(
 					utility::to_wstring(tem[0]),
 					utility::to_wstring(tem[1]),
@@ -53,7 +53,7 @@ void getFiles(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, 
 				);
 
 				curIndex = 0;
-				
+
 				for (auto& i : tem)
 				{
 					i.clear();
@@ -70,7 +70,7 @@ void getFiles(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, 
 		}
 	}
 
-	updateColumns(ref, filesNames);
+	updateColumns(ref, fileNames);
 
 	if (error == "1" && showError)
 	{
@@ -169,13 +169,13 @@ void uploadFile(streams::IOSocketStream<char>& clientStream, const wstring& file
 	}
 }
 
-void downloadFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, const vector<db::wFileData>& filesNames, const wstring& login)
+void downloadFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, const vector<db::wFileData>& fileNames, const wstring& login)
 {
 	int id = SendMessageW(ref.getList(), LVM_GETNEXTITEM, -1, LVNI_SELECTED);
 
 	while (id != -1)
 	{
-		downloadFile(clientStream, filesNames[id].fileName, login);
+		downloadFile(clientStream, fileNames[id].fileName, login);
 
 		id = SendMessageW(ref.getList(), LVM_GETNEXTITEM, id, LVNI_SELECTED);
 	}
@@ -238,6 +238,46 @@ void downloadFile(streams::IOSocketStream<char>& clientStream, const wstring& fi
 		wstring message = fileName + L"\r\n" + filesResponses::failDownloadFile.data();
 
 		MessageBoxW(nullptr, message.data(), L"Ошибка", MB_OK);
+	}
+}
+
+void removeFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, const vector<db::wFileData>& fileNames, const wstring& login)
+{
+	int id = SendMessageW(ref.getList(), LVM_GETNEXTITEM, -1, LVNI_SELECTED);
+
+	while (id != -1)
+	{
+		if (removeFileDialog(ref, fileNames[id].fileName))
+		{
+			removeFile(ref, clientStream, fileNames[id].fileName, login);
+		}
+
+		id = SendMessageW(ref.getList(), LVM_GETNEXTITEM, id, LVNI_SELECTED);
+	}
+}
+
+void removeFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, const std::wstring& fileName, const std::wstring& login)
+{
+	string request = web::HTTPBuilder().postRequest().headers
+	(
+		requestType::filesType, filesRequests::removeFile,
+		"Login", utility::to_string(login),
+		"File-Name", utility::to_string(fileName),
+		"Directory", "Home"
+	).build();
+	string response;
+
+	clientStream << request;
+
+	clientStream >> response;
+
+	if (response == responses::okResponse)
+	{
+		//TODO: message
+	}
+	else
+	{
+		MessageBoxW(ref.getMainWindow(), wstring(L"Не удалось удалить " + fileName + L" файл").data(), L"Ошибка", MB_OK);
 	}
 }
 

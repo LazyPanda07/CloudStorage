@@ -54,6 +54,19 @@ void initAuthorizationScreen(UI::MainWindow& ref)
 	ref.setCurrentScreen(new UI::AuthorizationScreen(ref.getMainWindow(), L"Authorization", AuthorizationScreenProcedure));
 }
 
+bool removeFileDialog(UI::MainWindow& ref, const std::wstring& fileName)
+{
+	int dialog = MessageBoxW
+	(
+		ref.getMainWindow(),
+		wstring(L"Вы действительно хотите удалить " + fileName).data(),
+		L"Удаление файла",
+		MB_YESNO | MB_ICONWARNING
+	);
+
+	return dialog == IDYES;
+}
+
 void updateColumns(UI::MainWindow& ref, const vector<db::wFileData>& data)
 {
 	updateNameColumn(ref, data);
