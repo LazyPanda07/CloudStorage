@@ -17,6 +17,8 @@ void uploadFile(streams::IOSocketStream<char>& clientStream, const filesystem::p
 
 void downloadFile(streams::IOSocketStream<char>& clientStream, const filesystem::path& currentPath);
 
+void removeFile(streams::IOSocketStream<char>& clientStream, const filesystem::path& currentPath);
+
 namespace web
 {
 	void CloudStorageServer::clientConnection(SOCKET clientSocket, sockaddr addr)
@@ -52,6 +54,10 @@ namespace web
 				else if (request == filesRequests::downloadFile)
 				{
 					downloadFile(clientStream, currentPath);
+				}
+				else if (request == filesRequests::removeFile)
+				{
+					removeFile(clientStream, currentPath);
 				}
 			}
 			catch (const WebException&)
@@ -151,5 +157,21 @@ void downloadFile(streams::IOSocketStream<char>& clientStream, const filesystem:
 	if (isLast)
 	{
 		clientStream << size;
+	}
+}
+
+void removeFile(streams::IOSocketStream<char>& clientStream, const filesystem::path& currentPath)
+{
+	string fileName;
+
+	clientStream >> fileName;
+
+	if (filesystem::remove(filesystem::path(currentPath).append(fileName)))
+	{
+		clientStream << responses::okResponse;
+	}
+	else
+	{
+		clientStream << responses::failResponse;
 	}
 }
