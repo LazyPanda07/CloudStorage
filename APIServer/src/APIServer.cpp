@@ -26,6 +26,8 @@ void uploadFile(streams::IOSocketStream<char>& clientStream, streams::IOSocketSt
 
 void downloadFile(streams::IOSocketStream<char>& clientStream, streams::IOSocketStream<char>& filesStream, const map<string, string>& headers);
 
+void removeFile(streams::IOSocketStream<char>& clientStream, streams::IOSocketStream<char>& filesStream, const map<string, string>& headers);
+
 void authorization(streams::IOSocketStream<char>& clientStream, streams::IOSocketStream<char>& dataBaseStream, const string& data);
 
 void registration(streams::IOSocketStream<char>& clientStream, streams::IOSocketStream<char>& dataBaseStream, const string& data);
@@ -39,29 +41,29 @@ namespace web
 		streams::IOSocketStream<char> clientStream(new buffers::IOSocketBuffer<char>(new HTTPNetwork(clientSocket)));
 		streams::IOSocketStream<char> filesStream(new buffers::IOSocketBuffer<char>(new FilesNetwork()));
 		streams::IOSocketStream<char> dataBaseStream(new buffers::IOSocketBuffer<char>(new DataBaseNetwork()));
-		string request;
+		string HTTPRequest;
 
 		while (true)
 		{
 			try
 			{
-				clientStream >> request;
+				clientStream >> HTTPRequest;
 
-				if (checkHTTP(request))
+				if (checkHTTP(HTTPRequest))
 				{
-					HTTPParser parser(request);
+					HTTPParser parser(HTTPRequest);
 					const map<string, string>& headers = parser.getHeaders();
 					auto it = headers.find(requestType::accountType);
 
 					if (it != end(headers))
 					{
-						const string& requestType = it->second;
+						const string& request = it->second;
 
-						if (requestType == accountRequest::authorization)
+						if (request == accountRequest::authorization)
 						{
 							authorization(clientStream, dataBaseStream, parser.getBody());
 						}
-						else if (requestType == accountRequest::registration)
+						else if (request == accountRequest::registration)
 						{
 							registration(clientStream, dataBaseStream, parser.getBody());
 						}
@@ -76,19 +78,23 @@ namespace web
 
 						if (it != end(headers))
 						{
-							const string& requestType = it->second;
+							const string& request = it->second;
 
-							if (requestType == filesRequests::showAllFilesInDirectory)
+							if (request == filesRequests::showAllFilesInDirectory)
 							{
 								showAllFilesInDirectory(clientStream, dataBaseStream, headers.at("Directory"));
 							}
-							else if (requestType == filesRequests::uploadFile)
+							else if (request == filesRequests::uploadFile)
 							{
 								uploadFile(clientStream, filesStream, parser.getBody(), headers);
 							}
-							if (requestType == filesRequests::downloadFile)
+							if (request == filesRequests::downloadFile)
 							{
 								downloadFile(clientStream, filesStream, headers);
+							}
+							else if (request == filesRequests::removeFile)
+							{
+								removeFile(clientStream, filesStream, headers);
 							}
 							else
 							{
@@ -242,6 +248,34 @@ void downloadFile(streams::IOSocketStream<char>& clientStream, streams::IOSocket
 		isLast ? "Total-File-Size" : "Reserved", isLast ? totalFileSize : 0,
 		"Content-Length", data.size()
 	).build(&data);
+
+	utility::insertSizeHeaderToHTTPMessage(response);
+
+	clientStream << response;
+}
+
+void removeFile(streams::IOSocketStream<char>& clientStream, streams::IOSocketStream<char>& filesStream, const map<string, string>& headers)
+{
+	const string& login = headers.at("Login");
+	const string& directory = headers.at("Directory");
+	const string& fileName = headers.at("File-Name");
+	bool error;
+	string responseMessage;
+
+	filesStream << filesRequests::removeFile;
+	filesStream << login;
+	filesStream << directory;
+
+	filesStream << fileName;
+
+	filesStream >> responseMessage;
+
+	error = responseMessage != responses::okResponse;
+
+	string response = web::HTTPBuilder().responseCode(web::ResponseCodes::ok).headers
+	(
+		"Error", error
+	).build();
 
 	utility::insertSizeHeaderToHTTPMessage(response);
 

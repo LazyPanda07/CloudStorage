@@ -267,11 +267,16 @@ void removeFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream
 	).build();
 	string response;
 
+	utility::insertSizeHeaderToHTTPMessage(request);
+
 	clientStream << request;
 
 	clientStream >> response;
 
-	if (response == responses::okResponse)
+	web::HTTPParser parser(response);
+	const map<string, string>& headers = parser.getHeaders();
+
+	if(headers.at("Error") == "0")
 	{
 		//TODO: message
 	}
