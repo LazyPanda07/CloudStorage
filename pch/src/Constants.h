@@ -11,7 +11,8 @@ inline constexpr int filePacketSize = 1 * 1024 * 1024;	//1 MB
 
 inline constexpr std::string_view customHTTPHeaderSize = "Total-HTTP-Message-Size: ";
 
-inline constexpr std::string_view delimiter = "/";
+inline constexpr std::string_view dataDelimiter = "/";
+inline constexpr std::string_view dataPartDelimiter = "|";
 
 namespace requestType
 {

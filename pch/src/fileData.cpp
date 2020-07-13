@@ -24,17 +24,17 @@ namespace db
 
 		result.
 			append(fileName).
-			append("|").
+			append(dataPartDelimiter).
 			append(filePath).
-			append("|").
+			append(dataPartDelimiter).
 			append(fileExtension).
-			append("|").
+			append(dataPartDelimiter).
 			append(uploadDate).
-			append("|").
+			append(dataPartDelimiter).
 			append(dateOfChange).
-			append("|").
+			append(dataPartDelimiter).
 			append(to_string(fileSize)).
-			append(delimiter);
+			append(dataDelimiter);
 
 		return result;
 	}

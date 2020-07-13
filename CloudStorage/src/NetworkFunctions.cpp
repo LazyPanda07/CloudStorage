@@ -40,7 +40,7 @@ void getFiles(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, 
 
 		for (const auto& i : body)
 		{
-			if (i == delimiter[0])
+			if (i == dataDelimiter[0])
 			{
 				filesNames.emplace_back
 				(
@@ -59,7 +59,7 @@ void getFiles(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, 
 					i.clear();
 				}
 			}
-			else if (i == '|')
+			else if (i == dataPartDelimiter[0])
 			{
 				curIndex++;
 			}

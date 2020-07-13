@@ -13,13 +13,9 @@
 
 using namespace std;
 
-void showAllFilesInDirectory(streams::IOSocketStream<char>& clientStream, const filesystem::path& currentPath);
-
 void uploadFile(streams::IOSocketStream<char>& clientStream, const filesystem::path& currentPath);
 
 void downloadFile(streams::IOSocketStream<char>& clientStream, const filesystem::path& currentPath);
-
-void findDirectory(filesystem::path& currentPath, const string& directory);
 
 namespace web
 {
@@ -48,17 +44,8 @@ namespace web
 				{
 					filesystem::create_directories(currentPath);
 				}
-
-				if (directory != "Home")
-				{
-					findDirectory(currentPath, directory);
-				}
-
-				if (request == filesRequests::showAllFilesInDirectory)
-				{
-					showAllFilesInDirectory(clientStream, currentPath);
-				}
-				else if (request == filesRequests::uploadFile)
+				
+				if (request == filesRequests::uploadFile)
 				{
 					uploadFile(clientStream, currentPath);
 				}
@@ -83,37 +70,6 @@ namespace web
 	{
 		cloudStorageServerPort = move(port);
 	}
-}
-
-void showAllFilesInDirectory(streams::IOSocketStream<char>& clientStream, const filesystem::path& currentPath)
-{
-	string result;
-	filesystem::directory_iterator it(currentPath);
-
-	for (const auto& i : it)
-	{
-		result += i.path().filename().string() + ":";
-	}
-
-	try
-	{
-		if (result.empty())
-		{
-			clientStream << responses::failResponse;
-			clientStream << filesResponses::emptyDirectory;
-		}
-		else
-		{
-			clientStream << responses::okResponse;
-			clientStream << result;
-		}
-	}
-	catch (const web::WebException& e)
-	{
-		cout << e.what() << endl;
-	}
-
-
 }
 
 void uploadFile(streams::IOSocketStream<char>& clientStream, const filesystem::path& currentPath)
@@ -195,19 +151,5 @@ void downloadFile(streams::IOSocketStream<char>& clientStream, const filesystem:
 	if (isLast)
 	{
 		clientStream << size;
-	}
-}
-
-void findDirectory(filesystem::path& currentPath, const string& directory)
-{
-	filesystem::recursive_directory_iterator it(currentPath);
-
-	for (const auto& i : it)
-	{
-		if (filesystem::is_directory(i) && i.path().filename() == directory)
-		{
-			currentPath = i;
-			return;
-		}
 	}
 }
