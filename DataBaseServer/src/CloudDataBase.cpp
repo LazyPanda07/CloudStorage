@@ -168,7 +168,7 @@ namespace db
 		}
 	}
 
-	vector<fileData> CloudDataBase::getFiles(const string& login)
+	vector<fileData> CloudDataBase::getFiles(const string& login) const
 	{
 		vector<fileData> result;
 		const string condition = "userId = " + to_string(this->getId(login));

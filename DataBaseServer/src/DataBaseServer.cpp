@@ -11,6 +11,14 @@
 
 using namespace std;
 
+//login initialize in this function
+void authorization(streams::IOSocketStream<char>& clientStream, const db::CloudDataBase& db, string& login);
+
+//login initialize in this function
+void registration(streams::IOSocketStream<char>& clientStream, const db::CloudDataBase& db, string& login);
+
+void showAllFilesInDirectory(streams::IOSocketStream<char>& clientStream, const db::CloudDataBase& db, const string& login);
+
 namespace web
 {
 	void DataBaseServer::clientConnection(SOCKET clientSocket, sockaddr addr)
@@ -29,62 +37,15 @@ namespace web
 
 				if (request == accountRequest::authorization)
 				{
-					string password;
-
-					clientStream >> login;
-					clientStream >> password;
-
-					if (db.authorization(login, password))
-					{
-						clientStream << responses::okResponse;
-					}
-					else
-					{
-						clientStream << accountResponses::failAuthorization;
-					}
+					authorization(clientStream, db, login);
 				}
 				else if (request == accountRequest::registration)
 				{
-					string password;
-
-					clientStream >> login;
-					clientStream >> password;
-
-					if (db.registration(login, password).size())
-					{
-						clientStream << accountResponses::failRegistration;
-					}
-					else
-					{
-						clientStream << accountResponses::successRegistration;
-					}
+					registration(clientStream, db, login);
 				}
 				else if (request == filesRequests::showAllFilesInDirectory)
 				{
-					string directory;
-					string result;
-
-					clientStream >> directory;
-
-					vector<db::fileData> data = db.getFiles(login);
-
-					for (const auto& i : data)
-					{
-						result += i;
-					}
-
-					if (data.empty())
-					{
-						clientStream << responses::failResponse;
-
-						clientStream << filesResponses::emptyDirectory;
-					}
-					else
-					{
-						clientStream << responses::okResponse;
-
-						clientStream << result;
-					}
+					showAllFilesInDirectory(clientStream, db, login);
 				}
 			}
 			catch (const WebException&)
@@ -102,5 +63,67 @@ namespace web
 	void DataBaseServer::setDataBaseServerPort(string&& port) noexcept
 	{
 		dataBaseServerPort = move(port);
+	}
+}
+
+void authorization(streams::IOSocketStream<char>& clientStream, const db::CloudDataBase& db, string& login)
+{
+	string password;
+
+	clientStream >> login;
+	clientStream >> password;
+
+	if (db.authorization(login, password))
+	{
+		clientStream << responses::okResponse;
+	}
+	else
+	{
+		clientStream << accountResponses::failAuthorization;
+	}
+}
+
+void registration(streams::IOSocketStream<char>& clientStream, const db::CloudDataBase& db, string& login)
+{
+	string password;
+
+	clientStream >> login;
+	clientStream >> password;
+
+	if (db.registration(login, password).size())
+	{
+		clientStream << accountResponses::failRegistration;
+	}
+	else
+	{
+		clientStream << accountResponses::successRegistration;
+	}
+}
+
+void showAllFilesInDirectory(streams::IOSocketStream<char>& clientStream, const db::CloudDataBase& db, const string& login)
+{
+	string directory;
+	string result;
+
+	clientStream >> directory;
+
+	vector<db::fileData> data = db.getFiles(login);
+
+	for (const auto& i : data)
+	{
+		result += i;
+	}
+
+	if (data.empty())
+	{
+		clientStream << responses::failResponse;
+
+		clientStream << filesResponses::emptyDirectory;
+	}
+	else
+	{
+		clientStream << responses::okResponse;
+
+		clientStream << result;
 	}
 }
