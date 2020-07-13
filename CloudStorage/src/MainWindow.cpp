@@ -80,6 +80,9 @@ namespace UI
 		case UI::MainWindow::elementsEnum::downloadButton:
 			return static_cast<CloudStorageScreen*>(currentScreen)->getDownloadButton();
 
+		case UI::MainWindow::elementsEnum::removeButton:
+			return static_cast<CloudStorageScreen*>(currentScreen)->getRemoveButton();
+
 		case UI::MainWindow::elementsEnum::list:
 			return static_cast<CloudStorageScreen*>(currentScreen)->getList();
 
@@ -146,6 +149,11 @@ namespace UI
 	HWND MainWindow::getDownloadButton() const
 	{
 		return this->getHWND(elementsEnum::downloadButton);
+	}
+
+	HWND MainWindow::getRemoveButton() const
+	{
+		return this->getHWND(elementsEnum::removeButton);
 	}
 
 	HWND MainWindow::getList() const

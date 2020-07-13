@@ -18,6 +18,7 @@ namespace UI
 	{
 		ShowWindow(refreshButton, SW_SHOW);
 		ShowWindow(downloadButton, SW_SHOW);
+		ShowWindow(removeButton, SW_SHOW);
 		ShowWindow(list, SW_SHOW);
 	}
 
@@ -64,6 +65,20 @@ namespace UI
 			nullptr
 		);
 
+		removeButton = CreateWindowExW
+		(
+			NULL,
+			L"BUTTON",
+			L"Удалить файл",
+			WS_CHILDWINDOW,
+			toolbar::toolbarButtonWidth * 2, 0,
+			toolbar::toolbarButtonWidth, toolbar::toolbarButtonHeight,
+			BaseScreen::wrapper,
+			HMENU(buttons::remove),
+			nullptr,
+			nullptr
+		);
+
 		list = CreateWindowExW
 		(
 			WS_EX_CLIENTEDGE,
@@ -106,6 +121,11 @@ namespace UI
 	HWND CloudStorageScreen::getDownloadButton() const
 	{
 		return downloadButton;
+	}
+
+	HWND CloudStorageScreen::getRemoveButton() const
+	{
+		return removeButton;
 	}
 
 	HWND CloudStorageScreen::getList() const

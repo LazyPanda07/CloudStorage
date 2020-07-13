@@ -16,6 +16,7 @@ namespace UI
 #pragma region CloudStorageScreen
 			refreshButton,
 			downloadButton,
+			removeButton,
 			list,
 #pragma endregion
 #pragma region AuthorizationScreen
@@ -55,6 +56,8 @@ namespace UI
 		HWND getRefreshButton() const;
 
 		HWND getDownloadButton() const;
+
+		HWND getRemoveButton() const;
 
 		HWND getList() const;
 

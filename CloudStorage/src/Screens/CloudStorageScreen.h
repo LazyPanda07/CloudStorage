@@ -11,6 +11,7 @@ namespace UI
 	private:
 		HWND refreshButton;
 		HWND downloadButton;
+		HWND removeButton;
 		HWND list;
 
 	private:
@@ -26,6 +27,8 @@ namespace UI
 		HWND getRefreshButton() const;
 
 		HWND getDownloadButton() const;
+
+		HWND getRemoveButton() const;
 
 		HWND getList() const;
 
