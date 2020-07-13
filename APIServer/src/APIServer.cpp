@@ -20,7 +20,7 @@ using namespace std;
 
 bool checkHTTP(const string& request);
 
-void showAllFilesInDirectory(streams::IOSocketStream<char>& clientStream, streams::IOSocketStream<char>& filesStream, const string& login, const string& directory);
+void showAllFilesInDirectory(streams::IOSocketStream<char>& clientStream, streams::IOSocketStream<char>& dataBaseStream, const string& directory);
 
 void uploadFile(streams::IOSocketStream<char>& clientStream, streams::IOSocketStream<char>& filesStream, const string& data, const map<string, string>& headers);
 
@@ -80,7 +80,7 @@ namespace web
 
 							if (requestType == filesRequests::showAllFilesInDirectory)
 							{
-								showAllFilesInDirectory(clientStream, filesStream, headers.at("Login"), headers.at("Directory"));
+								showAllFilesInDirectory(clientStream, dataBaseStream, headers.at("Directory"));
 							}
 							else if (requestType == filesRequests::uploadFile)
 							{
@@ -129,7 +129,7 @@ bool checkHTTP(const string& request)
 	return request.find("HTTP") != string::npos ? true : false;
 }
 
-void showAllFilesInDirectory(streams::IOSocketStream<char>& clientStream, streams::IOSocketStream<char>& filesStream, const string& login, const string& directory)
+void showAllFilesInDirectory(streams::IOSocketStream<char>& clientStream, streams::IOSocketStream<char>& filesStream, const string& directory)
 {
 	string serverResponse;
 	bool error;
@@ -138,7 +138,6 @@ void showAllFilesInDirectory(streams::IOSocketStream<char>& clientStream, stream
 	try
 	{
 		filesStream << filesRequests::showAllFilesInDirectory;
-		filesStream << login;
 		filesStream << directory;
 
 		filesStream >> serverResponse;
