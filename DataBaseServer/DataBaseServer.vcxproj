@@ -306,6 +306,7 @@ COPY /Y $(ProjectDir)settings.ini $(SolutionDir)$(Configuration)-$(Platform)\$(P
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\DataBaseException.cpp" />
+    <ClCompile Include="src\DataBaseFunctions.cpp" />
     <ClCompile Include="src\DataBaseNetwork.cpp" />
     <ClCompile Include="src\DataBaseOperations.cpp" />
     <ClCompile Include="src\DataBaseServer.cpp" />
@@ -332,6 +333,7 @@ COPY /Y $(ProjectDir)settings.ini $(SolutionDir)$(Configuration)-$(Platform)\$(P
   <ItemGroup>
     <ClInclude Include="src\DataBaseConstants.h" />
     <ClInclude Include="src\DataBaseException.h" />
+    <ClInclude Include="src\DataBaseFunctions.h" />
     <ClInclude Include="src\DataBaseNetwork.h" />
     <ClInclude Include="src\DataBaseOperations.h" />
     <ClInclude Include="src\DataBaseServer.h" />

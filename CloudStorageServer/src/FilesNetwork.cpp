@@ -13,7 +13,8 @@ namespace web
 		Log::error(message);
 	}
 
-	FilesNetwork::FilesNetwork(SOCKET clientSocket) : parent(clientSocket)
+	FilesNetwork::FilesNetwork(SOCKET clientSocket) :
+		parent(clientSocket)
 	{
 
 	}

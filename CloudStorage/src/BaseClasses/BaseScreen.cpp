@@ -6,7 +6,8 @@ using namespace std;
 
 namespace UI
 {
-	BaseScreen::BaseScreen(HWND parentWindow, const std::wstring& wrapperClassName, WNDPROC procedure) : parentWindow(parentWindow)
+	BaseScreen::BaseScreen(HWND parentWindow, const std::wstring& wrapperClassName, WNDPROC procedure) :
+		parentWindow(parentWindow)
 	{
 		WNDCLASSEXW screen = {};
 		RECT parentSizes;
@@ -70,6 +71,11 @@ namespace UI
 	HWND BaseScreen::getParent() const
 	{
 		return parentWindow;
+	}
+
+	HWND BaseScreen::getWrapper() const
+	{
+		return wrapper;
 	}
 
 	BaseScreen::~BaseScreen()

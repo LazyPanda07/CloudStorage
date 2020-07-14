@@ -1,9 +1,9 @@
 #pragma once
 
-#include <Windows.h>
-
 #include "UIInterfaces/IResizable.h"
 #include "BaseClasses/BaseScreen.h"
+
+#include <Windows.h>
 
 namespace UI
 {
@@ -13,6 +13,7 @@ namespace UI
 		enum class elementsEnum
 		{
 			mainWindow,
+			wrapper,
 #pragma region CloudStorageScreen
 			refreshButton,
 			downloadButton,
@@ -70,5 +71,7 @@ namespace UI
 		HWND getRegistrationPasswordEdit() const;
 
 		HWND getRegistrationRepeatPasswordEdit() const;
+
+		HWND getWrapper() const;
 	};
 }

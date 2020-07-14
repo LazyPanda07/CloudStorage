@@ -140,11 +140,11 @@ namespace UI
 		SendMessageW(password, EM_SETPASSWORDCHAR, static_cast<WPARAM>(L'●'), NULL);
 		SendMessageW(repeatPassword, EM_SETPASSWORDCHAR, static_cast<WPARAM>(L'●'), NULL);
 
-		SetWindowSubclass(login, RegistrationScreenElementsSubclass, 0, 0);
-		SetWindowSubclass(password, RegistrationScreenElementsSubclass, 0, 0);
-		SetWindowSubclass(repeatPassword, RegistrationScreenElementsSubclass, 0, 0);
-		SetWindowSubclass(registrationButton, RegistrationScreenElementsSubclass, UI::buttons::registration, 0);
-		SetWindowSubclass(toAuthorizationScreenButton, RegistrationScreenElementsSubclass, UI::buttons::toAuthorizationScreen, 0);
+		SetWindowSubclass(login, RegistrationScreenElementsSubclass, 0, NULL);
+		SetWindowSubclass(password, RegistrationScreenElementsSubclass, 0, NULL);
+		SetWindowSubclass(repeatPassword, RegistrationScreenElementsSubclass, 0, NULL);
+		SetWindowSubclass(registrationButton, RegistrationScreenElementsSubclass, UI::buttons::registration, NULL);
+		SetWindowSubclass(toAuthorizationScreenButton, RegistrationScreenElementsSubclass, UI::buttons::toAuthorizationScreen, NULL);
 
 		SetFocus(login);
 	}

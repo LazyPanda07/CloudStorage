@@ -3,6 +3,7 @@
 #include "HTTPNetwork.h"
 #include "Log.h"
 #include "HTTPParser.h"
+#include "Constants.h"
 
 using namespace std;
 
@@ -79,7 +80,8 @@ namespace web
 		}
 	}
 
-	HTTPNetwork::HTTPNetwork() : parent(APIServerIp, APIServerPort)
+	HTTPNetwork::HTTPNetwork() : 
+		parent(APIServerIp, APIServerPort)
 	{
 
 	}

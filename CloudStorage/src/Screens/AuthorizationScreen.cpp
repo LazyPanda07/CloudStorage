@@ -25,8 +25,8 @@ namespace UI
 
 	}
 
-	AuthorizationScreen::AuthorizationScreen(HWND parentWindow, const wstring& wrapperClassName, WNDPROC procedure)
-		: BaseScreen(parentWindow, wrapperClassName, procedure)
+	AuthorizationScreen::AuthorizationScreen(HWND parentWindow, const wstring& wrapperClassName, WNDPROC procedure) :
+		BaseScreen(parentWindow, wrapperClassName, procedure)
 	{
 		POINT centerWrapper = utility::centerCoordinates(authorizationScreen::loginEditWidth, authorizationScreen::loginEditHeight, BaseScreen::wrapper);
 		centerWrapper.y -= centerWrapper.y / 2;
@@ -119,10 +119,10 @@ namespace UI
 
 		SendMessageW(password, EM_SETPASSWORDCHAR, static_cast<WPARAM>(L'●'), NULL);
 
-		SetWindowSubclass(login, AuthorizationScreenElementsSubclass, 0, 0);
-		SetWindowSubclass(password, AuthorizationScreenElementsSubclass, 0, 0);
-		SetWindowSubclass(enterButton, AuthorizationScreenElementsSubclass, UI::buttons::authorization, 0);
-		SetWindowSubclass(toRegistrationScreenButton, AuthorizationScreenElementsSubclass, UI::buttons::toRegistrationScreen, 0);
+		SetWindowSubclass(login, AuthorizationScreenElementsSubclass, 0, NULL);
+		SetWindowSubclass(password, AuthorizationScreenElementsSubclass, 0, NULL);
+		SetWindowSubclass(enterButton, AuthorizationScreenElementsSubclass, UI::buttons::authorization, NULL);
+		SetWindowSubclass(toRegistrationScreenButton, AuthorizationScreenElementsSubclass, UI::buttons::toRegistrationScreen, NULL);
 
 		SetFocus(login);
 	}

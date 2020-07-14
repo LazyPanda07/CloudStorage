@@ -121,7 +121,8 @@ namespace db
 		return result;
 	}
 
-	CloudDataBase::CloudDataBase() : db(dataBaseName)
+	CloudDataBase::CloudDataBase() :
+		db(dataBaseName)
 	{
 		db.createTable
 		(

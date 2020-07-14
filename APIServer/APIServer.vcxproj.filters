@@ -30,6 +30,9 @@
     <ClCompile Include="src\DataBaseNetwork.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
+    <ClCompile Include="src\NetworkFunctions.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\APIServer.h">
@@ -42,6 +45,9 @@
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
     <ClInclude Include="src\DataBaseNetwork.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="src\NetworkFunctions.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
   </ItemGroup>

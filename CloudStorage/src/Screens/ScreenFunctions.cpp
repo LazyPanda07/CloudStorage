@@ -27,7 +27,7 @@ void initCloudStorageScreen(UI::MainWindow& ref)
 		ptr->pubDestroy();
 	}
 
-	ref.setCurrentScreen(new UI::CloudStorageScreen(ref.getMainWindow(), L"CloudStorage", CloudStorageScreenProcedure));
+	ref.setCurrentScreen(new UI::CloudStorageScreen(ref.getMainWindow(), UI::screens::cloudStorageScreen, CloudStorageScreenProcedure));
 }
 
 void initRegistrationScreen(UI::MainWindow& ref)
@@ -39,7 +39,7 @@ void initRegistrationScreen(UI::MainWindow& ref)
 		ptr->pubDestroy();
 	}
 
-	ref.setCurrentScreen(new UI::RegistrationScreen(ref.getMainWindow(), L"Registration", RegistrationScreenProcedure));
+	ref.setCurrentScreen(new UI::RegistrationScreen(ref.getMainWindow(), UI::screens::registrationScreen, RegistrationScreenProcedure));
 }
 
 void initAuthorizationScreen(UI::MainWindow& ref)
@@ -51,7 +51,7 @@ void initAuthorizationScreen(UI::MainWindow& ref)
 		ptr->pubDestroy();
 	}
 
-	ref.setCurrentScreen(new UI::AuthorizationScreen(ref.getMainWindow(), L"Authorization", AuthorizationScreenProcedure));
+	ref.setCurrentScreen(new UI::AuthorizationScreen(ref.getMainWindow(), UI::screens::authorizationScreen, AuthorizationScreenProcedure));
 }
 
 bool removeFileDialog(UI::MainWindow& ref, const std::wstring& fileName)
@@ -70,6 +70,8 @@ bool removeFileDialog(UI::MainWindow& ref, const std::wstring& fileName)
 void updateColumns(UI::MainWindow& ref, const vector<db::wFileData>& data)
 {
 	updateNameColumn(ref, data);
+
+	//TODO: update other columns
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -24,18 +24,18 @@ namespace UI
 
 	void CloudStorageScreen::destroy()
 	{
-		
+
 	}
 
 	CloudStorageScreen::CloudStorageScreen(HWND parentWindow, const std::wstring& wrapperClassName, WNDPROC procedure) :
-		BaseScreen(parentWindow,wrapperClassName,procedure)
+		BaseScreen(parentWindow, wrapperClassName, procedure)
 	{
-		RECT parentWindowSizes;
+		RECT wrapperSizes;
 
-		GetClientRect(parentWindow, &parentWindowSizes);
+		GetClientRect(wrapper, &wrapperSizes);
 
-		const LONG width = parentWindowSizes.right - parentWindowSizes.left;
-		const LONG height = parentWindowSizes.bottom - parentWindowSizes.top;
+		const LONG width = wrapperSizes.right - wrapperSizes.left;
+		const LONG height = wrapperSizes.bottom - wrapperSizes.top;
 
 		refreshButton = CreateWindowExW
 		(
@@ -94,7 +94,7 @@ namespace UI
 		);
 
 		DragAcceptFiles(list, true);
-		SetWindowSubclass(list, &DragAndDrop, 1, NULL);
+		SetWindowSubclass(list, DragAndDrop, 1, NULL);
 
 		createColumns(*this);
 
@@ -167,13 +167,13 @@ LRESULT __stdcall DragAndDrop(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam,
 void createColumns(UI::CloudStorageScreen& ref)
 {
 	array<LVCOLUMNW, UI::mainWindowUI::columnsInList> columns = {};
-	RECT parentWindowSizes;
+	RECT wrapperSizes;
 	RECT listSizes;
 
-	GetClientRect(ref.getParent(), &parentWindowSizes);
+	GetClientRect(ref.getWrapper(), &wrapperSizes);
 	GetClientRect(ref.getList(), &listSizes);
 
-	LONG width = parentWindowSizes.right - parentWindowSizes.left;
+	LONG width = wrapperSizes.right - wrapperSizes.left;
 
 	const array<LONG, UI::mainWindowUI::columnsInList> columnsSizes =
 	{

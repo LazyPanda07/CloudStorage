@@ -21,6 +21,7 @@ namespace db
 
 		unsigned int getPassword(int id) const;
 
+	private:
 		static unsigned int customHash(const std::string& source);
 
 	public:

@@ -11,14 +11,15 @@
 #include "fileData.h"
 #include "UIConstants.h"
 #include "MainWindow.h"
+#include "Log.h"
 
 #include <commctrl.h>
-
-#pragma comment (lib, "Comctl32.lib")
 
 #pragma comment (lib, "HTTP.lib")
 #pragma comment (lib, "SocketStreams.lib")
 #pragma comment (lib, "Log.lib")
+
+#pragma comment (lib, "Comctl32.lib")
 
 #pragma comment(linker,"\"/manifestdependency:type='win32' \
 name='Microsoft.Windows.Common-Controls' version='6.0.0.0' \
@@ -30,9 +31,10 @@ LRESULT __stdcall MainWindowProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM
 
 namespace UI
 {
-	MainWindow::MainWindow() : currentScreen(nullptr)
+	MainWindow::MainWindow() :
+		currentScreen(nullptr)
 	{
-		INITCOMMONCONTROLSEX init;
+		INITCOMMONCONTROLSEX init = {};
 		WNDCLASSEXW wndClass = {};
 		POINT monitorCenter = utility::centerCoordinates(UI::mainWindowUI::mainWindowWidth, UI::mainWindowUI::mainWindowHeight);
 
@@ -52,8 +54,10 @@ namespace UI
 			wndClass.lpszClassName,
 			L"Cloud Storage",
 			WS_OVERLAPPEDWINDOW | WS_VISIBLE,
-			monitorCenter.x, monitorCenter.y,
-			UI::mainWindowUI::mainWindowWidth, UI::mainWindowUI::mainWindowHeight,
+			monitorCenter.x,
+			monitorCenter.y,
+			UI::mainWindowUI::mainWindowWidth,
+			UI::mainWindowUI::mainWindowHeight,
 			nullptr,
 			HMENU(),
 			nullptr,
@@ -73,6 +77,9 @@ namespace UI
 		{
 		case UI::MainWindow::elementsEnum::mainWindow:
 			return mainWindow;
+
+		case UI::MainWindow::elementsEnum::wrapper:
+			return currentScreen->getWrapper();
 
 		case UI::MainWindow::elementsEnum::refreshButton:
 			return static_cast<CloudStorageScreen*>(currentScreen)->getRefreshButton();
@@ -185,6 +192,11 @@ namespace UI
 	{
 		return this->getHWND(elementsEnum::registrationRepeatPasswordEdit);
 	}
+
+	HWND MainWindow::getWrapper() const
+	{
+		return this->getHWND(elementsEnum::wrapper);
+	}
 }
 
 LRESULT __stdcall MainWindowProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
@@ -205,7 +217,7 @@ LRESULT __stdcall MainWindowProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM
 			}
 			catch (const bad_cast&)
 			{
-
+				//TODO: info about which screen trying to be cast
 			}
 		}
 
@@ -281,7 +293,7 @@ LRESULT __stdcall MainWindowProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM
 		return 0;
 
 	case UI::events::uploadFileE:
-		uploadFile(clientStream, *reinterpret_cast<vector<wstring>*>(wparam), login);
+		uploadFile(*ptr, clientStream, *reinterpret_cast<vector<wstring>*>(wparam), login);
 
 		return 0;
 

@@ -31,6 +31,13 @@ namespace UI
 		inline constexpr int toolbarTopOffset = 10;
 	}
 
+	namespace screens
+	{
+		inline const std::wstring authorizationScreen = L"Authorization";
+		inline const std::wstring registrationScreen  = L"Registration";
+		inline const std::wstring cloudStorageScreen  = L"CloudStorage";
+	}
+
 	namespace authorizationScreen
 	{
 		inline constexpr int loginLimitCharacters = 16;

@@ -1,9 +1,10 @@
 #pragma once
 
 #include <string>
-#include <Windows.h>
 
 #include "../UIInterfaces/IResizable.h"
+
+#include <Windows.h>
 
 namespace UI
 {
@@ -38,6 +39,8 @@ namespace UI
 		virtual void pubDestroy() final;
 
 		virtual HWND getParent() const final;
+
+		virtual HWND getWrapper() const final;
 
 		virtual ~BaseScreen();
 	};

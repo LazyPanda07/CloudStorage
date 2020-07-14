@@ -13,7 +13,8 @@ namespace web
 		Log::error(message);
 	}
 
-	FilesNetwork::FilesNetwork() : parent(cloudStorageServerIp, cloudStorageServerPort)
+	FilesNetwork::FilesNetwork() :
+		parent(cloudStorageServerIp, cloudStorageServerPort)
 	{
 
 	}

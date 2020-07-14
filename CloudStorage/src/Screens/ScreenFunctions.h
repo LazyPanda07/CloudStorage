@@ -1,10 +1,9 @@
 #pragma once
 
-#include "../MainWindow.h"
-
 #include <string>
 #include <vector>
 
+#include "../MainWindow.h"
 #include "fileData.h"
 
 void initCloudStorageScreen(UI::MainWindow& ref);

@@ -295,10 +295,12 @@ COPY /Y $(ProjectDir)settings.ini $(SolutionDir)$(Configuration)-$(Platform)\$(P
   <ItemGroup>
     <ClCompile Include="src\CloudStorageServer.cpp" />
     <ClCompile Include="src\EntryPointS.cpp" />
+    <ClCompile Include="src\FilesFunctions.cpp" />
     <ClCompile Include="src\FilesNetwork.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\CloudStorageServer.h" />
+    <ClInclude Include="src\FilesFunctions.h" />
     <ClInclude Include="src\FilesNetwork.h" />
   </ItemGroup>
   <ItemGroup>

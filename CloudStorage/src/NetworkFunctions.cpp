@@ -84,15 +84,15 @@ void getFiles(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, 
 	}
 }
 
-void uploadFile(streams::IOSocketStream<char>& clientStream, const vector<wstring>& files, const wstring& login)
+void uploadFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, const vector<wstring>& files, const wstring& login)
 {
 	for (const auto& i : files)
 	{
-		uploadFile(clientStream, i, login);
+		uploadFile(ref,clientStream, i, login);
 	}
 }
 
-void uploadFile(streams::IOSocketStream<char>& clientStream, const wstring& filePath, const wstring& login)
+void uploadFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, const wstring& filePath, const wstring& login)
 {
 	const filesystem::path file(filePath);
 	uintmax_t fileSize = filesystem::file_size(file);
@@ -157,7 +157,7 @@ void uploadFile(streams::IOSocketStream<char>& clientStream, const wstring& file
 	{
 		MessageBoxW
 		(
-			FindWindowW(L"MainWindow", L"Cloud Storage"),
+			ref.getMainWindow(),
 			utility::to_wstring(parser.getBody()).data(),
 			L"Ошибка",
 			MB_OK
@@ -165,7 +165,7 @@ void uploadFile(streams::IOSocketStream<char>& clientStream, const wstring& file
 	}
 	else
 	{
-		SendMessageW(FindWindowW(L"MainWindow", L"Cloud Storage"), UI::events::getFilesE, NULL, NULL);
+		SendMessageW(ref.getMainWindow(), UI::events::getFilesE, NULL, NULL);
 	}
 }
 
@@ -175,13 +175,13 @@ void downloadFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStre
 
 	while (id != -1)
 	{
-		downloadFile(clientStream, fileNames[id].fileName, login);
+		downloadFile(ref,clientStream, fileNames[id].fileName, login);
 
 		id = SendMessageW(ref.getList(), LVM_GETNEXTITEM, id, LVNI_SELECTED);
 	}
 }
 
-void downloadFile(streams::IOSocketStream<char>& clientStream, const wstring& fileName, const wstring& login)
+void downloadFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, const wstring& fileName, const wstring& login)
 {
 	uintmax_t offset = 0;
 	uintmax_t totalFileSize;
@@ -231,13 +231,13 @@ void downloadFile(streams::IOSocketStream<char>& clientStream, const wstring& fi
 	{
 		wstring message = fileName + L"\r\n" + filesResponses::successDownloadFile.data();
 
-		MessageBoxW(nullptr, message.data(), L"Успех", MB_OK);
+		MessageBoxW(ref.getMainWindow(), message.data(), L"Успех", MB_OK);
 	}
 	else
 	{
 		wstring message = fileName + L"\r\n" + filesResponses::failDownloadFile.data();
 
-		MessageBoxW(nullptr, message.data(), L"Ошибка", MB_OK);
+		MessageBoxW(ref.getMainWindow(), message.data(), L"Ошибка", MB_OK);
 	}
 }
 
@@ -282,7 +282,7 @@ void removeFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream
 	}
 	else
 	{
-		MessageBoxW(ref.getMainWindow(), wstring(L"Не удалось удалить " + fileName + L" файл").data(), L"Ошибка", MB_OK);
+		MessageBoxW(ref.getMainWindow(), wstring(L"Не удалось удалить " + fileName).data(), L"Ошибка", MB_OK);
 	}
 }
 
@@ -328,7 +328,7 @@ wstring authorization(UI::MainWindow& ref, streams::IOSocketStream<char>& client
 		SetWindowTextW(authorizationLoginEdit, L"");
 		SetWindowTextW(authorizationPasswordEdit, L"");
 
-		MessageBoxW(nullptr, utility::to_wstring(parser.getBody()).data(), L"Ошибка", MB_OK);
+		MessageBoxW(ref.getMainWindow(), utility::to_wstring(parser.getBody()).data(), L"Ошибка", MB_OK);
 
 		return wstring();
 	}
@@ -359,7 +359,7 @@ wstring registration(UI::MainWindow& ref, streams::IOSocketStream<char>& clientS
 		SetWindowTextW(registrationPasswordEdit, L"");
 		SetWindowTextW(registrationRepeatPasswordEdit, L"");
 
-		MessageBoxW(nullptr, L"Пароли не совпадают", L"Ошибка", MB_OK);
+		MessageBoxW(ref.getMainWindow(), L"Пароли не совпадают", L"Ошибка", MB_OK);
 
 		return wstring();
 	}
@@ -393,7 +393,7 @@ wstring registration(UI::MainWindow& ref, streams::IOSocketStream<char>& clientS
 		SetWindowTextW(registrationPasswordEdit, L"");
 		SetWindowTextW(registrationRepeatPasswordEdit, L"");
 
-		MessageBoxW(nullptr, utility::to_wstring(parser.getBody()).data(), L"Ошибка", MB_OK);
+		MessageBoxW(ref.getMainWindow(), utility::to_wstring(parser.getBody()).data(), L"Ошибка", MB_OK);
 
 		return wstring();
 	}

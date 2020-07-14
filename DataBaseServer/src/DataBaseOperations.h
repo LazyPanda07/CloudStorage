@@ -1,8 +1,8 @@
 #pragma once
 
-#include <winsqlite/winsqlite3.h>
-
 #include "DataBaseException.h"
+
+#include <winsqlite/winsqlite3.h>
 
 namespace db
 {

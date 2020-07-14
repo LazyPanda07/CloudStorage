@@ -9,13 +9,13 @@
 
 void getFiles(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, std::vector<db::wFileData>& fileNames, bool showError);
 
-void uploadFile(streams::IOSocketStream<char>& clientStream, const std::vector<std::wstring>& files, const std::wstring& login);
+void uploadFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, const std::vector<std::wstring>& files, const std::wstring& login);
 
-void uploadFile(streams::IOSocketStream<char>& clientStream, const std::wstring& filePath, const std::wstring& login);
+void uploadFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, const std::wstring& filePath, const std::wstring& login);
 
 void downloadFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, const std::vector<db::wFileData>& fileNames, const std::wstring& login);
 
-void downloadFile(streams::IOSocketStream<char>& clientStream, const std::wstring& fileName, const std::wstring& login);
+void downloadFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, const std::wstring& fileName, const std::wstring& login);
 
 void removeFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, const std::vector<db::wFileData>& fileNames, const std::wstring& login);
 

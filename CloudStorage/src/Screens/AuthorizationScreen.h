@@ -1,9 +1,9 @@
 #pragma once
 
-#include <Windows.h>
-
 #include "../UIInterfaces/IIterable.h"
 #include "../BaseClasses/BaseScreen.h"
+
+#include <Windows.h>
 
 namespace UI
 {
@@ -14,7 +14,7 @@ namespace UI
 
 		HWND login;
 		HWND password;
-		
+
 		HWND enterButton;
 		HWND toRegistrationScreenButton;
 

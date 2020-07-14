@@ -33,6 +33,9 @@
     <ClCompile Include="src\CloudDataBase.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
+    <ClCompile Include="src\DataBaseFunctions.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\DataBaseServer.h">
@@ -51,6 +54,9 @@
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
     <ClInclude Include="src\CloudDataBase.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="src\DataBaseFunctions.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
   </ItemGroup>

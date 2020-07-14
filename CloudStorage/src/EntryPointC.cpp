@@ -4,6 +4,7 @@
 #include "MainWindow.h"
 #include "Log.h"
 #include "UIConstants.h"
+#include "Constants.h"
 #include "INIParser.h"
 
 #pragma comment (lib, "INIParser.lib")

@@ -1,8 +1,8 @@
 #pragma once
 
-#include <Windows.h>
-
 #include "../BaseClasses/BaseScreen.h"
+
+#include <Windows.h>
 
 namespace UI
 {

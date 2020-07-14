@@ -13,7 +13,8 @@ namespace web
 		Log::error(message);
 	}
 
-	DataBaseNetwork::DataBaseNetwork() : parent(dataBaseServerIp, dataBaseServerPort)
+	DataBaseNetwork::DataBaseNetwork() :
+		parent(dataBaseServerIp, dataBaseServerPort)
 	{
 
 	}

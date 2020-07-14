@@ -12,7 +12,8 @@ namespace web
 		Log::error(message);
 	}
 
-	DataBaseNetwork::DataBaseNetwork(SOCKET clientSocket) : parent(clientSocket)
+	DataBaseNetwork::DataBaseNetwork(SOCKET clientSocket) :
+		parent(clientSocket)
 	{
 
 	}

@@ -1,7 +1,6 @@
 #include "pch.h"
 
 #include "DataBaseOperations.h"
-
 #include "DataBaseException.h"
 
 #pragma comment (lib, "winsqlite3.lib")
@@ -23,7 +22,8 @@ namespace db
 		return errorMessage;
 	}
 
-	DataBaseOperations::DataBaseOperations(const string_view& dataBaseName) : lock(sqlite3_mutex_alloc(SQLITE_MUTEX_FAST))
+	DataBaseOperations::DataBaseOperations(const string_view& dataBaseName) :
+		lock(sqlite3_mutex_alloc(SQLITE_MUTEX_FAST))
 	{
 		sqlite3_open(dataBaseName.data(), &connection);
 	}
