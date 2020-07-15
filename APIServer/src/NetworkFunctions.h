@@ -10,11 +10,11 @@ bool checkHTTP(const std::string& request);
 
 void showAllFilesInDirectory(streams::IOSocketStream<char>& clientStream, streams::IOSocketStream<char>& dataBaseStream, const std::string& directory);
 
-void uploadFile(streams::IOSocketStream<char>& clientStream, streams::IOSocketStream<char>& filesStream, const std::string& data, const std::map<std::string, std::string>& headers);
+void uploadFile(streams::IOSocketStream<char>& clientStream, streams::IOSocketStream<char>& filesStream, streams::IOSocketStream<char>& dataBaseStream, const std::string& data, const std::map<std::string, std::string>& headers);
 
 void downloadFile(streams::IOSocketStream<char>& clientStream, streams::IOSocketStream<char>& filesStream, const std::map<std::string, std::string>& headers);
 
-void removeFile(streams::IOSocketStream<char>& clientStream, streams::IOSocketStream<char>& filesStream, const std::map<std::string, std::string>& headers);
+void removeFile(streams::IOSocketStream<char>& clientStream, streams::IOSocketStream<char>& filesStream, streams::IOSocketStream<char>& dataBaseStream, const std::map<std::string, std::string>& headers);
 
 void authorization(streams::IOSocketStream<char>& clientStream, streams::IOSocketStream<char>& dataBaseStream, const std::string& data);
 

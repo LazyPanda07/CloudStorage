@@ -49,10 +49,6 @@ namespace web
 						{
 							registration(clientStream, dataBaseStream, parser.getBody());
 						}
-						else
-						{
-							continue;
-						}
 					}
 					else
 					{
@@ -68,7 +64,7 @@ namespace web
 							}
 							else if (request == filesRequests::uploadFile)
 							{
-								uploadFile(clientStream, filesStream, parser.getBody(), headers);
+								uploadFile(clientStream, filesStream, dataBaseStream, parser.getBody(), headers);
 							}
 							if (request == filesRequests::downloadFile)
 							{
@@ -76,13 +72,13 @@ namespace web
 							}
 							else if (request == filesRequests::removeFile)
 							{
-								removeFile(clientStream, filesStream, headers);
+								removeFile(clientStream, filesStream, dataBaseStream, headers);
 							}
 						}
 					}
 				}
 			}
-			catch (const WebException& e)
+			catch (const WebException&)
 			{
 
 			}

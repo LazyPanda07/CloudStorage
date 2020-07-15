@@ -27,7 +27,7 @@ namespace db
 	public:
 		CloudDataBase();
 
-		bool uploadFile(const std::string& login, std::string&& fileName, std::string&& filePath, std::string&& fileExtension) const;
+		bool uploadFileData(const std::string& login, std::string&& fileName, std::string&& filePath, std::string&& fileExtension, unsigned int fileSize) const;
 
 		std::vector<fileData> getFiles(const std::string& login) const;
 

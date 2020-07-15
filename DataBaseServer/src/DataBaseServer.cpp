@@ -40,6 +40,10 @@ namespace web
 				{
 					showAllFilesInDirectory(clientStream, db, login);
 				}
+				else if (request == filesRequests::uploadFile)
+				{
+					uploadFileData(clientStream, db, login);
+				}
 			}
 			catch (const WebException&)
 			{

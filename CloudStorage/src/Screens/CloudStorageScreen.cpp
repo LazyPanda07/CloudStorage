@@ -152,6 +152,8 @@ LRESULT __stdcall DragAndDrop(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam,
 			data[i].resize(DragQueryFileW(drop, i, nullptr, data[i].size()) + 1);
 
 			DragQueryFileW(drop, i, data[i].data(), data[i].size());
+
+			data[i].pop_back();
 		}
 
 		SendMessageW(GetParent(hwnd), UI::events::uploadFileE, reinterpret_cast<WPARAM>(&data), NULL);

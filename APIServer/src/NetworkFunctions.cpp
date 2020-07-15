@@ -53,7 +53,7 @@ void showAllFilesInDirectory(streams::IOSocketStream<char>& clientStream, stream
 	}
 }
 
-void uploadFile(streams::IOSocketStream<char>& clientStream, streams::IOSocketStream<char>& filesStream, const string& data, const map<string, string>& headers)
+void uploadFile(streams::IOSocketStream<char>& clientStream, streams::IOSocketStream<char>& filesStream, streams::IOSocketStream<char>& dataBaseStream, const string& data, const map<string, string>& headers)
 {
 	const string& fileName = headers.at("File-Name");
 	const string& login = headers.at("Login");
@@ -81,6 +81,17 @@ void uploadFile(streams::IOSocketStream<char>& clientStream, streams::IOSocketSt
 
 		filesStream >> isSuccess;
 		filesStream >> responseMessage;
+
+		if (isSuccess == responses::okResponse)
+		{
+			dataBaseStream << filesRequests::uploadFile;
+
+			dataBaseStream << fileName;
+
+			dataBaseStream << directory;
+
+			dataBaseStream << uploadSize;
+		}
 
 		string response = web::HTTPBuilder().responseCode(web::ResponseCodes::ok).headers
 		(
@@ -130,7 +141,7 @@ void downloadFile(streams::IOSocketStream<char>& clientStream, streams::IOSocket
 	clientStream << response;
 }
 
-void removeFile(streams::IOSocketStream<char>& clientStream, streams::IOSocketStream<char>& filesStream, const map<string, string>& headers)
+void removeFile(streams::IOSocketStream<char>& clientStream, streams::IOSocketStream<char>& filesStream, streams::IOSocketStream<char>& dataBaseStream, const map<string, string>& headers)
 {
 	const string& login = headers.at("Login");
 	const string& directory = headers.at("Directory");

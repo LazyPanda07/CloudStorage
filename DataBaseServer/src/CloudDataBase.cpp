@@ -147,7 +147,7 @@ namespace db
 		);
 	}
 
-	bool CloudDataBase::uploadFile(const string& login, std::string&& fileName, std::string&& filePath, std::string&& fileExtension) const
+	bool CloudDataBase::uploadFileData(const string& login, string&& fileName, string&& filePath, string&& fileExtension, unsigned int fileSize) const
 	{
 		try
 		{
@@ -157,7 +157,8 @@ namespace db
 				"userId", this->getId(login),
 				"fileName", move(fileName),
 				"filePath", move(filePath),
-				"fileExtension", move(fileExtension)
+				"fileExtension", move(fileExtension),
+				"fileSize", fileSize
 			);
 
 			return true;

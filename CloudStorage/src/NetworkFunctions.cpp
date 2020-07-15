@@ -88,13 +88,13 @@ void uploadFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream
 {
 	for (const auto& i : files)
 	{
-		uploadFile(ref,clientStream, i, login);
+		uploadFile(ref, clientStream, i, login);
 	}
 }
 
 void uploadFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, const wstring& filePath, const wstring& login)
 {
-	const filesystem::path file(filePath);
+	const filesystem::path file(utility::to_string(filePath));
 	uintmax_t fileSize = filesystem::file_size(file);
 
 	string fileData;
@@ -175,7 +175,7 @@ void downloadFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStre
 
 	while (id != -1)
 	{
-		downloadFile(ref,clientStream, fileNames[id].fileName, login);
+		downloadFile(ref, clientStream, fileNames[id].fileName, login);
 
 		id = SendMessageW(ref.getList(), LVM_GETNEXTITEM, id, LVNI_SELECTED);
 	}
@@ -276,7 +276,7 @@ void removeFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream
 	web::HTTPParser parser(response);
 	const map<string, string>& headers = parser.getHeaders();
 
-	if(headers.at("Error") == "0")
+	if (headers.at("Error") == "0")
 	{
 		//TODO: message
 	}
