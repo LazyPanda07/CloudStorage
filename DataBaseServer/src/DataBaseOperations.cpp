@@ -38,6 +38,18 @@ namespace db
 		}
 	}
 
+	void DataBaseOperations::deleteFromTable(const string_view& tableName, const string& condition) const
+	{
+		string query(string("DELETE FROM ").append(tableName).append(" WHERE ").append(condition));
+
+		char* message = this->applyQuery(query);
+
+		if (message)
+		{
+			throw DataBaseException(message);
+		}
+	}
+
 	DataBaseOperations::~DataBaseOperations()
 	{
 		sqlite3_close(connection);

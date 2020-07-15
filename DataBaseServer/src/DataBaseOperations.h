@@ -39,6 +39,8 @@ namespace db
 
 		void rawQuery(const std::string& query, sqlite3_callback callback = nullptr, void* userData = nullptr) const;
 
+		void deleteFromTable(const std::string_view& tableName, const std::string& condition) const;
+
 		~DataBaseOperations();
 	};
 
