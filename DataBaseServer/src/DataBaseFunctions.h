@@ -14,3 +14,5 @@ void registration(streams::IOSocketStream<char>& clientStream, const db::CloudDa
 void showAllFilesInDirectory(streams::IOSocketStream<char>& clientStream, const db::CloudDataBase& db, const std::string& login);
 
 void uploadFileData(streams::IOSocketStream<char>& clientStream, const db::CloudDataBase& db, const std::string& login);
+
+void removeFileData(streams::IOSocketStream<char>& clientStream, const db::CloudDataBase& db, const std::string& login);

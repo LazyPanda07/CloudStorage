@@ -69,15 +69,24 @@ void showAllFilesInDirectory(streams::IOSocketStream<char>& clientStream, const 
 
 void uploadFileData(streams::IOSocketStream<char>& clientStream, const db::CloudDataBase& db, const string& login)
 {
-	string filePath;
 	string fileName;
+	string filePath;
 	uintmax_t fileSize;
 
 	clientStream >> fileName;
-
 	clientStream >> filePath;
-
 	clientStream >> fileSize;
 
 	db.uploadFileData(login, move(fileName), move(filePath), string(begin(fileName) + fileName.rfind('.'), end(fileName)), fileSize);
+}
+
+void removeFileData(streams::IOSocketStream<char>& clientStream, const db::CloudDataBase& db, const std::string& login)
+{
+	string fileName;
+	string filePath;
+
+	clientStream >> fileName;
+	clientStream >> filePath;
+
+	
 }

@@ -44,6 +44,10 @@ namespace web
 				{
 					uploadFileData(clientStream, db, login);
 				}
+				else if (request == filesRequests::removeFile)
+				{
+					removeFileData(clientStream, db, login);
+				}
 			}
 			catch (const WebException&)
 			{

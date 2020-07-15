@@ -94,7 +94,7 @@ void uploadFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream
 
 void uploadFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, const wstring& filePath, const wstring& login)
 {
-	const filesystem::path file(utility::to_string(filePath));
+	const filesystem::path file(filePath);
 	uintmax_t fileSize = filesystem::file_size(file);
 
 	string fileData;

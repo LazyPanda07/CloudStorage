@@ -159,6 +159,15 @@ void removeFile(streams::IOSocketStream<char>& clientStream, streams::IOSocketSt
 
 	error = responseMessage != responses::okResponse;
 
+	if (!error)
+	{
+		dataBaseStream << filesRequests::removeFile;
+
+		dataBaseStream << fileName;
+
+		dataBaseStream << directory;
+	}
+
 	string response = web::HTTPBuilder().responseCode(web::ResponseCodes::ok).headers
 	(
 		"Error", error
