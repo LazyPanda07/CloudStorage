@@ -29,6 +29,8 @@ namespace db
 
 		bool uploadFileData(const std::string& login, std::string&& fileName, std::string&& filePath, std::string&& fileExtension, unsigned int fileSize) const;
 
+		bool removeFileData(const std::string& login, std::string&& fileName, std::string&& filePath) const;
+
 		std::vector<fileData> getFiles(const std::string& login) const;
 
 		std::string registration(const std::string& login, const std::string& password) const;

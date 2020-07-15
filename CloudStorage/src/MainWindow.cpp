@@ -239,6 +239,8 @@ LRESULT __stdcall MainWindowProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM
 		case UI::buttons::remove:
 			removeFile(*ptr, clientStream, fileNames, login);
 
+			SendMessageW(ptr->getMainWindow(), UI::events::getFilesE, NULL, NULL);
+
 			break;
 
 		case UI::buttons::authorization:

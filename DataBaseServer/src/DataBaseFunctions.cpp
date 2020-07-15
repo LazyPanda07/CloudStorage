@@ -88,5 +88,5 @@ void removeFileData(streams::IOSocketStream<char>& clientStream, const db::Cloud
 	clientStream >> fileName;
 	clientStream >> filePath;
 
-	
+	db.removeFileData(login, move(fileName), move(filePath));
 }

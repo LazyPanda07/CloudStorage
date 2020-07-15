@@ -163,7 +163,24 @@ namespace db
 
 			return true;
 		}
-		catch (const db::DataBaseException& e)
+		catch (const DataBaseException& e)
+		{
+			Log::warning(e.what());
+			return false;
+		}
+	}
+
+	bool CloudDataBase::removeFileData(const std::string& login, std::string&& fileName, std::string&& filePath) const
+	{
+		try
+		{
+			string condition = "userId = " + to_string(this->getId(login)) + " AND fileName = '" + move(fileName) + "' AND filePath = '" + move(filePath) + '\'';
+
+			db.deleteFromTable(filesTable, condition);
+
+			return true;
+		}
+		catch (const DataBaseException& e)
 		{
 			Log::warning(e.what());
 			return false;
@@ -223,7 +240,7 @@ namespace db
 
 			return string();
 		}
-		catch (const db::DataBaseException& e)
+		catch (const DataBaseException& e)
 		{
 			Log::warning(e.what());
 			return e.what();
