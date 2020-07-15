@@ -82,31 +82,31 @@ namespace UI
 			return currentScreen->getWrapper();
 
 		case UI::MainWindow::elementsEnum::refreshButton:
-			return static_cast<CloudStorageScreen*>(currentScreen)->getRefreshButton();
+			return static_cast<CloudStorageScreen*>(currentScreen.get())->getRefreshButton();
 
 		case UI::MainWindow::elementsEnum::downloadButton:
-			return static_cast<CloudStorageScreen*>(currentScreen)->getDownloadButton();
+			return static_cast<CloudStorageScreen*>(currentScreen.get())->getDownloadButton();
 
 		case UI::MainWindow::elementsEnum::removeButton:
-			return static_cast<CloudStorageScreen*>(currentScreen)->getRemoveButton();
+			return static_cast<CloudStorageScreen*>(currentScreen.get())->getRemoveButton();
 
 		case UI::MainWindow::elementsEnum::list:
-			return static_cast<CloudStorageScreen*>(currentScreen)->getList();
+			return static_cast<CloudStorageScreen*>(currentScreen.get())->getList();
 
 		case UI::MainWindow::elementsEnum::authorizationLoginEdit:
-			return static_cast<AuthorizationScreen*>(currentScreen)->getAuthorizationLoginEdit();
+			return static_cast<AuthorizationScreen*>(currentScreen.get())->getAuthorizationLoginEdit();
 
 		case UI::MainWindow::elementsEnum::authorizationPasswordEdit:
-			return static_cast<AuthorizationScreen*>(currentScreen)->getAuthorizationPasswordEdit();
+			return static_cast<AuthorizationScreen*>(currentScreen.get())->getAuthorizationPasswordEdit();
 
 		case UI::MainWindow::elementsEnum::registrationLoginEdit:
-			return static_cast<RegistrationScreen*>(currentScreen)->getRegistrationLoginEdit();
+			return static_cast<RegistrationScreen*>(currentScreen.get())->getRegistrationLoginEdit();
 
 		case UI::MainWindow::elementsEnum::registrationPasswordEdit:
-			return static_cast<RegistrationScreen*>(currentScreen)->getRegistrationPasswordEdit();
+			return static_cast<RegistrationScreen*>(currentScreen.get())->getRegistrationPasswordEdit();
 
 		case UI::MainWindow::elementsEnum::registrationRepeatPasswordEdit:
-			return static_cast<RegistrationScreen*>(currentScreen)->getRegistrationRepeatPasswordEdit();
+			return static_cast<RegistrationScreen*>(currentScreen.get())->getRegistrationRepeatPasswordEdit();
 
 		default:
 			return nullptr;
@@ -127,17 +127,17 @@ namespace UI
 
 	BaseScreen* MainWindow::getCurrentScreen()
 	{
-		return currentScreen;
+		return currentScreen.get();
 	}
 
 	void MainWindow::setCurrentScreen(BaseScreen* screen)
 	{
-		currentScreen = screen;
+		currentScreen.reset(screen);
 	}
 
 	void MainWindow::resize()
 	{
-		if (currentScreen)
+		if (currentScreen.get())
 		{
 			currentScreen->pubResize();
 		}

@@ -1,5 +1,7 @@
 #pragma once
 
+#include <memory>
+
 #include "UIInterfaces/IResizable.h"
 #include "BaseClasses/BaseScreen.h"
 
@@ -34,7 +36,7 @@ namespace UI
 	private:
 		HWND mainWindow;
 
-		BaseScreen* currentScreen;
+		std::unique_ptr<BaseScreen> currentScreen;
 
 	private:
 		MainWindow();

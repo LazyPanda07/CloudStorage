@@ -20,37 +20,16 @@ void updateNameColumn(UI::MainWindow& ref, const vector<db::wFileData>& data);
 
 void initCloudStorageScreen(UI::MainWindow& ref)
 {
-	UI::BaseScreen* ptr = ref.getCurrentScreen();
-
-	if (ptr)
-	{
-		ptr->pubDestroy();
-	}
-
 	ref.setCurrentScreen(new UI::CloudStorageScreen(ref.getMainWindow(), UI::screens::cloudStorageScreen, CloudStorageScreenProcedure));
 }
 
 void initRegistrationScreen(UI::MainWindow& ref)
 {
-	UI::BaseScreen* ptr = ref.getCurrentScreen();
-
-	if (ptr)
-	{
-		ptr->pubDestroy();
-	}
-
 	ref.setCurrentScreen(new UI::RegistrationScreen(ref.getMainWindow(), UI::screens::registrationScreen, RegistrationScreenProcedure));
 }
 
 void initAuthorizationScreen(UI::MainWindow& ref)
 {
-	UI::BaseScreen* ptr = ref.getCurrentScreen();
-
-	if (ptr)
-	{
-		ptr->pubDestroy();
-	}
-
 	ref.setCurrentScreen(new UI::AuthorizationScreen(ref.getMainWindow(), UI::screens::authorizationScreen, AuthorizationScreenProcedure));
 }
 

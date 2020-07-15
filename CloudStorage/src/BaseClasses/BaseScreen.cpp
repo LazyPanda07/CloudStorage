@@ -80,6 +80,6 @@ namespace UI
 
 	BaseScreen::~BaseScreen()
 	{
-		this->pubDestroy();
+		DestroyWindow(wrapper);
 	}
 }
