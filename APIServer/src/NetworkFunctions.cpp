@@ -84,13 +84,16 @@ void uploadFile(streams::IOSocketStream<char>& clientStream, streams::IOSocketSt
 
 		if (isSuccess == responses::okResponse)
 		{
+			string extension;
+
+			filesStream >> extension;
+
 			dataBaseStream << filesRequests::uploadFile;
-
 			dataBaseStream << fileName;
-
 			dataBaseStream << directory;
-
+			dataBaseStream << extension;
 			dataBaseStream << uploadSize;
+			
 		}
 
 		string response = web::HTTPBuilder().responseCode(web::ResponseCodes::ok).headers

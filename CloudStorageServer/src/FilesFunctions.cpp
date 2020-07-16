@@ -2,6 +2,7 @@
 
 #include "FilesFunctions.h"
 #include "Constants.h"
+#include "UtilityFunctions.h"
 
 using namespace std;
 
@@ -36,6 +37,20 @@ void uploadFile(streams::IOSocketStream<char>& clientStream, const filesystem::p
 		{
 			clientStream << responses::okResponse;
 			clientStream << filesResponses::successUploadFile;
+
+			SHFILEINFOW extensionInfo = {};
+			
+			SHGetFileInfoW(filesystem::path(currentPath).append(fileName).wstring().data(), NULL, &extensionInfo, sizeof(extensionInfo), SHGFI_TYPENAME);
+			
+			string extension
+			(
+				utility::to_string
+				(
+					wstring(extensionInfo.szTypeName, extensionInfo.szTypeName + wcslen(extensionInfo.szTypeName))
+				)
+			);
+
+			clientStream << extension;
 		}
 		else
 		{

@@ -20,6 +20,8 @@ void updateNameColumn(UI::MainWindow& ref, const vector<db::fileDataRepresentati
 
 void updateDateColumn(UI::MainWindow& ref, const vector<db::fileDataRepresentation>& data);
 
+void updateTypeColumn(UI::MainWindow& ref, const vector<db::fileDataRepresentation>& data);
+
 void updateSizeColumn(UI::MainWindow& ref, const vector<db::fileDataRepresentation>& data);
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -60,9 +62,9 @@ void updateColumns(UI::MainWindow& ref, const vector<db::fileDataRepresentation>
 
 	updateDateColumn(ref, data);
 
-	updateSizeColumn(ref, data);
+	updateTypeColumn(ref, data);
 
-	//TODO: update other columns
+	updateSizeColumn(ref, data);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -119,7 +121,29 @@ void updateDateColumn(UI::MainWindow& ref, const vector<db::fileDataRepresentati
 		item.pszText = const_cast<wchar_t*>(data[i].dateOfChange.data());
 		item.iItem = i;
 		item.iSubItem = UI::mainWindowUI::dateColumnIndex;
-		
+
+		SendMessageW(ref.getList(), LVM_SETITEMW, NULL, reinterpret_cast<LPARAM>(&item));
+	}
+
+	InvalidateRect(ref.getList(), &rect, TRUE);
+}
+
+void updateTypeColumn(UI::MainWindow& ref, const vector<db::fileDataRepresentation>& data)
+{
+	LVITEMW item = {};
+
+	RECT rect;
+
+	GetClientRect(ref.getList(), &rect);
+
+	item.mask = LVIF_TEXT;
+
+	for (size_t i = 0; i < data.size(); i++)
+	{
+		item.pszText = const_cast<wchar_t*>(data[i].fileExtension.data());
+		item.iItem = i;
+		item.iSubItem = UI::mainWindowUI::typeColumnIndex;
+
 		SendMessageW(ref.getList(), LVM_SETITEMW, NULL, reinterpret_cast<LPARAM>(&item));
 	}
 

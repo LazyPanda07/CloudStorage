@@ -71,13 +71,15 @@ void uploadFileData(streams::IOSocketStream<char>& clientStream, const db::Cloud
 {
 	string fileName;
 	string filePath;
+	string fileExtension;
 	uintmax_t fileSize;
 
 	clientStream >> fileName;
 	clientStream >> filePath;
+	clientStream >> fileExtension;
 	clientStream >> fileSize;
 
-	db.uploadFileData(login, move(fileName), move(filePath), string(begin(fileName) + fileName.rfind('.'), end(fileName)), fileSize);
+	db.uploadFileData(login, move(fileName), move(filePath), move(fileExtension), fileSize);
 }
 
 void removeFileData(streams::IOSocketStream<char>& clientStream, const db::CloudDataBase& db, const std::string& login)
