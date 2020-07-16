@@ -40,7 +40,7 @@ void uploadFile(streams::IOSocketStream<char>& clientStream, const filesystem::p
 
 			SHFILEINFOW extensionInfo = {};
 			
-			SHGetFileInfoW(filesystem::path(currentPath).append(fileName).wstring().data(), NULL, &extensionInfo, sizeof(extensionInfo), SHGFI_TYPENAME);
+			SHGetFileInfoW(filesystem::path(currentPath).append(fileName).wstring().data(), NULL, &extensionInfo, sizeof(extensionInfo), SHGFI_TYPENAME | SHGFI_USEFILEATTRIBUTES);
 			
 			string extension
 			(
