@@ -57,7 +57,7 @@ namespace web
 	}
 
 	DataBaseServer::DataBaseServer() : 
-		BaseTCPServer(dataBaseServerPort, false)
+		BaseTCPServer(dataBaseServerPort, serverTimeoutRecv, false)
 	{
 
 	}

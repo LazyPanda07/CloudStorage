@@ -62,49 +62,56 @@ void uploadFile(streams::IOSocketStream<char>& clientStream, streams::IOSocketSt
 	auto it = headers.find("Total-File-Size");
 	bool needResponse = it != end(headers);
 
-	filesStream << filesRequests::uploadFile;
-	filesStream << login;
-	filesStream << directory;
-
-	filesStream << fileName;
-	filesStream << offset;
-	filesStream << data;
-	filesStream << needResponse;
-
-	if (needResponse)
+	try
 	{
-		uintmax_t uploadSize = stoull(it->second);
-		string responseMessage;
-		string isSuccess;
+		filesStream << filesRequests::uploadFile;
+		filesStream << login;
+		filesStream << directory;
 
-		filesStream << uploadSize;
+		filesStream << fileName;
+		filesStream << offset;
+		filesStream << data;
+		filesStream << needResponse;
 
-		filesStream >> isSuccess;
-		filesStream >> responseMessage;
-
-		if (isSuccess == responses::okResponse)
+		if (needResponse)
 		{
-			string extension;
+			uintmax_t uploadSize = stoull(it->second);
+			string responseMessage;
+			string isSuccess;
 
-			filesStream >> extension;
+			filesStream << uploadSize;
 
-			dataBaseStream << filesRequests::uploadFile;
-			dataBaseStream << fileName;
-			dataBaseStream << directory;
-			dataBaseStream << extension;
-			dataBaseStream << uploadSize;
-			
+			filesStream >> isSuccess;
+			filesStream >> responseMessage;
+
+			if (isSuccess == responses::okResponse)
+			{
+				string extension;
+
+				filesStream >> extension;
+
+				dataBaseStream << filesRequests::uploadFile;
+				dataBaseStream << fileName;
+				dataBaseStream << directory;
+				dataBaseStream << extension;
+				dataBaseStream << uploadSize;
+
+			}
+
+			string response = web::HTTPBuilder().responseCode(web::ResponseCodes::ok).headers
+			(
+				"Error", isSuccess == responses::okResponse ? false : true,
+				"Content-Length", responseMessage.size()
+			).build(&responseMessage);
+
+			utility::insertSizeHeaderToHTTPMessage(response);
+
+			clientStream << response;
 		}
-
-		string response = web::HTTPBuilder().responseCode(web::ResponseCodes::ok).headers
-		(
-			"Error", isSuccess == responses::okResponse ? false : true,
-			"Content-Length", responseMessage.size()
-		).build(&responseMessage);
-
-		utility::insertSizeHeaderToHTTPMessage(response);
-
-		clientStream << response;
+	}
+	catch (const web::WebException& e)
+	{
+		cout << e.what() << endl;
 	}
 }
 
@@ -118,30 +125,37 @@ void downloadFile(streams::IOSocketStream<char>& clientStream, streams::IOSocket
 	uintmax_t offset = stoull(headers.at("Range"));
 	uintmax_t totalFileSize;
 
-	filesStream << filesRequests::downloadFile;
-	filesStream << login;
-	filesStream << directory;
-
-	filesStream << fileName;
-	filesStream << offset;
-
-	filesStream >> data;
-	filesStream >> isLast;
-
-	if (isLast)
+	try
 	{
-		filesStream >> totalFileSize;
+		filesStream << filesRequests::downloadFile;
+		filesStream << login;
+		filesStream << directory;
+
+		filesStream << fileName;
+		filesStream << offset;
+
+		filesStream >> data;
+		filesStream >> isLast;
+
+		if (isLast)
+		{
+			filesStream >> totalFileSize;
+		}
+
+		string response = web::HTTPBuilder().responseCode(web::ResponseCodes::ok).headers
+		(
+			isLast ? "Total-File-Size" : "Reserved", isLast ? totalFileSize : 0,
+			"Content-Length", data.size()
+		).build(&data);
+
+		utility::insertSizeHeaderToHTTPMessage(response);
+
+		clientStream << response;
 	}
-
-	string response = web::HTTPBuilder().responseCode(web::ResponseCodes::ok).headers
-	(
-		isLast ? "Total-File-Size" : "Reserved", isLast ? totalFileSize : 0,
-		"Content-Length", data.size()
-	).build(&data);
-
-	utility::insertSizeHeaderToHTTPMessage(response);
-
-	clientStream << response;
+	catch (const web::WebException& e)
+	{
+		cout << e.what() << endl;
+	}
 }
 
 void removeFile(streams::IOSocketStream<char>& clientStream, streams::IOSocketStream<char>& filesStream, streams::IOSocketStream<char>& dataBaseStream, const map<string, string>& headers)
@@ -152,33 +166,40 @@ void removeFile(streams::IOSocketStream<char>& clientStream, streams::IOSocketSt
 	bool error;
 	string responseMessage;
 
-	filesStream << filesRequests::removeFile;
-	filesStream << login;
-	filesStream << directory;
-
-	filesStream << fileName;
-
-	filesStream >> responseMessage;
-
-	error = responseMessage != responses::okResponse;
-
-	if (!error)
+	try
 	{
-		dataBaseStream << filesRequests::removeFile;
+		filesStream << filesRequests::removeFile;
+		filesStream << login;
+		filesStream << directory;
 
-		dataBaseStream << fileName;
+		filesStream << fileName;
 
-		dataBaseStream << directory;
+		filesStream >> responseMessage;
+
+		error = responseMessage != responses::okResponse;
+
+		if (!error)
+		{
+			dataBaseStream << filesRequests::removeFile;
+
+			dataBaseStream << fileName;
+
+			dataBaseStream << directory;
+		}
+
+		string response = web::HTTPBuilder().responseCode(web::ResponseCodes::ok).headers
+		(
+			"Error", error
+		).build();
+
+		utility::insertSizeHeaderToHTTPMessage(response);
+
+		clientStream << response;
 	}
-
-	string response = web::HTTPBuilder().responseCode(web::ResponseCodes::ok).headers
-	(
-		"Error", error
-	).build();
-
-	utility::insertSizeHeaderToHTTPMessage(response);
-
-	clientStream << response;
+	catch (const web::WebException& e)
+	{
+		cout << e.what() << endl;
+	}
 }
 
 void authorization(streams::IOSocketStream<char>& clientStream, streams::IOSocketStream<char>& dataBaseStream, const string& data)
@@ -188,36 +209,43 @@ void authorization(streams::IOSocketStream<char>& clientStream, streams::IOSocke
 	string responseMessage;
 	bool error;
 
-	dataBaseStream << accountRequest::authorization;
-	dataBaseStream << login;
-	dataBaseStream << password;
-
-	dataBaseStream >> response;
-
-	error = response != responses::okResponse;
-
-	if (error)
+	try
 	{
-		responseMessage = move(response);
+		dataBaseStream << accountRequest::authorization;
+		dataBaseStream << login;
+		dataBaseStream << password;
 
-		response = web::HTTPBuilder().responseCode(web::ResponseCodes::ok).headers
-		(
-			"Error", error,
-			"Content-Length", responseMessage.size()
-		).build(&responseMessage);
+		dataBaseStream >> response;
 
+		error = response != responses::okResponse;
+
+		if (error)
+		{
+			responseMessage = move(response);
+
+			response = web::HTTPBuilder().responseCode(web::ResponseCodes::ok).headers
+			(
+				"Error", error,
+				"Content-Length", responseMessage.size()
+			).build(&responseMessage);
+
+		}
+		else
+		{
+			response = web::HTTPBuilder().responseCode(web::ResponseCodes::ok).headers
+			(
+				"Error", error
+			).build();
+		}
+
+		utility::insertSizeHeaderToHTTPMessage(response);
+
+		clientStream << response;
 	}
-	else
+	catch (const web::WebException& e)
 	{
-		response = web::HTTPBuilder().responseCode(web::ResponseCodes::ok).headers
-		(
-			"Error", error
-		).build();
+		cout << e.what() << endl;
 	}
-
-	utility::insertSizeHeaderToHTTPMessage(response);
-
-	clientStream << response;
 }
 
 void registration(streams::IOSocketStream<char>& clientStream, streams::IOSocketStream<char>& dataBaseStream, const string& data)
@@ -227,36 +255,43 @@ void registration(streams::IOSocketStream<char>& clientStream, streams::IOSocket
 	string responseMessage;
 	bool error;
 
-	dataBaseStream << accountRequest::registration;
-	dataBaseStream << login;
-	dataBaseStream << password;
-
-	dataBaseStream >> response;
-
-	error = response == accountResponses::failRegistration;
-
-	if (error)
+	try
 	{
-		responseMessage = move(response);
+		dataBaseStream << accountRequest::registration;
+		dataBaseStream << login;
+		dataBaseStream << password;
 
-		response = web::HTTPBuilder().responseCode(web::ResponseCodes::ok).headers
-		(
-			"Error", error,
-			"Content-Length", responseMessage.size()
-		).build(&responseMessage);
+		dataBaseStream >> response;
 
+		error = response == accountResponses::failRegistration;
+
+		if (error)
+		{
+			responseMessage = move(response);
+
+			response = web::HTTPBuilder().responseCode(web::ResponseCodes::ok).headers
+			(
+				"Error", error,
+				"Content-Length", responseMessage.size()
+			).build(&responseMessage);
+
+		}
+		else
+		{
+			response = web::HTTPBuilder().responseCode(web::ResponseCodes::ok).headers
+			(
+				"Error", error
+			).build();
+		}
+
+		utility::insertSizeHeaderToHTTPMessage(response);
+
+		clientStream << response;
 	}
-	else
+	catch (const web::WebException& e)
 	{
-		response = web::HTTPBuilder().responseCode(web::ResponseCodes::ok).headers
-		(
-			"Error", error
-		).build();
+		cout << e.what() << endl;
 	}
-
-	utility::insertSizeHeaderToHTTPMessage(response);
-
-	clientStream << response;
 }
 
 tuple<string, string> userDataParse(const string& data)

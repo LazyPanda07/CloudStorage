@@ -80,13 +80,13 @@ namespace web
 			}
 			catch (const WebException&)
 			{
-
+				return;
 			}
 		}
 	}
 
 	APIServer::APIServer() :
-		BaseTCPServer(APIServerPort, false)
+		BaseTCPServer(APIServerPort, serverTimeoutRecv, false)
 	{
 
 	}

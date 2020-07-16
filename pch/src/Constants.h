@@ -1,5 +1,9 @@
 #pragma once
 
+#ifndef _WINDEF_
+typedef unsigned long DWORD;
+#endif
+
 #include <string>
 
 inline constexpr std::string_view settingsFile = "settings.ini";
@@ -8,6 +12,8 @@ inline constexpr std::string_view usersDirectory = "Data";
 
 inline constexpr short HTTPPacketSize = 4096;
 inline constexpr int filePacketSize = 1 * 1024 * 1024;	//1 MB
+
+inline constexpr DWORD serverTimeoutRecv = 600000;	//10 minutes
 
 inline constexpr std::string_view customHTTPHeaderSize = "Total-HTTP-Message-Size: ";
 

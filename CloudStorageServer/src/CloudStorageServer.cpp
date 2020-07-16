@@ -62,7 +62,7 @@ namespace web
 	}
 
 	CloudStorageServer::CloudStorageServer() :
-		BaseTCPServer(cloudStorageServerPort, false)
+		BaseTCPServer(cloudStorageServerPort, serverTimeoutRecv, false)
 	{
 
 	}
