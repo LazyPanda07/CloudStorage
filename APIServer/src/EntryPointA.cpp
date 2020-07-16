@@ -37,7 +37,19 @@ int main(int argc, char** argv)
 		{
 			cin >> command;
 
+			if (command == "clients")
+			{
+				auto clients = server.getClients();
 
+				for (const auto& i : clients)
+				{
+					cout << i.first << "	" << i.second << endl;
+				}
+			}
+			else if (command == "cls")
+			{
+				system("cls");
+			}
 		}
 	}
 	catch (const web::WebException& e)

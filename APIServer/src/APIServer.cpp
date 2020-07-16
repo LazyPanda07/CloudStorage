@@ -16,6 +16,8 @@
 
 using namespace std;
 
+string getIp(sockaddr& addr);
+
 namespace web
 {
 	void APIServer::clientConnection(SOCKET clientSocket, sockaddr addr)
@@ -24,6 +26,8 @@ namespace web
 		streams::IOSocketStream<char> filesStream(new buffers::IOSocketBuffer<char>(new FilesNetwork()));
 		streams::IOSocketStream<char> dataBaseStream(new buffers::IOSocketBuffer<char>(new DataBaseNetwork()));
 		string HTTPRequest;
+
+		clients.insert(this_thread::get_id(), getIp(addr));
 
 		while (true)
 		{
@@ -80,6 +84,7 @@ namespace web
 			}
 			catch (const WebException&)
 			{
+				clients.erase(this_thread::get_id());
 				return;
 			}
 		}
@@ -95,4 +100,25 @@ namespace web
 	{
 		APIServerPort = move(port);
 	}
+
+	vector<pair<thread::id, string>> APIServer::getClients() noexcept
+	{
+		return clients.getClients();
+	}
+}
+
+string getIp(sockaddr& addr)
+{
+	string ip;
+
+	ip.resize(16);
+
+	inet_ntop(AF_INET, reinterpret_cast<const char*>(&reinterpret_cast<sockaddr_in*>(&addr)->sin_addr), ip.data(), ip.size());
+
+	while (ip.back() == '\0')
+	{
+		ip.pop_back();
+	}
+
+	return ip;
 }
