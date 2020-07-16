@@ -8,6 +8,7 @@
 #include "UtilityFunctions.h"
 #include "Screens/ScreenFunctions.h"
 #include "fileData.h"
+#include "ClientTime.h"
 
 #include <commctrl.h>
 
@@ -15,6 +16,7 @@ using namespace std;
 
 void getFiles(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, vector<db::wFileData>& fileNames, bool showError)
 {
+	utility::ClientTime& instance = utility::ClientTime::get();
 	string request = web::HTTPBuilder().postRequest().headers
 	(
 		requestType::filesType, filesRequests::showAllFilesInDirectory,
@@ -47,8 +49,8 @@ void getFiles(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, 
 					utility::to_wstring(tem[0]),
 					utility::to_wstring(tem[1]),
 					utility::to_wstring(tem[2]),
-					utility::to_wstring(tem[3]),
-					utility::to_wstring(tem[4]),
+					instance.convertToLocal(tem[3]),
+					instance.convertToLocal(tem[4]),
 					stoul(tem[5])
 				);
 

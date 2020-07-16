@@ -31,31 +31,28 @@ namespace utility
 	{
 		array<int, 3> date;
 		array<int, 3> time;
-		tm calendar;
+		tm calendar = {};
 		time_t timeWithOffset;
 		string result;
 		string tem;
 
 		result.resize(20);
 
-		for (size_t i = 0; i < dateTime.size(); i++)
+		for (size_t i = 0, dateIndex = 0, timeIndex = 0; i < dateTime.size(); i++)
 		{
-			for (size_t i = 0, dateIndex = 0, timeIndex = 0; i < dateTime.size(); i++)
+			if (dateTime[i] == '-' || dateTime[i] == ' ')
 			{
-				if (dateTime[i] == '-' || dateTime[i] == ' ')
-				{
-					date[dateIndex++] = stoul(tem);
-					tem.clear();
-				}
-				else if (dateTime[i] == ':')
-				{
-					time[timeIndex++] = stoul(tem);
-					tem.clear();
-				}
-				else
-				{
-					tem += dateTime[i];
-				}
+				date[dateIndex++] = stoul(tem);
+				tem.clear();
+			}
+			else if (dateTime[i] == ':')
+			{
+				time[timeIndex++] = stoul(tem);
+				tem.clear();
+			}
+			else
+			{
+				tem += dateTime[i];
 			}
 		}
 
