@@ -203,7 +203,7 @@ LRESULT __stdcall MainWindowProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM
 {
 	static streams::IOSocketStream<char> clientStream(new buffers::IOSocketBuffer<char>(new web::HTTPNetwork()));
 	static UI::MainWindow* ptr = nullptr;
-	static vector<db::wFileData> fileNames;
+	static vector<db::fileDataRepresentation> fileNames;
 	static wstring login;
 
 	switch (msg)

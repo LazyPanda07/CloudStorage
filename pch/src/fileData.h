@@ -18,15 +18,15 @@ namespace db
 		operator std::string () const;
 	};
 
-	struct wFileData
+	struct fileDataRepresentation
 	{
 		std::wstring fileName;
 		std::wstring filePath;
 		std::wstring fileExtension;
 		std::wstring uploadDate;
 		std::wstring dateOfChange;
-		unsigned int fileSize;
+		std::wstring fileSize;
 
-		wFileData(std::wstring&& fileName, std::wstring&& filePath, std::wstring&& fileExtension, std::wstring&& uploadDate, std::wstring&& dateOfChange, unsigned int fileSize) noexcept;
+		fileDataRepresentation(std::wstring&& fileName, std::wstring&& filePath, std::wstring&& fileExtension, std::wstring&& uploadDate, std::wstring&& dateOfChange, unsigned int fileSize) noexcept;
 	};
 }

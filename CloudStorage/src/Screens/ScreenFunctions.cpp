@@ -16,9 +16,11 @@ using namespace std;
 
 void clearColumns(UI::MainWindow& ref);
 
-void updateNameColumn(UI::MainWindow& ref, const vector<db::wFileData>& data);
+void updateNameColumn(UI::MainWindow& ref, const vector<db::fileDataRepresentation>& data);
 
-void updateDateColumn(UI::MainWindow& ref, const vector<db::wFileData>& data);
+void updateDateColumn(UI::MainWindow& ref, const vector<db::fileDataRepresentation>& data);
+
+void updateSizeColumn(UI::MainWindow& ref, const vector<db::fileDataRepresentation>& data);
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -50,13 +52,15 @@ bool removeFileDialog(UI::MainWindow& ref, const std::wstring& fileName)
 	return dialog == IDYES;
 }
 
-void updateColumns(UI::MainWindow& ref, const vector<db::wFileData>& data)
+void updateColumns(UI::MainWindow& ref, const vector<db::fileDataRepresentation>& data)
 {
 	clearColumns(ref);
 
 	updateNameColumn(ref, data);
 
 	updateDateColumn(ref, data);
+
+	updateSizeColumn(ref, data);
 
 	//TODO: update other columns
 }
@@ -78,7 +82,7 @@ void clearColumns(UI::MainWindow& ref)
 	} while (success);
 }
 
-void updateNameColumn(UI::MainWindow& ref, const vector<db::wFileData>& data)
+void updateNameColumn(UI::MainWindow& ref, const vector<db::fileDataRepresentation>& data)
 {
 	LVITEMW item = {};
 
@@ -100,7 +104,7 @@ void updateNameColumn(UI::MainWindow& ref, const vector<db::wFileData>& data)
 	InvalidateRect(ref.getList(), &rect, TRUE);
 }
 
-void updateDateColumn(UI::MainWindow& ref, const vector<db::wFileData>& data)
+void updateDateColumn(UI::MainWindow& ref, const vector<db::fileDataRepresentation>& data)
 {
 	LVITEMW item = {};
 
@@ -115,10 +119,30 @@ void updateDateColumn(UI::MainWindow& ref, const vector<db::wFileData>& data)
 		item.pszText = const_cast<wchar_t*>(data[i].dateOfChange.data());
 		item.iItem = i;
 		item.iSubItem = UI::mainWindowUI::dateColumnIndex;
+		
+		SendMessageW(ref.getList(), LVM_SETITEMW, NULL, reinterpret_cast<LPARAM>(&item));
+	}
 
-		auto error = SendMessageW(ref.getList(), LVM_SETITEMW, NULL, reinterpret_cast<LPARAM>(&item));
+	InvalidateRect(ref.getList(), &rect, TRUE);
+}
 
-		int a = 5;
+void updateSizeColumn(UI::MainWindow& ref, const vector<db::fileDataRepresentation>& data)
+{
+	LVITEMW item = {};
+
+	RECT rect;
+
+	GetClientRect(ref.getList(), &rect);
+
+	item.mask = LVIF_TEXT;
+
+	for (size_t i = 0; i < data.size(); i++)
+	{
+		item.pszText = const_cast<wchar_t*>(data[i].fileSize.data());
+		item.iItem = i;
+		item.iSubItem = UI::mainWindowUI::sizeColumnIndex;
+
+		SendMessageW(ref.getList(), LVM_SETITEMW, NULL, reinterpret_cast<LPARAM>(&item));
 	}
 
 	InvalidateRect(ref.getList(), &rect, TRUE);

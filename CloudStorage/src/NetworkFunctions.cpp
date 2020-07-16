@@ -14,7 +14,7 @@
 
 using namespace std;
 
-void getFiles(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, vector<db::wFileData>& fileNames, bool showError)
+void getFiles(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, vector<db::fileDataRepresentation>& fileNames, bool showError)
 {
 	utility::ClientTime& instance = utility::ClientTime::get();
 	string request = web::HTTPBuilder().postRequest().headers
@@ -171,7 +171,7 @@ void uploadFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream
 	}
 }
 
-void downloadFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, const vector<db::wFileData>& fileNames, const wstring& login)
+void downloadFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, const vector<db::fileDataRepresentation>& fileNames, const wstring& login)
 {
 	int id = SendMessageW(ref.getList(), LVM_GETNEXTITEM, -1, LVNI_SELECTED);
 
@@ -243,7 +243,7 @@ void downloadFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStre
 	}
 }
 
-void removeFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, const vector<db::wFileData>& fileNames, const wstring& login)
+void removeFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, const vector<db::fileDataRepresentation>& fileNames, const wstring& login)
 {
 	int id = SendMessageW(ref.getList(), LVM_GETNEXTITEM, -1, LVNI_SELECTED);
 

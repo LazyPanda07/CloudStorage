@@ -39,13 +39,13 @@ namespace db
 		return result;
 	}
 
-	wFileData::wFileData(wstring&& fileName, wstring&& filePath, wstring&& fileExtension, wstring&& uploadDate, wstring&& dateOfChange, unsigned int fileSize) noexcept :
+	fileDataRepresentation::fileDataRepresentation(wstring&& fileName, wstring&& filePath, wstring&& fileExtension, wstring&& uploadDate, wstring&& dateOfChange, unsigned int fileSize) noexcept :
 		fileName(move(fileName)),
 		filePath(move(filePath)),
 		fileExtension(move(fileExtension)),
 		uploadDate(move(uploadDate)),
 		dateOfChange(move(dateOfChange)),
-		fileSize(fileSize)
+		fileSize(to_wstring(fileSize))
 	{
 
 	}
