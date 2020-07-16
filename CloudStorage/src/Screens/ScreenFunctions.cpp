@@ -14,7 +14,11 @@
 
 using namespace std;
 
+void clearColumns(UI::MainWindow& ref);
+
 void updateNameColumn(UI::MainWindow& ref, const vector<db::wFileData>& data);
+
+void updateDateColumn(UI::MainWindow& ref, const vector<db::wFileData>& data);
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -48,14 +52,18 @@ bool removeFileDialog(UI::MainWindow& ref, const std::wstring& fileName)
 
 void updateColumns(UI::MainWindow& ref, const vector<db::wFileData>& data)
 {
+	clearColumns(ref);
+
 	updateNameColumn(ref, data);
+
+	updateDateColumn(ref, data);
 
 	//TODO: update other columns
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void updateNameColumn(UI::MainWindow& ref, const vector<db::wFileData>& data)
+void clearColumns(UI::MainWindow& ref)
 {
 	bool success = false;
 
@@ -68,22 +76,49 @@ void updateNameColumn(UI::MainWindow& ref, const vector<db::wFileData>& data)
 
 		SendMessageW(ref.getList(), LVM_DELETEITEM, item.iItem, NULL);
 	} while (success);
+}
 
-	LVITEMW lvi = {};
+void updateNameColumn(UI::MainWindow& ref, const vector<db::wFileData>& data)
+{
+	LVITEMW item = {};
 
 	RECT rect;
 
 	GetClientRect(ref.getList(), &rect);
 
-	lvi.mask = LVIF_TEXT;
+	item.mask = LVIF_TEXT;
 
 	for (size_t i = 0; i < data.size(); i++)
 	{
-		lvi.pszText = const_cast<wchar_t*>(data[i].fileName.data());
-		lvi.iItem = i;
-		lvi.iSubItem = UI::mainWindowUI::nameColumnIndex;
+		item.pszText = const_cast<wchar_t*>(data[i].fileName.data());
+		item.iItem = i;
+		item.iSubItem = UI::mainWindowUI::nameColumnIndex;
 
-		SendMessageW(ref.getList(), LVM_INSERTITEM, NULL, reinterpret_cast<LPARAM>(&lvi));
+		SendMessageW(ref.getList(), LVM_INSERTITEM, NULL, reinterpret_cast<LPARAM>(&item));
+	}
+
+	InvalidateRect(ref.getList(), &rect, TRUE);
+}
+
+void updateDateColumn(UI::MainWindow& ref, const vector<db::wFileData>& data)
+{
+	LVITEMW item = {};
+
+	RECT rect;
+
+	GetClientRect(ref.getList(), &rect);
+
+	item.mask = LVIF_TEXT;
+
+	for (size_t i = 0; i < data.size(); i++)
+	{
+		item.pszText = const_cast<wchar_t*>(data[i].dateOfChange.data());
+		item.iItem = i;
+		item.iSubItem = UI::mainWindowUI::dateColumnIndex;
+
+		auto error = SendMessageW(ref.getList(), LVM_SETITEMW, NULL, reinterpret_cast<LPARAM>(&item));
+
+		int a = 5;
 	}
 
 	InvalidateRect(ref.getList(), &rect, TRUE);
