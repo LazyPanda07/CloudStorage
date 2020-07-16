@@ -211,7 +211,7 @@ void authorization(streams::IOSocketStream<char>& clientStream, streams::IOSocke
 
 	try
 	{
-		dataBaseStream << accountRequest::authorization;
+		dataBaseStream << accountRequests::authorization;
 		dataBaseStream << login;
 		dataBaseStream << password;
 
@@ -257,7 +257,7 @@ void registration(streams::IOSocketStream<char>& clientStream, streams::IOSocket
 
 	try
 	{
-		dataBaseStream << accountRequest::registration;
+		dataBaseStream << accountRequests::registration;
 		dataBaseStream << login;
 		dataBaseStream << password;
 

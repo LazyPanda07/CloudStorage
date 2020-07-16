@@ -319,6 +319,9 @@ LRESULT __stdcall MainWindowProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM
 		return 0;
 
 	case WM_DESTROY:
+
+		exitFromApplication(*ptr, clientStream);
+		this_thread::sleep_for(0.6s);
 		PostQuitMessage(0);
 
 		return 0;

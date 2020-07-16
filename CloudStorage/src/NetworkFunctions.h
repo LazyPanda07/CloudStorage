@@ -21,6 +21,8 @@ void removeFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream
 
 void removeFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, const std::wstring& fileName, const std::wstring& login);
 
+void exitFromApplication(UI::MainWindow& ref, streams::IOSocketStream<char>& clientSream);
+
 std::wstring authorization(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream);
 
 std::wstring registration(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream);

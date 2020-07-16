@@ -45,11 +45,11 @@ namespace web
 					{
 						const string& request = it->second;
 
-						if (request == accountRequest::authorization)
+						if (request == accountRequests::authorization)
 						{
 							authorization(clientStream, dataBaseStream, parser.getBody());
 						}
-						else if (request == accountRequest::registration)
+						else if (request == accountRequests::registration)
 						{
 							registration(clientStream, dataBaseStream, parser.getBody());
 						}
@@ -77,6 +77,24 @@ namespace web
 							else if (request == filesRequests::removeFile)
 							{
 								removeFile(clientStream, filesStream, dataBaseStream, headers);
+							}
+						}
+						else
+						{
+							it = headers.find(requestType::exitType);
+
+							if (it != end(headers))
+							{
+								const string& request = it->second;
+
+								if (request == accountRequests::exit)
+								{
+									clients.erase(this_thread::get_id());
+									dataBaseStream << accountRequests::exit;
+									filesStream << accountRequests::exit;
+									this_thread::sleep_for(0.6s);
+									return;
+								}
 							}
 						}
 					}

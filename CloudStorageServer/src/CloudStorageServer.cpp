@@ -53,6 +53,10 @@ namespace web
 				{
 					removeFile(clientStream, currentPath);
 				}
+				else if (request == accountRequests::exit)
+				{
+					return;
+				}
 			}
 			catch (const WebException&)
 			{

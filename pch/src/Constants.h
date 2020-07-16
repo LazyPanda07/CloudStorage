@@ -24,12 +24,14 @@ namespace requestType
 {
 	inline const std::string accountType = "Account request";
 	inline const std::string filesType = "Files request";
+	inline const std::string exitType = "Exit request";
 }
 
-namespace accountRequest
+namespace accountRequests
 {
 	inline constexpr std::string_view authorization = "Authorization";
 	inline constexpr std::string_view registration = "Registration";
+	inline constexpr std::string_view exit = "EOSS";
 }
 
 namespace filesRequests

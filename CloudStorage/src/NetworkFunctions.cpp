@@ -288,6 +288,18 @@ void removeFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream
 	}
 }
 
+void exitFromApplication(UI::MainWindow& ref, streams::IOSocketStream<char>& clientSream)
+{
+	string request = web::HTTPBuilder().postRequest().headers
+	(
+		requestType::exitType, accountRequests::exit
+	).build();
+
+	utility::insertSizeHeaderToHTTPMessage(request);
+
+	clientSream << request;
+}
+
 wstring authorization(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream)
 {
 	wstring wLogin;
@@ -309,7 +321,7 @@ wstring authorization(UI::MainWindow& ref, streams::IOSocketStream<char>& client
 
 	string request = web::HTTPBuilder().postRequest().headers
 	(
-		requestType::accountType, accountRequest::authorization,
+		requestType::accountType, accountRequests::authorization,
 		"Content-Length", body.size()
 	).build(&body);
 
@@ -373,7 +385,7 @@ wstring registration(UI::MainWindow& ref, streams::IOSocketStream<char>& clientS
 
 	string request = web::HTTPBuilder().postRequest().headers
 	(
-		requestType::accountType, accountRequest::registration,
+		requestType::accountType, accountRequests::registration,
 		"Content-Length", body.size()
 	).build(&body);
 

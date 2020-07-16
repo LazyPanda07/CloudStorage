@@ -28,11 +28,11 @@ namespace web
 
 				clientStream >> request;
 
-				if (request == accountRequest::authorization)
+				if (request == accountRequests::authorization)
 				{
 					authorization(clientStream, db, login);
 				}
-				else if (request == accountRequest::registration)
+				else if (request == accountRequests::registration)
 				{
 					registration(clientStream, db, login);
 				}
@@ -47,6 +47,10 @@ namespace web
 				else if (request == filesRequests::removeFile)
 				{
 					removeFileData(clientStream, db, login);
+				}
+				else if (request == accountRequests::exit)
+				{
+					return;
 				}
 			}
 			catch (const WebException&)
