@@ -297,6 +297,7 @@ COPY /Y $(ProjectDir)settings.ini $(SolutionDir)$(Configuration)-$(Platform)\$(P
   <ItemGroup>
     <ClCompile Include="src\BaseClasses\BaseScreen.cpp" />
     <ClCompile Include="src\ClientTime.cpp" />
+    <ClCompile Include="src\ErrorHandling.cpp" />
     <ClCompile Include="src\NetworkFunctions.cpp" />
     <ClCompile Include="src\Screens\CloudStorageScreen.cpp" />
     <ClCompile Include="src\HTTPNetwork.cpp" />
@@ -314,6 +315,7 @@ COPY /Y $(ProjectDir)settings.ini $(SolutionDir)$(Configuration)-$(Platform)\$(P
   <ItemGroup>
     <ClInclude Include="src\BaseClasses\BaseScreen.h" />
     <ClInclude Include="src\ClientTime.h" />
+    <ClInclude Include="src\ErrorHandling.h" />
     <ClInclude Include="src\HTTPNetwork.h" />
     <ClInclude Include="src\MainWindow.h" />
     <ClInclude Include="src\NetworkFunctions.h" />

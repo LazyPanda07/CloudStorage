@@ -9,6 +9,7 @@
 #include "Screens/ScreenFunctions.h"
 #include "fileData.h"
 #include "ClientTime.h"
+#include "ErrorHandling.h"
 
 #include <commctrl.h>
 
@@ -27,8 +28,25 @@ void getFiles(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, 
 
 	utility::insertSizeHeaderToHTTPMessage(request);
 
-	clientStream << request;
-	clientStream >> response;
+	try
+	{
+		clientStream << request;
+	}
+	catch (const web::WebException&)
+	{
+		UI::serverRequestError(ref);
+		return;
+	}
+
+	try
+	{
+		clientStream >> response;
+	}
+	catch (const web::WebException&)
+	{
+		UI::serverResponseError(ref);
+		return;
+	}
 
 	web::HTTPParser parser(response);
 	const string& error = parser.getHeaders().at("Error");
@@ -143,13 +161,30 @@ void uploadFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream
 
 		utility::insertSizeHeaderToHTTPMessage(message);
 
-		clientStream << message;
+		try
+		{
+			clientStream << message;
+		}
+		catch (const web::WebException&)
+		{
+			UI::serverRequestError(ref);
+			in.close();
+			return;
+		}
 
 	} while (!isLast);
 
 	in.close();
 
-	clientStream >> response;
+	try
+	{
+		clientStream >> response;
+	}
+	catch (const web::WebException&)
+	{
+		UI::serverResponseError(ref);
+		return;
+	}
 
 	web::HTTPParser parser(response);
 
@@ -206,9 +241,27 @@ void downloadFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStre
 
 		utility::insertSizeHeaderToHTTPMessage(request);
 
-		clientStream << request;
+		try
+		{
+			clientStream << request;
+		}
+		catch (const web::WebException&)
+		{
+			UI::serverRequestError(ref);
+			out.close();
+			return;
+		}
 
-		clientStream >> response;
+		try
+		{
+			clientStream >> response;
+		}
+		catch (const web::WebException&)
+		{
+			UI::serverResponseError(ref);
+			out.close();
+			return;
+		}
 
 		web::HTTPParser parser(response);
 		const map<string, string>& headers = parser.getHeaders();
@@ -271,9 +324,25 @@ void removeFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream
 
 	utility::insertSizeHeaderToHTTPMessage(request);
 
-	clientStream << request;
+	try
+	{
+		clientStream << request;
+	}
+	catch (const web::WebException&)
+	{
+		UI::serverRequestError(ref);
+		return;
+	}
 
-	clientStream >> response;
+	try
+	{
+		clientStream >> response;
+	}
+	catch (const web::WebException&)
+	{
+		UI::serverResponseError(ref);
+		return;
+	}
 
 	web::HTTPParser parser(response);
 	const map<string, string>& headers = parser.getHeaders();
@@ -297,7 +366,14 @@ void exitFromApplication(UI::MainWindow& ref, streams::IOSocketStream<char>& cli
 
 	utility::insertSizeHeaderToHTTPMessage(request);
 
-	clientSream << request;
+	try
+	{
+		clientSream << request;
+	}
+	catch (const web::WebException&)
+	{
+		UI::serverRequestError(ref);
+	}
 }
 
 wstring authorization(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream)
@@ -327,9 +403,25 @@ wstring authorization(UI::MainWindow& ref, streams::IOSocketStream<char>& client
 
 	utility::insertSizeHeaderToHTTPMessage(request);
 
-	clientStream << request;
+	try
+	{
+		clientStream << request;
+	}
+	catch (const web::WebException&)
+	{
+		UI::serverRequestError(ref);
+		return wstring();
+	}
 
-	clientStream >> response;
+	try
+	{
+		clientStream >> response;
+	}
+	catch (const web::WebException&)
+	{
+		UI::serverResponseError(ref);
+		return wstring();
+	}
 
 	web::HTTPParser parser(response);
 
@@ -391,9 +483,25 @@ wstring registration(UI::MainWindow& ref, streams::IOSocketStream<char>& clientS
 
 	utility::insertSizeHeaderToHTTPMessage(request);
 
-	clientStream << request;
+	try
+	{
+		clientStream << request;
+	}
+	catch (const web::WebException&)
+	{
+		UI::serverRequestError(ref);
+		return wstring();
+	}
 
-	clientStream >> response;
+	try
+	{
+		clientStream >> response;
+	}
+	catch (const web::WebException&)
+	{
+		UI::serverResponseError(ref);
+		return wstring();
+	}
 
 	web::HTTPParser parser(response);
 
