@@ -83,7 +83,7 @@ namespace web
 	HTTPNetwork::HTTPNetwork() : 
 		parent(APIServerIp, APIServerPort)
 	{
-
+		setsockopt(parent::clientSocket, SOL_SOCKET, SO_RCVTIMEO, reinterpret_cast<const char*>(&clientTimeoutRecv), sizeof(clientTimeoutRecv));
 	}
 
 	int HTTPNetwork::sendData(const string_view& data)
