@@ -24,6 +24,8 @@ namespace UI
 
 		void resize() override;
 
+		const std::string getName() const override;
+
 		HWND getRefreshButton() const;
 
 		HWND getDownloadButton() const;

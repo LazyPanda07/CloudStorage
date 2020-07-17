@@ -184,6 +184,11 @@ namespace UI
 		);
 	}
 
+	const string AuthorizationScreen::getName() const
+	{
+		return "AuthorizationScreen";
+	}
+
 	const HWND& AuthorizationScreen::next(const HWND& value) const
 	{
 		if (value == login)

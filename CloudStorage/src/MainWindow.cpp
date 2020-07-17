@@ -217,7 +217,7 @@ LRESULT __stdcall MainWindowProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM
 			}
 			catch (const bad_cast&)
 			{
-				//TODO: info about which screen trying to be cast
+				Log::info("User attempts to cast {} to IIterable\n", ptr->getCurrentScreen()->getName());
 			}
 		}
 

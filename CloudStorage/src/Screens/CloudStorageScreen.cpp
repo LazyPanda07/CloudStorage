@@ -113,6 +113,11 @@ namespace UI
 		SetWindowPos(list, HWND_BOTTOM, 0, toolbar::toolbarHeight, width, height - toolbar::toolbarHeight, SWP_SHOWWINDOW);
 	}
 
+	const string CloudStorageScreen::getName() const
+	{
+		return "CloudStorageScreen";
+	}
+
 	HWND CloudStorageScreen::getRefreshButton() const
 	{
 		return refreshButton;

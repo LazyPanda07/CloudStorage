@@ -32,6 +32,8 @@ namespace UI
 		//wrapperClassName used in RegisterClassExW
 		BaseScreen(HWND parentWindow, const std::wstring& wrapperClassName, WNDPROC procedure);
 
+		virtual const std::string getName() const = 0;
+
 		virtual void pubResize() final;
 
 		virtual void pubShow() final;

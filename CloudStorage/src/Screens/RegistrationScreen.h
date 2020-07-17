@@ -27,6 +27,8 @@ namespace UI
 
 		void resize() override;
 
+		const std::string getName() const override;
+
 		const HWND& next(const HWND& value) const override;
 
 		HWND getRegistrationLoginEdit() const;

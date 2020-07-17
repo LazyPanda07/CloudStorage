@@ -216,6 +216,11 @@ namespace UI
 		);
 	}
 
+	const string RegistrationScreen::getName() const
+	{
+		return "RegistrationScreen";
+	}
+
 	const HWND& RegistrationScreen::next(const HWND& value) const
 	{
 		if (login == value)

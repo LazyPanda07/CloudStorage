@@ -349,7 +349,7 @@ void removeFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream
 
 	if (headers.at("Error") == "0")
 	{
-		//TODO: message
+		//TODO: success message
 	}
 	else
 	{
