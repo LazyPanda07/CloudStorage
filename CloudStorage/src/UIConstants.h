@@ -87,6 +87,18 @@ namespace UI
 		inline constexpr int toAuthorizationScreenButtonHeight = 20;
 	}
 
+	namespace basePopupWindow
+	{
+		inline constexpr int popupWindowWidth = 800;
+		inline constexpr int popupWindowHeight = 600;
+
+		inline constexpr int messageStaticWidth = 300;
+		inline constexpr int messageStaticHeight = 20;
+
+		inline constexpr int cancelButtonWidth = 200;
+		inline constexpr int cancelButtonHeight = 20;
+	}
+
 	namespace buttons
 	{
 		enum toolbarButtons

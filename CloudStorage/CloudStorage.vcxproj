@@ -295,6 +295,7 @@ COPY /Y $(ProjectDir)settings.ini $(SolutionDir)$(Configuration)-$(Platform)\$(P
     </CustomBuildStep>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\BaseClasses\BasePopupWindow.cpp" />
     <ClCompile Include="src\BaseClasses\BaseScreen.cpp" />
     <ClCompile Include="src\ClientTime.cpp" />
     <ClCompile Include="src\ErrorHandling.cpp" />
@@ -313,6 +314,7 @@ COPY /Y $(ProjectDir)settings.ini $(SolutionDir)$(Configuration)-$(Platform)\$(P
     <ClCompile Include="src\WindowProcedures\RegistrationScreenProcedure.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\BaseClasses\BasePopupWindow.h" />
     <ClInclude Include="src\BaseClasses\BaseScreen.h" />
     <ClInclude Include="src\ClientTime.h" />
     <ClInclude Include="src\ErrorHandling.h" />

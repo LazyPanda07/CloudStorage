@@ -36,7 +36,7 @@ namespace UI
 	{
 		INITCOMMONCONTROLSEX init = {};
 		WNDCLASSEXW wndClass = {};
-		POINT monitorCenter = utility::centerCoordinates(UI::mainWindowUI::mainWindowWidth, UI::mainWindowUI::mainWindowHeight);
+		POINT centerOfDesktop = utility::centerCoordinates(UI::mainWindowUI::mainWindowWidth, UI::mainWindowUI::mainWindowHeight);
 
 		init.dwICC = ICC_LISTVIEW_CLASSES;
 		wndClass.cbSize = sizeof(WNDCLASSEXW);
@@ -54,8 +54,8 @@ namespace UI
 			wndClass.lpszClassName,
 			L"Cloud Storage",
 			WS_OVERLAPPEDWINDOW | WS_VISIBLE,
-			monitorCenter.x,
-			monitorCenter.y,
+			centerOfDesktop.x,
+			centerOfDesktop.y,
 			UI::mainWindowUI::mainWindowWidth,
 			UI::mainWindowUI::mainWindowHeight,
 			nullptr,
