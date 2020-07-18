@@ -58,6 +58,7 @@ namespace utility
 
 		time[2] = stoul(tem);
 		date[0] -= 1900;
+		date[1]--;
 
 		calendar.tm_year = date[0];
 		calendar.tm_mon = date[1];
