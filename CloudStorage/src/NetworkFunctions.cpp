@@ -114,6 +114,7 @@ void uploadFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream
 
 void uploadFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, const wstring& filePath, const wstring& login)
 {
+	//TODO: make uploadFile function async with progress bar
 	const filesystem::path file(filePath);
 	uintmax_t fileSize = filesystem::file_size(file);
 
@@ -220,6 +221,7 @@ void downloadFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStre
 
 void downloadFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, const wstring& fileName, const wstring& login)
 {
+	//TODO: make downloadFile function async with progress bar
 	uintmax_t offset = 0;
 	uintmax_t totalFileSize;
 	const string sFileName = utility::to_string(fileName);

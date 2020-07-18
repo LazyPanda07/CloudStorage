@@ -239,7 +239,7 @@ namespace UI
 		{
 			return toAuthorizationScreenButton;
 		}
-		else if (toAuthorizationScreenButton == value)
+		else if (toAuthorizationScreenButton == value || BaseScreen::parentWindow)
 		{
 			return login;
 		}

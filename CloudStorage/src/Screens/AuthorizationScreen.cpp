@@ -203,7 +203,7 @@ namespace UI
 		{
 			return toRegistrationScreenButton;
 		}
-		else if (value == toRegistrationScreenButton)
+		else if (value == toRegistrationScreenButton || value == BaseScreen::parentWindow)
 		{
 			return login;
 		}

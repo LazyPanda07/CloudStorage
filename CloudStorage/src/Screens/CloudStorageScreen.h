@@ -14,6 +14,8 @@ namespace UI
 		HWND removeButton;
 		HWND list;
 
+		//TODO: add reconnect button
+
 	private:
 		void show() override;
 

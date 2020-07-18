@@ -52,16 +52,16 @@ namespace responses
 
 namespace accountResponses
 {
-	inline constexpr std::string_view failAuthorization = "Wrong login or password";
-	inline constexpr std::string_view successRegistration = "Registration was successfully";
-	inline constexpr std::string_view failRegistration = "This user already exists";
+	inline constexpr std::string_view failAuthorization = "Неправильный логин или пароль";
+	inline constexpr std::string_view successRegistration = "Регистрация прошла успешно";
+	inline constexpr std::string_view failRegistration = "Такой пользователь уже существует";
 }
 
 namespace filesResponses
 {
-	inline constexpr std::string_view emptyDirectory = "Directory is empty";
-	inline constexpr std::string_view successUploadFile = "File successfully uploaded";
-	inline constexpr std::string_view failUploadFile = "Fail while file upload";
-	inline constexpr std::wstring_view successDownloadFile = L"File successfully downloaded";
-	inline constexpr std::wstring_view failDownloadFile = L"Fail while file download";
+	inline constexpr std::string_view emptyDirectory = "Эта папка пуста";
+	inline constexpr std::string_view successUploadFile = "Файл успешно загружен";
+	inline constexpr std::string_view failUploadFile = "Ошибка при загрузке файла";
+	inline constexpr std::wstring_view successDownloadFile = L"Файл успешно скачан";
+	inline constexpr std::wstring_view failDownloadFile = L"Ошибка при скачивании файла";
 }
