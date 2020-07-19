@@ -29,7 +29,7 @@ namespace UI
 		BaseScreen(parentWindow, wrapperClassName, procedure)
 	{
 		POINT centerWrapper = utility::centerCoordinates(authorizationScreen::loginEditWidth, authorizationScreen::loginEditHeight, BaseScreen::wrapper);
-		centerWrapper.y -= centerWrapper.y / 2;
+		centerWrapper.y /= 2;
 
 		screenName = CreateWindowExW
 		(
@@ -130,7 +130,7 @@ namespace UI
 	void AuthorizationScreen::resize()
 	{
 		POINT centerWrapper = utility::centerCoordinates(authorizationScreen::loginEditWidth, authorizationScreen::loginEditHeight, BaseScreen::wrapper);
-		centerWrapper.y -= centerWrapper.y / 2;
+		centerWrapper.y /= 2;
 
 		SetWindowPos
 		(

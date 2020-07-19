@@ -16,7 +16,7 @@
 
 using namespace std;
 
-void asyncUploadFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, wstring filePath, const wstring& login);
+void asyncUploadFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, const wstring filePath, const wstring& login);
 
 ////////////////////////////////////////////////////////////////
 
@@ -113,13 +113,8 @@ void uploadFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream
 {
 	for (const auto& i : files)
 	{
-		uploadFile(ref, clientStream, i, login);
+		thread(asyncUploadFile, std::ref(ref), std::ref(clientStream), i, std::ref(login)).detach();
 	}
-}
-
-void uploadFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, const wstring& filePath, const wstring& login)
-{
-	thread(asyncUploadFile, std::ref(ref), std::ref(clientStream), filePath, std::ref(login)).detach();
 }
 
 void downloadFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, const vector<db::fileDataRepresentation>& fileNames, const wstring& login)
@@ -440,7 +435,7 @@ wstring registration(UI::MainWindow& ref, streams::IOSocketStream<char>& clientS
 
 ////////////////////////////////////////////////////////////////
 
-void asyncUploadFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, wstring filePath, const wstring& login)
+void asyncUploadFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, const wstring filePath, const wstring& login)
 {
 	const filesystem::path file(filePath);
 	intmax_t fileSize = filesystem::file_size(file);
