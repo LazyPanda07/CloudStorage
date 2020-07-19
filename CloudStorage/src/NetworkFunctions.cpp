@@ -10,10 +10,15 @@
 #include "fileData.h"
 #include "ClientTime.h"
 #include "ErrorHandling.h"
+#include "Log.h"
 
 #include <commctrl.h>
 
 using namespace std;
+
+void asyncUploadFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, wstring filePath, const wstring& login);
+
+////////////////////////////////////////////////////////////////
 
 void getFiles(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, vector<db::fileDataRepresentation>& fileNames, bool showError)
 {
@@ -114,97 +119,7 @@ void uploadFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream
 
 void uploadFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, const wstring& filePath, const wstring& login)
 {
-	//TODO: make uploadFile function async with progress bar
-	const filesystem::path file(filePath);
-	uintmax_t fileSize = filesystem::file_size(file);
-
-	string fileData;
-	string lastPacket;
-	string response;
-	bool isLast;
-
-	ifstream in(file, ios::binary);
-
-	fileData.resize(filePacketSize);
-
-	do
-	{
-		const string* data;
-		uintmax_t offset = in.tellg();
-
-		if (fileSize - offset >= filePacketSize)
-		{
-			in.read(fileData.data(), fileData.size());
-
-			data = &fileData;
-			isLast = false;
-		}
-		else
-		{
-			lastPacket.resize(fileSize - offset);
-
-			in.read(lastPacket.data(), lastPacket.size());
-
-			data = &lastPacket;
-			isLast = true;
-		}
-
-		string message = web::HTTPBuilder().postRequest().headers
-		(
-			requestType::filesType, filesRequests::uploadFile,
-			"Login", utility::to_string(login),
-			"Directory", "Home",
-			"File-Name", file.filename().string(),
-			"Range", offset,
-			"Content-Length", data->size(),
-			isLast ? "Total-File-Size" : "Reserved", isLast ? fileSize : 0
-		).build(data);
-
-		utility::insertSizeHeaderToHTTPMessage(message);
-
-		try
-		{
-			clientStream << message;
-		}
-		catch (const web::WebException&)
-		{
-			UI::serverRequestError(ref);
-			in.close();
-			return;
-		}
-
-	} while (!isLast);
-
-	in.close();
-
-	try
-	{
-		clientStream >> response;
-	}
-	catch (const web::WebException&)
-	{
-		UI::serverResponseError(ref);
-		return;
-	}
-
-	web::HTTPParser parser(response);
-
-	const string& error = parser.getHeaders().at("Error");
-
-	if (error == "1")
-	{
-		MessageBoxW
-		(
-			ref.getMainWindow(),
-			utility::to_wstring(parser.getBody()).data(),
-			L"Ошибка",
-			MB_OK
-		);
-	}
-	else
-	{
-		SendMessageW(ref.getMainWindow(), UI::events::getFilesE, NULL, NULL);
-	}
+	thread(asyncUploadFile, std::ref(ref), std::ref(clientStream), filePath, std::ref(login)).detach();
 }
 
 void downloadFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, const vector<db::fileDataRepresentation>& fileNames, const wstring& login)
@@ -222,8 +137,8 @@ void downloadFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStre
 void downloadFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, const wstring& fileName, const wstring& login)
 {
 	//TODO: make downloadFile function async with progress bar
-	uintmax_t offset = 0;
-	uintmax_t totalFileSize;
+	intmax_t offset = 0;
+	intmax_t totalFileSize;
 	const string sFileName = utility::to_string(fileName);
 	bool lastPacket;
 	string response;
@@ -520,5 +435,99 @@ wstring registration(UI::MainWindow& ref, streams::IOSocketStream<char>& clientS
 		MessageBoxW(ref.getMainWindow(), utility::to_wstring(parser.getBody()).data(), L"Ошибка", MB_OK);
 
 		return wstring();
+	}
+}
+
+////////////////////////////////////////////////////////////////
+
+void asyncUploadFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, wstring filePath, const wstring& login)
+{
+	const filesystem::path file(filePath);
+	intmax_t fileSize = filesystem::file_size(file);
+
+	string fileData;
+	string lastPacket;
+	string response;
+	bool isLast;
+
+	ifstream in(file, ios::binary);
+
+	fileData.resize(filePacketSize);
+	do
+	{
+		const string* data;
+		intmax_t offset = in.tellg();
+
+		if (fileSize - offset >= filePacketSize)
+		{
+			in.read(fileData.data(), fileData.size());
+
+			data = &fileData;
+			isLast = false;
+		}
+		else
+		{
+			lastPacket.resize(fileSize - offset);
+
+			in.read(lastPacket.data(), lastPacket.size());
+
+			data = &lastPacket;
+			isLast = true;
+		}
+
+		string message = web::HTTPBuilder().postRequest().headers
+		(
+			requestType::filesType, filesRequests::uploadFile,
+			"Login", utility::to_string(login),
+			"Directory", "Home",
+			"File-Name", file.filename().string(),
+			"Range", offset,
+			"Content-Length", data->size(),
+			isLast ? "Total-File-Size" : "Reserved", isLast ? fileSize : 0
+		).build(data);
+
+		utility::insertSizeHeaderToHTTPMessage(message);
+
+		try
+		{
+			clientStream << message;
+		}
+		catch (const web::WebException&)
+		{
+			UI::serverRequestError(ref);
+			in.close();
+			return;
+		}
+	} while (!isLast);
+
+	in.close();
+
+	try
+	{
+		clientStream >> response;
+	}
+	catch (const web::WebException&)
+	{
+		UI::serverResponseError(ref);
+		return;
+	}
+
+	web::HTTPParser parser(response);
+
+	const string& error = parser.getHeaders().at("Error");
+
+	if (error == "1")
+	{
+		MessageBoxW
+		(
+			ref.getMainWindow(),
+			utility::to_wstring(parser.getBody()).data(),
+			L"Ошибка",
+			MB_OK
+		);
+	}
+	else
+	{
+		SendMessageW(ref.getMainWindow(), UI::events::getFilesE, NULL, NULL);
 	}
 }

@@ -72,7 +72,7 @@ void uploadFileData(streams::IOSocketStream<char>& clientStream, const db::Cloud
 	string fileName;
 	string filePath;
 	string fileExtension;
-	uintmax_t fileSize;
+	intmax_t fileSize;
 
 	clientStream >> fileName;
 	clientStream >> filePath;

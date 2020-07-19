@@ -9,7 +9,7 @@ using namespace std;
 void uploadFile(streams::IOSocketStream<char>& clientStream, const filesystem::path& currentPath)
 {
 	string fileName;
-	uintmax_t offset;
+	intmax_t offset;
 	string data;
 	bool needResponse;
 
@@ -28,8 +28,8 @@ void uploadFile(streams::IOSocketStream<char>& clientStream, const filesystem::p
 
 	if (needResponse)
 	{
-		uintmax_t uploadSize;
-		uintmax_t downloadSize = filesystem::file_size(filesystem::path(currentPath).append(fileName));
+		intmax_t uploadSize;
+		intmax_t downloadSize = filesystem::file_size(filesystem::path(currentPath).append(fileName));
 
 		clientStream >> uploadSize;
 
@@ -63,8 +63,8 @@ void uploadFile(streams::IOSocketStream<char>& clientStream, const filesystem::p
 void downloadFile(streams::IOSocketStream<char>& clientStream, const filesystem::path& currentPath)
 {
 	string fileName;
-	uintmax_t offset;
-	uintmax_t size;
+	intmax_t offset;
+	intmax_t size;
 	string data;
 	bool isLast;
 

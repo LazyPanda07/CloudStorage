@@ -58,60 +58,60 @@ void uploadFile(streams::IOSocketStream<char>& clientStream, streams::IOSocketSt
 	const string& fileName = headers.at("File-Name");
 	const string& login = headers.at("Login");
 	const string& directory = headers.at("Directory");
-	uintmax_t offset = stoull(headers.at("Range"));
+	intmax_t offset = stoull(headers.at("Range"));
 	auto it = headers.find("Total-File-Size");
 	bool needResponse = it != end(headers);
 
-	try
+
+	filesStream << filesRequests::uploadFile;
+	filesStream << login;
+	filesStream << directory;
+	filesStream << fileName;
+	filesStream << offset;
+	filesStream << data;
+	filesStream << needResponse;
+
+	if (needResponse)
 	{
-		filesStream << filesRequests::uploadFile;
-		filesStream << login;
-		filesStream << directory;
+		intmax_t uploadSize = stoull(it->second);
+		string responseMessage;
+		string isSuccess;
 
-		filesStream << fileName;
-		filesStream << offset;
-		filesStream << data;
-		filesStream << needResponse;
+		filesStream << uploadSize;
 
-		if (needResponse)
+		filesStream >> isSuccess;
+		filesStream >> responseMessage;
+
+		if (isSuccess == responses::okResponse)
 		{
-			uintmax_t uploadSize = stoull(it->second);
-			string responseMessage;
-			string isSuccess;
+			string extension;
 
-			filesStream << uploadSize;
+			filesStream >> extension;
 
-			filesStream >> isSuccess;
-			filesStream >> responseMessage;
+			dataBaseStream << filesRequests::uploadFile;
+			dataBaseStream << fileName;
+			dataBaseStream << directory;
+			dataBaseStream << extension;
+			dataBaseStream << uploadSize;
 
-			if (isSuccess == responses::okResponse)
-			{
-				string extension;
+		}
 
-				filesStream >> extension;
+		string response = web::HTTPBuilder().responseCode(web::ResponseCodes::ok).headers
+		(
+			"Error", isSuccess == responses::okResponse ? false : true,
+			"Content-Length", responseMessage.size()
+		).build(&responseMessage);
 
-				dataBaseStream << filesRequests::uploadFile;
-				dataBaseStream << fileName;
-				dataBaseStream << directory;
-				dataBaseStream << extension;
-				dataBaseStream << uploadSize;
+		utility::insertSizeHeaderToHTTPMessage(response);
 
-			}
-
-			string response = web::HTTPBuilder().responseCode(web::ResponseCodes::ok).headers
-			(
-				"Error", isSuccess == responses::okResponse ? false : true,
-				"Content-Length", responseMessage.size()
-			).build(&responseMessage);
-
-			utility::insertSizeHeaderToHTTPMessage(response);
-
+		try
+		{
 			clientStream << response;
 		}
-	}
-	catch (const web::WebException& e)
-	{
-		cout << e.what() << endl;
+		catch (const web::WebException& e)
+		{
+			
+		}
 	}
 }
 
@@ -122,8 +122,8 @@ void downloadFile(streams::IOSocketStream<char>& clientStream, streams::IOSocket
 	const string& directory = headers.at("Directory");
 	bool isLast;
 	string data;
-	uintmax_t offset = stoull(headers.at("Range"));
-	uintmax_t totalFileSize;
+	intmax_t offset = stoull(headers.at("Range"));
+	intmax_t totalFileSize;
 
 	try
 	{

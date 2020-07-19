@@ -11,7 +11,7 @@ inline constexpr std::string_view settingsFile = "settings.ini";
 inline constexpr std::string_view usersDirectory = "Data";
 
 inline constexpr short HTTPPacketSize = 4096;
-inline constexpr int filePacketSize = 1 * 1024 * 1024;	//1 MB
+inline constexpr int filePacketSize = 10 * 1024 * 1024;	//10 MB
 
 inline constexpr DWORD serverTimeoutRecv = 600000;	//10 minutes
 inline constexpr DWORD clientTimeoutRecv = 30000;	//30 seconds
