@@ -16,6 +16,8 @@ void downloadFile(streams::IOSocketStream<char>& clientStream, streams::IOSocket
 
 void removeFile(streams::IOSocketStream<char>& clientStream, streams::IOSocketStream<char>& filesStream, streams::IOSocketStream<char>& dataBaseStream, const std::map<std::string, std::string>& headers);
 
+void cancelUploadFile(streams::IOSocketStream<char>& clientStream, streams::IOSocketStream<char>& filesStream, const std::map<std::string, std::string>& headers);
+
 void authorization(streams::IOSocketStream<char>& clientStream, streams::IOSocketStream<char>& dataBaseStream, const std::string& data);
 
 void registration(streams::IOSocketStream<char>& clientStream, streams::IOSocketStream<char>& dataBaseStream, const std::string& data);

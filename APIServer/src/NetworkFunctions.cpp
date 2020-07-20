@@ -201,6 +201,28 @@ void removeFile(streams::IOSocketStream<char>& clientStream, streams::IOSocketSt
 	}
 }
 
+void cancelUploadFile(streams::IOSocketStream<char>& clientStream, streams::IOSocketStream<char>& filesStream, const map<string, string>& headers)
+{
+	const string& login = headers.at("Login");
+	const string& directory = headers.at("Directory");
+	const string& fileName = headers.at("File-Name");
+	string response = web::HTTPBuilder().responseCode(web::ResponseCodes::ok).headers
+	(
+		"Reserved", 0
+	).build();
+
+	utility::insertSizeHeaderToHTTPMessage(response);
+
+	filesStream << networkRequests::cancelOperation;
+	filesStream << login;
+	filesStream << directory;
+
+	filesStream << fileName;
+	filesStream << filesRequests::uploadFile;
+
+	clientStream << response;
+}
+
 void authorization(streams::IOSocketStream<char>& clientStream, streams::IOSocketStream<char>& dataBaseStream, const string& data)
 {
 	auto [login, password] = userDataParse(data);

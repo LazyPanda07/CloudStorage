@@ -18,8 +18,7 @@
 
 using namespace std;
 
-template<typename StringT>
-string buildCancelHTTPRequest(const StringT& operationType);
+string cancelUploadFile(const string& fileName, const string& login);
 
 void asyncUploadFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, const wstring& filePath, const wstring& login, bool& isCancel);
 
@@ -432,13 +431,15 @@ wstring registration(UI::MainWindow& ref, streams::IOSocketStream<char>& clientS
 
 ////////////////////////////////////////////////////////////////
 
-template<typename StringT>
-string buildCancelHTTPRequest(const StringT& operationType)
+string cancelUploadFile(const string& fileName, const string& login)
 {
 	string result = web::HTTPBuilder().postRequest().headers
 	(
 		requestType::cancelType, networkRequests::cancelOperation,
-		"Operation-Type", operationType
+		"Operation-Type", filesRequests::uploadFile,
+		"Login", login,
+		"Directory", "Home",
+		"File-Name", fileName
 	).build();
 
 	utility::insertSizeHeaderToHTTPMessage(result);
@@ -471,11 +472,14 @@ void asyncUploadFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientS
 
 		if (isCancel)
 		{
-			string cancelRequest = buildCancelHTTPRequest(filesRequests::uploadFile);
+			string cancelRequest = cancelUploadFile(file.filename().string(), utility::to_string(login));
 
 			clientStream << cancelRequest;
 
+			clientStream >> cancelRequest;
+
 			SendMessageW(ref.getMainWindow(), UI::events::deletePopupWindowE, NULL, NULL);
+			SendMessageW(ref.getMainWindow(), UI::events::recursiveUploadFileE, NULL, NULL);
 			in.close();
 			return;
 		}
@@ -522,7 +526,11 @@ void asyncUploadFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientS
 			return;
 		}
 
-		SendMessageW(ref.getPopupWindow(), UI::events::updateProgressBarE, static_cast<WPARAM>(offset), NULL);
+		if (!isCancel)
+		{
+			SendMessageW(ref.getPopupWindow(), UI::events::updateProgressBarE, static_cast<WPARAM>(offset), NULL);
+		}
+
 	} while (!isLast);
 
 	in.close();
@@ -540,7 +548,10 @@ void asyncUploadFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientS
 
 	web::HTTPParser parser(response);
 
-	SendMessageW(ref.getPopupWindow(), UI::events::updateProgressBarE, static_cast<WPARAM>(fileSize), NULL);
+	if (!isCancel)
+	{
+		SendMessageW(ref.getPopupWindow(), UI::events::updateProgressBarE, static_cast<WPARAM>(fileSize), NULL);
+	}
 
 	this_thread::sleep_for(1s);
 

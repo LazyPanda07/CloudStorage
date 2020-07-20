@@ -96,6 +96,20 @@ namespace web
 									return;
 								}
 							}
+							else
+							{
+								it = headers.find(requestType::cancelType);
+
+								if (it != end(headers))
+								{
+									const string& operationType = headers.at("Operation-Type");
+
+									if (operationType == filesRequests::uploadFile)
+									{
+										cancelUploadFile(clientStream,filesStream, headers);
+									}
+								}
+							}
 						}
 					}
 				}

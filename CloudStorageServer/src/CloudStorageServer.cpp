@@ -53,6 +53,10 @@ namespace web
 				{
 					removeFile(clientStream, currentPath);
 				}
+				else if (request == networkRequests::cancelOperation)
+				{
+					cancelOperation(clientStream, currentPath);
+				}
 				else if (request == networkRequests::exit)
 				{
 					return;

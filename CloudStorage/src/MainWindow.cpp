@@ -338,6 +338,8 @@ LRESULT __stdcall MainWindowProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM
 	case UI::events::recursiveUploadFileE:
 		if (uploadFileIndex != dragAndDropFiles.size())
 		{
+			isCancel = false;
+
 			uploadFile(*ptr, clientStream, dragAndDropFiles[uploadFileIndex++], login, isCancel);
 		}
 

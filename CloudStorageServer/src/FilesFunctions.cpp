@@ -117,3 +117,17 @@ void removeFile(streams::IOSocketStream<char>& clientStream, const filesystem::p
 		clientStream << responses::failResponse;
 	}
 }
+
+void cancelOperation(streams::IOSocketStream<char>& clientStream, const filesystem::path& currentPath)
+{
+	string fileName;
+	string operationType;
+	
+	clientStream >> fileName;
+	clientStream >> operationType;
+
+	if (operationType == filesRequests::uploadFile)
+	{
+		filesystem::remove(filesystem::path(currentPath).append(fileName));
+	}
+}
