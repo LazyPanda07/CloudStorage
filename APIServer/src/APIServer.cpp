@@ -87,11 +87,11 @@ namespace web
 							{
 								const string& request = it->second;
 
-								if (request == accountRequests::exit)
+								if (request == networkRequests::exit)
 								{
 									clients.erase(this_thread::get_id());
-									dataBaseStream << accountRequests::exit;
-									filesStream << accountRequests::exit;
+									dataBaseStream << networkRequests::exit;
+									filesStream << networkRequests::exit;
 									this_thread::sleep_for(0.6s);
 									return;
 								}

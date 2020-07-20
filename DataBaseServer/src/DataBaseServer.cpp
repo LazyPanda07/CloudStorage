@@ -48,7 +48,7 @@ namespace web
 				{
 					removeFileData(clientStream, db, login);
 				}
-				else if (request == accountRequests::exit)
+				else if (request == networkRequests::exit)
 				{
 					return;
 				}

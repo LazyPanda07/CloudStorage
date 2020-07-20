@@ -18,7 +18,10 @@
 
 using namespace std;
 
-void asyncUploadFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, const wstring& filePath, const wstring& login);
+template<typename StringT>
+string buildCancelHTTPRequest(const StringT& operationType);
+
+void asyncUploadFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, const wstring& filePath, const wstring& login, bool& isCancel);
 
 ////////////////////////////////////////////////////////////////
 
@@ -111,11 +114,11 @@ void getFiles(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, 
 	}
 }
 
-void uploadFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, const wstring& filePath, const wstring& login)
+void uploadFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, const wstring& filePath, const wstring& login, bool& isCancel)
 {
-	initUploadFilePopupWindow(ref, wstring(begin(filePath) + filePath.find('\\') + 1, end(filePath)));
+	initUploadFilePopupWindow(ref, wstring(begin(filePath) + filePath.rfind('\\') + 1, end(filePath)));
 
-	thread(asyncUploadFile, std::ref(ref), std::ref(clientStream), std::ref(filePath), std::ref(login)).detach();
+	thread(asyncUploadFile, std::ref(ref), std::ref(clientStream), std::ref(filePath), std::ref(login), std::ref(isCancel)).detach();
 }
 
 void downloadFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, const vector<db::fileDataRepresentation>& fileNames, const wstring& login)
@@ -274,7 +277,7 @@ void exitFromApplication(UI::MainWindow& ref, streams::IOSocketStream<char>& cli
 {
 	string request = web::HTTPBuilder().postRequest().headers
 	(
-		requestType::exitType, accountRequests::exit
+		requestType::exitType, networkRequests::exit
 	).build();
 
 	utility::insertSizeHeaderToHTTPMessage(request);
@@ -429,7 +432,21 @@ wstring registration(UI::MainWindow& ref, streams::IOSocketStream<char>& clientS
 
 ////////////////////////////////////////////////////////////////
 
-void asyncUploadFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, const wstring& filePath, const wstring& login)
+template<typename StringT>
+string buildCancelHTTPRequest(const StringT& operationType)
+{
+	string result = web::HTTPBuilder().postRequest().headers
+	(
+		requestType::cancelType, networkRequests::cancelOperation,
+		"Operation-Type", operationType
+	).build();
+
+	utility::insertSizeHeaderToHTTPMessage(result);
+
+	return result;
+}
+
+void asyncUploadFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, const wstring& filePath, const wstring& login, bool& isCancel)
 {
 	const filesystem::path file(filePath);
 	intmax_t fileSize = filesystem::file_size(file);
@@ -444,10 +461,24 @@ void asyncUploadFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientS
 	static_cast<UI::UploadFilePopupWindow*>(ref.getCurrentPopupWindow())->setProgressBarRange(0, fileSize);
 
 	fileData.resize(filePacketSize);
+
+	isCancel = false;
+
 	do
 	{
 		const string* data;
 		intmax_t offset = in.tellg();
+
+		if (isCancel)
+		{
+			string cancelRequest = buildCancelHTTPRequest(filesRequests::uploadFile);
+
+			clientStream << cancelRequest;
+
+			SendMessageW(ref.getMainWindow(), UI::events::deletePopupWindowE, NULL, NULL);
+			in.close();
+			return;
+		}
 
 		if (fileSize - offset >= filePacketSize)
 		{

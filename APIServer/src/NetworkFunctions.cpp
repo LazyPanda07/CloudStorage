@@ -62,7 +62,6 @@ void uploadFile(streams::IOSocketStream<char>& clientStream, streams::IOSocketSt
 	auto it = headers.find("Total-File-Size");
 	bool needResponse = it != end(headers);
 
-
 	filesStream << filesRequests::uploadFile;
 	filesStream << login;
 	filesStream << directory;

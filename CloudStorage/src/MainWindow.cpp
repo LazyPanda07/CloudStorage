@@ -239,6 +239,7 @@ LRESULT __stdcall MainWindowProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM
 	static wstring login;
 	static vector<wstring> dragAndDropFiles;
 	static size_t uploadFileIndex;
+	static bool isCancel;
 #pragma endregion
 
 	switch (msg)
@@ -321,7 +322,7 @@ LRESULT __stdcall MainWindowProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM
 			break;
 
 		case UI::BasePopupWindow::cancel:
-			ptr->deleteCurrentPopupWindow();
+			SendMessageW(ptr->getMainWindow(), UI::events::deletePopupWindowE, NULL, NULL);
 
 			break;
 		}
@@ -337,7 +338,7 @@ LRESULT __stdcall MainWindowProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM
 	case UI::events::recursiveUploadFileE:
 		if (uploadFileIndex != dragAndDropFiles.size())
 		{
-			uploadFile(*ptr, clientStream, dragAndDropFiles[uploadFileIndex++], login);
+			uploadFile(*ptr, clientStream, dragAndDropFiles[uploadFileIndex++], login, isCancel);
 		}
 
 		return 0;
@@ -346,7 +347,7 @@ LRESULT __stdcall MainWindowProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM
 		uploadFileIndex = 0;
 		dragAndDropFiles = move(*reinterpret_cast<vector<wstring>*>(wparam));
 
-		uploadFile(*ptr, clientStream, dragAndDropFiles[uploadFileIndex++], login);
+		uploadFile(*ptr, clientStream, dragAndDropFiles[uploadFileIndex++], login, isCancel);
 
 		return 0;
 
@@ -361,8 +362,10 @@ LRESULT __stdcall MainWindowProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM
 		return 0;
 
 	case UI::events::deletePopupWindowE:
-		ptr->deleteCurrentPopupWindow();
+		isCancel = true;
 
+		ptr->deleteCurrentPopupWindow();
+		
 		return 0;
 #pragma endregion
 
