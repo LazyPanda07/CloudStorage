@@ -278,14 +278,7 @@ void exitFromApplication(UI::MainWindow& ref, streams::IOSocketStream<char>& cli
 
 	utility::insertSizeHeaderToHTTPMessage(request);
 
-	try
-	{
-		clientSream << request;
-	}
-	catch (const web::WebException&)
-	{
-		UI::serverRequestError(ref);
-	}
+	clientSream << request;
 }
 
 wstring authorization(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream)

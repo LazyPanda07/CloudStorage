@@ -25,8 +25,8 @@ namespace UI
 
 	}
 
-	AuthorizationScreen::AuthorizationScreen(HWND parentWindow, const wstring& wrapperClassName, WNDPROC procedure) :
-		BaseScreen(parentWindow, wrapperClassName, procedure)
+	AuthorizationScreen::AuthorizationScreen(HWND parentWindow, WNDPROC procedure) :
+		BaseScreen(parentWindow, screens::authorizationScreen, procedure)
 	{
 		POINT centerWrapper = utility::centerCoordinates(authorizationScreen::loginEditWidth, authorizationScreen::loginEditHeight, BaseScreen::wrapper);
 		centerWrapper.y /= 2;

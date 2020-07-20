@@ -17,7 +17,6 @@ LRESULT __stdcall UploadFilePopupWindowProcedure(HWND hwnd, UINT msg, WPARAM wpa
 		{
 		case UI::BasePopupWindow::cancel:
 			SendMessageW(disableWindow, WM_COMMAND, UI::BasePopupWindow::cancel, NULL);
-
 		}
 
 		return 0;

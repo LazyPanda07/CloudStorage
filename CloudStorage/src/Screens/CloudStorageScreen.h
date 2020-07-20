@@ -22,7 +22,7 @@ namespace UI
 		void destroy() override;
 
 	public:
-		CloudStorageScreen(HWND parentWindow, const std::wstring& wrapperClassName, WNDPROC procedure);
+		CloudStorageScreen(HWND parentWindow, WNDPROC procedure);
 
 		void resize() override;
 

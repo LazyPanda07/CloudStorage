@@ -24,7 +24,7 @@ namespace UI
 		void destroy() override;
 
 	public:
-		AuthorizationScreen(HWND parentWindow, const std::wstring& wrapperClassName, WNDPROC procedure);
+		AuthorizationScreen(HWND parentWindow, WNDPROC procedure);
 
 		void resize() override;
 

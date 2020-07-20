@@ -28,17 +28,17 @@ void updateSizeColumn(UI::MainWindow& ref, const vector<db::fileDataRepresentati
 
 void initCloudStorageScreen(UI::MainWindow& ref)
 {
-	ref.setCurrentScreen(new UI::CloudStorageScreen(ref.getMainWindow(), UI::screens::cloudStorageScreen, CloudStorageScreenProcedure));
+	ref.setCurrentScreen(new UI::CloudStorageScreen(ref.getMainWindow(), CloudStorageScreenProcedure));
 }
 
 void initRegistrationScreen(UI::MainWindow& ref)
 {
-	ref.setCurrentScreen(new UI::RegistrationScreen(ref.getMainWindow(), UI::screens::registrationScreen, RegistrationScreenProcedure));
+	ref.setCurrentScreen(new UI::RegistrationScreen(ref.getMainWindow(), RegistrationScreenProcedure));
 }
 
 void initAuthorizationScreen(UI::MainWindow& ref)
 {
-	ref.setCurrentScreen(new UI::AuthorizationScreen(ref.getMainWindow(), UI::screens::authorizationScreen, AuthorizationScreenProcedure));
+	ref.setCurrentScreen(new UI::AuthorizationScreen(ref.getMainWindow(), AuthorizationScreenProcedure));
 }
 
 bool removeFileDialog(UI::MainWindow& ref, const std::wstring& fileName)

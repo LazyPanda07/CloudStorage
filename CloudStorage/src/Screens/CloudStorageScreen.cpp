@@ -27,8 +27,8 @@ namespace UI
 
 	}
 
-	CloudStorageScreen::CloudStorageScreen(HWND parentWindow, const std::wstring& wrapperClassName, WNDPROC procedure) :
-		BaseScreen(parentWindow, wrapperClassName, procedure)
+	CloudStorageScreen::CloudStorageScreen(HWND parentWindow, WNDPROC procedure) :
+		BaseScreen(parentWindow, screens::cloudStorageScreen, procedure)
 	{
 		RECT wrapperSizes;
 

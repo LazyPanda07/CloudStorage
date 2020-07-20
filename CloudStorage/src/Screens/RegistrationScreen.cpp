@@ -26,8 +26,8 @@ namespace UI
 
 	}
 
-	RegistrationScreen::RegistrationScreen(HWND parentWindow, const std::wstring& wrapperClassName, WNDPROC procedure) :
-		BaseScreen(parentWindow, wrapperClassName, procedure)
+	RegistrationScreen::RegistrationScreen(HWND parentWindow, WNDPROC procedure) :
+		BaseScreen(parentWindow, screens::registrationScreen, procedure)
 	{
 
 		POINT centerWrapper = utility::centerCoordinates(registrationScreen::loginEditWidth, registrationScreen::loginEditHeight, BaseScreen::wrapper);

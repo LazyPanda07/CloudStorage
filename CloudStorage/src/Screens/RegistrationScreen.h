@@ -23,7 +23,7 @@ namespace UI
 		void destroy() override;
 
 	public:
-		RegistrationScreen(HWND parentWindow, const std::wstring& wrapperClassName, WNDPROC procedure);
+		RegistrationScreen(HWND parentWindow, WNDPROC procedure);
 
 		void resize() override;
 

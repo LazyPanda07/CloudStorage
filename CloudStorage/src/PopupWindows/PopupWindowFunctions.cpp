@@ -14,7 +14,6 @@ void initUploadFilePopupWindow(UI::MainWindow& ref, const wstring& message)
 		new UI::UploadFilePopupWindow
 		(
 			ref.getMainWindow(),
-			UI::popupWindows::uploadFilePopupWindow,
 			L"Загрузка файла",
 			UploadFilePopupWindowProcedure,
 			message

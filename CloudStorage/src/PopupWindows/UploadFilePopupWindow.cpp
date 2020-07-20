@@ -10,8 +10,8 @@ using namespace std;
 
 namespace UI
 {
-	UploadFilePopupWindow::UploadFilePopupWindow(HWND disableWindow, const std::wstring& popupWindowClassName, const std::wstring& popupWindowTitle, WNDPROC procedure, const std::wstring& message) :
-		BasePopupWindow(disableWindow, popupWindowClassName, popupWindowTitle, procedure, message)
+	UploadFilePopupWindow::UploadFilePopupWindow(HWND disableWindow, const wstring& popupWindowTitle, WNDPROC procedure, const wstring& message) :
+		BasePopupWindow(disableWindow, popupWindows::uploadFilePopupWindow, popupWindowTitle, procedure, message)
 	{
 		RECT messagePos = utility::getWindowPosition(BasePopupWindow::messageStatic);
 		RECT sizes;
