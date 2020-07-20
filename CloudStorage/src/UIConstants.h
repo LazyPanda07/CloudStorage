@@ -134,6 +134,7 @@ namespace UI
 		{
 			getFilesE = buttons::authorizationScreenButtonsCount + 1,
 			uploadFileE,
+			recursiveUploadFileE,
 			downLoadFilesE,
 			networkEventsCount
 		};
@@ -148,7 +149,7 @@ namespace UI
 		enum initEvents
 		{
 			initMainWindowPtrE = modifyEventsCount + 1,
-			initPopupWindow,
+			initPopupWindowE,
 			initEventsCount
 		};
 	}

@@ -28,7 +28,7 @@ LRESULT __stdcall UploadFilePopupWindowProcedure(HWND hwnd, UINT msg, WPARAM wpa
 
 		return 0;
 
-	case UI::events::initPopupWindow:
+	case UI::events::initPopupWindowE:
 		ptr = reinterpret_cast<UI::UploadFilePopupWindow*>(wparam);
 
 		return 0;

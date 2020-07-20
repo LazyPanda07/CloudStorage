@@ -334,11 +334,19 @@ LRESULT __stdcall MainWindowProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM
 
 		return 0;
 
+	case UI::events::recursiveUploadFileE:
+		if (uploadFileIndex != dragAndDropFiles.size())
+		{
+			uploadFile(*ptr, clientStream, dragAndDropFiles[uploadFileIndex++], login);
+		}
+
+		return 0;
+
 	case UI::events::uploadFileE:
 		uploadFileIndex = 0;
 		dragAndDropFiles = move(*reinterpret_cast<vector<wstring>*>(wparam));
 
-		uploadFile(*ptr, clientStream, dragAndDropFiles[uploadFileIndex], login);
+		uploadFile(*ptr, clientStream, dragAndDropFiles[uploadFileIndex++], login);
 
 		return 0;
 

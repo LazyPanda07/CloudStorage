@@ -486,6 +486,7 @@ void asyncUploadFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientS
 		catch (const web::WebException&)
 		{
 			UI::serverRequestError(ref);
+			SendMessageW(ref.getMainWindow(), UI::events::deletePopupWindowE, NULL, NULL);
 			in.close();
 			return;
 		}
@@ -527,6 +528,7 @@ void asyncUploadFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientS
 		if (ok == IDOK)
 		{
 			SendMessageW(ref.getMainWindow(), UI::events::deletePopupWindowE, NULL, NULL);
+			SendMessageW(ref.getMainWindow(), UI::events::recursiveUploadFileE, NULL, NULL);
 		}
 	}
 	else
@@ -543,6 +545,7 @@ void asyncUploadFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientS
 		{
 			SendMessageW(ref.getMainWindow(), UI::events::getFilesE, NULL, NULL);
 			SendMessageW(ref.getMainWindow(), UI::events::deletePopupWindowE, NULL, NULL);
+			SendMessageW(ref.getMainWindow(), UI::events::recursiveUploadFileE, NULL, NULL);
 		}
 	}
 }
