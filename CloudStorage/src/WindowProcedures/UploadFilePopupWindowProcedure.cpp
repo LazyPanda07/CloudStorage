@@ -1,14 +1,16 @@
 #include "pch.h"
 
 #include "UploadFilePopupWindowProcedure.h"
-#include "../BaseClasses/BasePopupWindow.h"
+#include "../PopupWindows/UploadFilePopupWindow.h"
 #include "../UIConstants.h"
+
+#include <commctrl.h>
 
 using namespace std;
 
 LRESULT __stdcall UploadFilePopupWindowProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 {
-	static HWND disableWindow;
+	static UI::UploadFilePopupWindow* ptr = nullptr;
 
 	switch (msg)
 	{
@@ -16,18 +18,23 @@ LRESULT __stdcall UploadFilePopupWindowProcedure(HWND hwnd, UINT msg, WPARAM wpa
 		switch (wparam)
 		{
 		case UI::BasePopupWindow::cancel:
-			SendMessageW(disableWindow, WM_COMMAND, UI::BasePopupWindow::cancel, NULL);
+			SendMessageW(ptr->getDisableWindow(), WM_COMMAND, UI::BasePopupWindow::cancel, NULL);
 		}
 
 		return 0;
 
-	case UI::events::initDisableWindow:
-		disableWindow = reinterpret_cast<HWND>(wparam);
+	case UI::events::updateProgressBarE:
+		SendMessageW(ptr->getProgressBar(), PBM_SETPOS, wparam, NULL);
+
+		return 0;
+
+	case UI::events::initPopupWindow:
+		ptr = reinterpret_cast<UI::UploadFilePopupWindow*>(wparam);
 
 		return 0;
 
 	case WM_DESTROY:
-		SendMessageW(disableWindow, WM_COMMAND, UI::BasePopupWindow::cancel, NULL);
+		SendMessageW(ptr->getDisableWindow(), WM_COMMAND, UI::BasePopupWindow::cancel, NULL);
 
 		return 0;
 

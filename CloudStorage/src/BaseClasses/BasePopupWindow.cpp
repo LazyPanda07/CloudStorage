@@ -45,20 +45,20 @@ namespace UI
 		
 		GetClientRect(popupWindow, &sizes);
 
-		centerPopup = utility::centerCoordinates(basePopupWindow::messageStaticWidth, basePopupWindow::messageStaticHeight, popupWindow);
-		centerPopup.y /= 2;
 		width = sizes.right - sizes.left;
 		height = sizes.bottom - sizes.top;
+		centerPopup = utility::centerCoordinates(width, basePopupWindow::messageStaticHeight, popupWindow);
+		centerPopup.y /= 2;
 
 		messageStatic = CreateWindowExW
 		(
 			NULL,
 			L"STATIC",
 			message.data(),
-			WS_CHILDWINDOW | SS_CENTER | SS_SIMPLE | WS_VISIBLE,
-			centerPopup.x + basePopupWindow::messageStaticWidth / 3,
-			centerPopup.y - basePopupWindow::messageStaticHeight,
-			basePopupWindow::messageStaticWidth,
+			WS_CHILDWINDOW | SS_CENTER | WS_VISIBLE,
+			0,
+			centerPopup.y,
+			width,
 			basePopupWindow::messageStaticHeight,
 			popupWindow,
 			HMENU(),

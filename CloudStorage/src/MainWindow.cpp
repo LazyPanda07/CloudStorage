@@ -8,7 +8,6 @@
 #include "Screens/AuthorizationScreen.h"
 #include "Screens/RegistrationScreen.h"
 #include "Screens/CloudStorageScreen.h"
-#include "PopupWindows/PopupWindowFunctions.h"
 #include "fileData.h"
 #include "UIConstants.h"
 #include "MainWindow.h"
@@ -108,6 +107,12 @@ namespace UI
 
 		case UI::MainWindow::elementsEnum::registrationRepeatPasswordEdit:
 			return static_cast<RegistrationScreen*>(currentScreen.get())->getRegistrationRepeatPasswordEdit();
+
+		case UI::MainWindow::elementsEnum::popupWindow:
+			return currentPopupWindow->getPopupWindow();
+
+		case UI::MainWindow::elementsEnum::cancelButton:
+			return currentPopupWindow->getCancelButton();
 
 		default:
 			return nullptr;
@@ -209,6 +214,16 @@ namespace UI
 		return this->getHWND(elementsEnum::registrationRepeatPasswordEdit);
 	}
 
+	HWND MainWindow::getPopupWindow() const
+	{
+		return this->getHWND(elementsEnum::popupWindow);
+	}
+
+	HWND MainWindow::getCancelButton() const
+	{
+		return this->getHWND(elementsEnum::cancelButton);
+	}
+
 	HWND MainWindow::getWrapper() const
 	{
 		return this->getHWND(elementsEnum::wrapper);
@@ -222,6 +237,8 @@ LRESULT __stdcall MainWindowProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM
 	static UI::MainWindow* ptr = nullptr;
 	static vector<db::fileDataRepresentation> fileNames;
 	static wstring login;
+	static vector<wstring> dragAndDropFiles;
+	static size_t uploadFileIndex;
 #pragma endregion
 
 	switch (msg)
@@ -318,7 +335,10 @@ LRESULT __stdcall MainWindowProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM
 		return 0;
 
 	case UI::events::uploadFileE:
-		uploadFile(*ptr, clientStream, *reinterpret_cast<vector<wstring>*>(wparam), login);
+		uploadFileIndex = 0;
+		dragAndDropFiles = move(*reinterpret_cast<vector<wstring>*>(wparam));
+
+		uploadFile(*ptr, clientStream, dragAndDropFiles[uploadFileIndex], login);
 
 		return 0;
 
@@ -329,6 +349,11 @@ LRESULT __stdcall MainWindowProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM
 
 	case UI::events::initMainWindowPtrE:
 		ptr = reinterpret_cast<UI::MainWindow*>(wparam);
+
+		return 0;
+
+	case UI::events::deletePopupWindowE:
+		ptr->deleteCurrentPopupWindow();
 
 		return 0;
 #pragma endregion

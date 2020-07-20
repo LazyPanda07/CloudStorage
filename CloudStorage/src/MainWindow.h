@@ -30,8 +30,13 @@ namespace UI
 #pragma region RegistrationScreen
 			registrationLoginEdit,
 			registrationPasswordEdit,
-			registrationRepeatPasswordEdit
+			registrationRepeatPasswordEdit,
 #pragma endregion
+#pragma region BasePopupWindow
+			popupWindow,
+			cancelButton
+#pragma endregion
+
 		};
 
 	private:
@@ -81,6 +86,10 @@ namespace UI
 		HWND getRegistrationPasswordEdit() const;
 
 		HWND getRegistrationRepeatPasswordEdit() const;
+
+		HWND getPopupWindow() const;
+
+		HWND getCancelButton() const;
 
 		HWND getWrapper() const;
 	};

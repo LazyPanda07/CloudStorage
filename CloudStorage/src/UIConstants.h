@@ -34,8 +34,8 @@ namespace UI
 	namespace screens
 	{
 		inline const std::wstring authorizationScreen = L"Authorization";
-		inline const std::wstring registrationScreen  = L"Registration";
-		inline const std::wstring cloudStorageScreen  = L"CloudStorage";
+		inline const std::wstring registrationScreen = L"Registration";
+		inline const std::wstring cloudStorageScreen = L"CloudStorage";
 	}
 
 	namespace popupWindows
@@ -97,7 +97,6 @@ namespace UI
 		inline constexpr int popupWindowWidth = 800;
 		inline constexpr int popupWindowHeight = 600;
 
-		inline constexpr int messageStaticWidth = 300;
 		inline constexpr int messageStaticHeight = 20;
 
 		inline constexpr int cancelButtonWidth = 200;
@@ -139,10 +138,17 @@ namespace UI
 			networkEventsCount
 		};
 
+		enum modifyEvents
+		{
+			updateProgressBarE = networkEventsCount + 1,
+			deletePopupWindowE,
+			modifyEventsCount
+		};
+
 		enum initEvents
 		{
-			initMainWindowPtrE = networkEventsCount + 1,
-			initDisableWindow,
+			initMainWindowPtrE = modifyEventsCount + 1,
+			initPopupWindow,
 			initEventsCount
 		};
 	}

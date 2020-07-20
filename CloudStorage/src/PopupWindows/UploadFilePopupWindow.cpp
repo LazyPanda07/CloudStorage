@@ -39,6 +39,16 @@ namespace UI
 			nullptr
 		);
 
-		SendMessageW(BasePopupWindow::popupWindow, UI::events::initDisableWindow, reinterpret_cast<WPARAM>(BasePopupWindow::disableWindow), NULL);
+		SendMessageW(BasePopupWindow::popupWindow, UI::events::initPopupWindow, reinterpret_cast<WPARAM>(this), NULL);
+	}
+
+	HWND UploadFilePopupWindow::getProgressBar() const
+	{
+		return progressBar;
+	}
+
+	void UploadFilePopupWindow::setProgressBarRange(int min, intmax_t max)
+	{
+		SendMessageW(progressBar, PBM_SETRANGE32, static_cast<WPARAM>(min), static_cast<LPARAM>(max));
 	}
 }
