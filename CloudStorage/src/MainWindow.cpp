@@ -8,6 +8,7 @@
 #include "Screens/AuthorizationScreen.h"
 #include "Screens/RegistrationScreen.h"
 #include "Screens/CloudStorageScreen.h"
+#include "PopupWindows/PopupWindowFunctions.h"
 #include "fileData.h"
 #include "UIConstants.h"
 #include "MainWindow.h"
@@ -130,9 +131,24 @@ namespace UI
 		return currentScreen.get();
 	}
 
+	BasePopupWindow* MainWindow::getCurrentPopupWindow()
+	{
+		return currentPopupWindow.get();
+	}
+
 	void MainWindow::setCurrentScreen(BaseScreen* screen)
 	{
 		currentScreen.reset(screen);
+	}
+
+	void MainWindow::setCurrentPopupWindow(BasePopupWindow* popupWindow)
+	{
+		currentPopupWindow.reset(popupWindow);
+	}
+
+	void MainWindow::deleteCurrentPopupWindow()
+	{
+		currentPopupWindow.reset();
 	}
 
 	void MainWindow::resize()
@@ -201,10 +217,12 @@ namespace UI
 
 LRESULT __stdcall MainWindowProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 {
+#pragma region Variables
 	static streams::IOSocketStream<char> clientStream(new buffers::IOSocketBuffer<char>(new web::HTTPNetwork()));
 	static UI::MainWindow* ptr = nullptr;
 	static vector<db::fileDataRepresentation> fileNames;
 	static wstring login;
+#pragma endregion
 
 	switch (msg)
 	{
@@ -282,6 +300,11 @@ LRESULT __stdcall MainWindowProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM
 			initAuthorizationScreen(*ptr);
 
 			ptr->getCurrentScreen()->pubShow();
+
+			break;
+
+		case UI::BasePopupWindow::cancel:
+			ptr->deleteCurrentPopupWindow();
 
 			break;
 		}

@@ -91,6 +91,14 @@ namespace utility
 		return { static_cast<LONG>(x - width * 0.5), static_cast<LONG>(y - height * 0.5) };
 	}
 
+	RECT getWindowPosition(HWND window)
+	{
+		RECT result;
+		GetWindowRect(window, &result);
+		MapWindowPoints(GetDesktopWindow(), GetParent(window), reinterpret_cast<LPPOINT>(&result), 2);
+		return result;
+	}
+
 	void insertSizeHeaderToHTTPMessage(string& HTTPMessage)
 	{
 		string totalHTTPMessageSize = customHTTPHeaderSize.data() + calculateHTTPMessageSize(HTTPMessage) + "\r\n";

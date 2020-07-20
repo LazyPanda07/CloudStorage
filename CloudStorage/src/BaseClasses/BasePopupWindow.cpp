@@ -14,6 +14,9 @@ namespace UI
 		WNDCLASSEXW popup = {};
 		POINT centerOfDesktop = utility::centerCoordinates(basePopupWindow::popupWindowWidth, basePopupWindow::popupWindowHeight);
 		POINT centerPopup;
+		RECT sizes;
+		LONG width;
+		LONG height;
 
 		popup.cbSize = sizeof(popup);
 		popup.lpfnWndProc = procedure;
@@ -29,7 +32,7 @@ namespace UI
 			NULL,
 			popup.lpszClassName,
 			popupWindowTitle.data(),
-			WS_OVERLAPPEDWINDOW | WS_VISIBLE,
+			WS_OVERLAPPEDWINDOW ^ WS_THICKFRAME | WS_VISIBLE,
 			centerOfDesktop.x,
 			centerOfDesktop.y,
 			basePopupWindow::popupWindowWidth,
@@ -39,8 +42,13 @@ namespace UI
 			nullptr,
 			nullptr
 		);
+		
+		GetClientRect(popupWindow, &sizes);
 
 		centerPopup = utility::centerCoordinates(basePopupWindow::messageStaticWidth, basePopupWindow::messageStaticHeight, popupWindow);
+		centerPopup.y /= 2;
+		width = sizes.right - sizes.left;
+		height = sizes.bottom - sizes.top;
 
 		messageStatic = CreateWindowExW
 		(
@@ -64,8 +72,8 @@ namespace UI
 			L"BUTTON",
 			L"Отмена",
 			WS_CHILDWINDOW | WS_VISIBLE,
-			basePopupWindow::popupWindowWidth - basePopupWindow::cancelButtonWidth,
-			basePopupWindow::popupWindowHeight - basePopupWindow::cancelButtonHeight,
+			width - basePopupWindow::cancelButtonWidth,
+			height - basePopupWindow::cancelButtonHeight,
 			basePopupWindow::cancelButtonWidth,
 			basePopupWindow::cancelButtonHeight,
 			popupWindow,
@@ -73,7 +81,6 @@ namespace UI
 			nullptr,
 			nullptr
 		);
-
 	}
 
 	HWND BasePopupWindow::getPopupWindow() const

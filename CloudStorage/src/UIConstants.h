@@ -38,6 +38,11 @@ namespace UI
 		inline const std::wstring cloudStorageScreen  = L"CloudStorage";
 	}
 
+	namespace popupWindows
+	{
+		inline const std::wstring uploadFilePopupWindow = L"UploadFilePopupWindow";
+	}
+
 	namespace authorizationScreen
 	{
 		inline constexpr int loginLimitCharacters = 16;
@@ -137,6 +142,7 @@ namespace UI
 		enum initEvents
 		{
 			initMainWindowPtrE = networkEventsCount + 1,
+			initDisableWindow,
 			initEventsCount
 		};
 	}

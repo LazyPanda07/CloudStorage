@@ -13,5 +13,7 @@ namespace utility
 
 	POINT centerCoordinates(LONG width, LONG height, HWND window = GetDesktopWindow());
 
+	RECT getWindowPosition(HWND window);
+
 	void insertSizeHeaderToHTTPMessage(std::string& HTTPMessage);
 }

@@ -4,6 +4,7 @@
 
 #include "UIInterfaces/IResizable.h"
 #include "BaseClasses/BaseScreen.h"
+#include "BaseClasses/BasePopupWindow.h"
 
 #include <Windows.h>
 
@@ -37,6 +38,7 @@ namespace UI
 		HWND mainWindow;
 
 		std::unique_ptr<BaseScreen> currentScreen;
+		std::unique_ptr<BasePopupWindow> currentPopupWindow;
 
 	private:
 		MainWindow();
@@ -50,7 +52,13 @@ namespace UI
 
 		BaseScreen* getCurrentScreen();
 
+		BasePopupWindow* getCurrentPopupWindow();
+
 		void setCurrentScreen(BaseScreen* screen);
+
+		void setCurrentPopupWindow(BasePopupWindow* popupWindow);
+
+		void deleteCurrentPopupWindow();
 
 		void resize() override;
 
