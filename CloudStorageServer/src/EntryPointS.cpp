@@ -20,7 +20,7 @@ int main(int argc, char** argv)
 
 	try
 	{
-		web::CloudStorageServer server;
+		web::CloudStorageServer server;	//TODO: add user interface
 		string command;
 
 		server.start();

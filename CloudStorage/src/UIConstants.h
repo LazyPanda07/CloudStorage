@@ -41,6 +41,7 @@ namespace UI
 	namespace popupWindows
 	{
 		inline const std::wstring uploadFilePopupWindow = L"UploadFilePopupWindow";
+		inline const std::wstring downloadFilePopupWidnow = L"DownloadFilePopupWindow";
 	}
 
 	namespace authorizationScreen

@@ -75,6 +75,12 @@
     <ClCompile Include="src\WindowProcedures\UploadFilePopupWindowProcedure.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
+    <ClCompile Include="src\PopupWindows\DownloadFilePopupWindow.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="src\WindowProcedures\DownloadFilePopupWindowProcedure.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\MainWindow.h">
@@ -141,6 +147,12 @@
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
     <ClInclude Include="src\WindowProcedures\UploadFilePopupWindowProcedure.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="src\PopupWindows\DownloadFilePopupWindow.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="src\WindowProcedures\DownloadFilePopupWindowProcedure.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
   </ItemGroup>

@@ -28,7 +28,7 @@ int main(int argc, char** argv)
 
 	try
 	{
-		web::APIServer server;
+		web::APIServer server;	//TODO: add user interface
 		string command;
 
 		server.start();

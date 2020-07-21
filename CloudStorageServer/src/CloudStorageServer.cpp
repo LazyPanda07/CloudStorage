@@ -18,6 +18,7 @@ namespace web
 	void CloudStorageServer::clientConnection(SOCKET clientSocket, sockaddr addr)
 	{
 		streams::IOSocketStream<char> clientStream(new buffers::IOSocketBuffer<char>(new FilesNetwork(clientSocket)));
+		//TODO: filesystem::path currentDirectory that save user's current directory
 
 		while (true)
 		{

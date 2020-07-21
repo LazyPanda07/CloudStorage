@@ -300,6 +300,7 @@ COPY /Y $(ProjectDir)settings.ini $(SolutionDir)$(Configuration)-$(Platform)\$(P
     <ClCompile Include="src\ClientTime.cpp" />
     <ClCompile Include="src\ErrorHandling.cpp" />
     <ClCompile Include="src\NetworkFunctions.cpp" />
+    <ClCompile Include="src\PopupWindows\DownloadFilePopupWindow.cpp" />
     <ClCompile Include="src\PopupWindows\PopupWindowFunctions.cpp" />
     <ClCompile Include="src\PopupWindows\UploadFilePopupWindow.cpp" />
     <ClCompile Include="src\Screens\CloudStorageScreen.cpp" />
@@ -313,6 +314,7 @@ COPY /Y $(ProjectDir)settings.ini $(SolutionDir)$(Configuration)-$(Platform)\$(P
     <ClCompile Include="src\SubclassProcedures\RegistrationScreenElementsSubclass.cpp" />
     <ClCompile Include="src\WindowProcedures\AuthorizationScreenProcedure.cpp" />
     <ClCompile Include="src\WindowProcedures\CloudStorageScreenProcedure.cpp" />
+    <ClCompile Include="src\WindowProcedures\DownloadFilePopupWindowProcedure.cpp" />
     <ClCompile Include="src\WindowProcedures\RegistrationScreenProcedure.cpp" />
     <ClCompile Include="src\WindowProcedures\UploadFilePopupWindowProcedure.cpp" />
   </ItemGroup>
@@ -324,6 +326,7 @@ COPY /Y $(ProjectDir)settings.ini $(SolutionDir)$(Configuration)-$(Platform)\$(P
     <ClInclude Include="src\HTTPNetwork.h" />
     <ClInclude Include="src\MainWindow.h" />
     <ClInclude Include="src\NetworkFunctions.h" />
+    <ClInclude Include="src\PopupWindows\DownloadFilePopupWindow.h" />
     <ClInclude Include="src\PopupWindows\PopupWindowFunctions.h" />
     <ClInclude Include="src\PopupWindows\UploadFilePopupWindow.h" />
     <ClInclude Include="src\Screens\AuthorizationScreen.h" />
@@ -337,6 +340,7 @@ COPY /Y $(ProjectDir)settings.ini $(SolutionDir)$(Configuration)-$(Platform)\$(P
     <ClInclude Include="src\UIInterfaces\IResizable.h" />
     <ClInclude Include="src\WindowProcedures\AuthorizationScreenProcedure.h" />
     <ClInclude Include="src\WindowProcedures\CloudStorageScreenProcedure.h" />
+    <ClInclude Include="src\WindowProcedures\DownloadFilePopupWindowProcedure.h" />
     <ClInclude Include="src\WindowProcedures\RegistrationScreenProcedure.h" />
     <ClInclude Include="src\WindowProcedures\UploadFilePopupWindowProcedure.h" />
   </ItemGroup>

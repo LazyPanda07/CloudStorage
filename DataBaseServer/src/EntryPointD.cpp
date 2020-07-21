@@ -20,7 +20,7 @@ int main(int argc, char** argv)
 
 	try
 	{
-		web::DataBaseServer server;
+		web::DataBaseServer server;	//TODO: add user interface
 		string command;
 
 		server.start();

@@ -14,6 +14,7 @@ int __stdcall wWinMain(HINSTANCE hInstance, HINSTANCE, PWSTR pCmdLine, int nCmdS
 	Log::init(false);
 
 	utility::INIParser parser(settingsFile);
+	//TODO: add path to downloaded files in settings.ini and check if path exists
 
 	web::HTTPNetwork::setAPIServerIp(parser.getKeyValue("APIServer", "ServerIp"));
 	web::HTTPNetwork::setAPIServerPort(parser.getKeyValue("APIServer", "ServerPort"));
