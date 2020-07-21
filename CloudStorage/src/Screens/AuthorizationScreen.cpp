@@ -27,9 +27,9 @@ namespace UI
 	}
 
 	AuthorizationScreen::AuthorizationScreen(HWND parentWindow) :
-		BaseScreen(parentWindow, screens::authorizationScreen, AuthorizationScreenProcedure)
+		BaseScreen(parentWindow, screens::authorizationScreenName, AuthorizationScreenProcedure)
 	{
-		POINT centerWrapper = utility::centerCoordinates(authorizationScreen::loginEditWidth, authorizationScreen::loginEditHeight, BaseScreen::wrapper);
+		POINT centerWrapper = utility::centerCoordinates(screens::authorizationScreen::loginEditWidth, screens::authorizationScreen::loginEditHeight, BaseScreen::wrapper);
 		centerWrapper.y /= 2;
 
 		screenName = CreateWindowExW
@@ -38,10 +38,10 @@ namespace UI
 			L"STATIC",
 			L"Авторизация",
 			WS_CHILDWINDOW | SS_CENTER | SS_SIMPLE,
-			centerWrapper.x + authorizationScreen::loginEditWidth / 3,
-			centerWrapper.y - authorizationScreen::defaultOffset - authorizationScreen::loginEditHeight,
-			authorizationScreen::screenNameStaticWidth,
-			authorizationScreen::screenNameStaticHeight,
+			centerWrapper.x + screens::authorizationScreen::loginEditWidth / 3,
+			centerWrapper.y - screens::authorizationScreen::defaultOffset - screens::authorizationScreen::loginEditHeight,
+			screens::authorizationScreen::screenNameStaticWidth,
+			screens::authorizationScreen::screenNameStaticHeight,
 			BaseScreen::wrapper,
 			HMENU(),
 			nullptr,
@@ -56,8 +56,8 @@ namespace UI
 			WS_CHILDWINDOW,
 			centerWrapper.x,
 			centerWrapper.y,
-			authorizationScreen::loginEditWidth,
-			authorizationScreen::loginEditHeight,
+			screens::authorizationScreen::loginEditWidth,
+			screens::authorizationScreen::loginEditHeight,
 			BaseScreen::wrapper,
 			HMENU(),
 			nullptr,
@@ -71,9 +71,9 @@ namespace UI
 			nullptr,
 			WS_CHILDWINDOW,
 			centerWrapper.x,
-			centerWrapper.y + authorizationScreen::defaultOffset + authorizationScreen::loginEditHeight,
-			authorizationScreen::passwordEditWidth,
-			authorizationScreen::passwordEditHeight,
+			centerWrapper.y + screens::authorizationScreen::defaultOffset + screens::authorizationScreen::loginEditHeight,
+			screens::authorizationScreen::passwordEditWidth,
+			screens::authorizationScreen::passwordEditHeight,
 			BaseScreen::wrapper,
 			HMENU(),
 			nullptr,
@@ -87,9 +87,9 @@ namespace UI
 			L"Вход",
 			WS_CHILDWINDOW,
 			centerWrapper.x,
-			centerWrapper.y + authorizationScreen::defaultOffset * 2 + authorizationScreen::loginEditHeight + authorizationScreen::passwordEditHeight,
-			authorizationScreen::enterButtonWidth,
-			authorizationScreen::enterButtonHeight,
+			centerWrapper.y + screens::authorizationScreen::defaultOffset * 2 + screens::authorizationScreen::loginEditHeight + screens::authorizationScreen::passwordEditHeight,
+			screens::authorizationScreen::enterButtonWidth,
+			screens::authorizationScreen::enterButtonHeight,
 			BaseScreen::wrapper,
 			HMENU(UI::buttons::authorization),
 			nullptr,
@@ -102,10 +102,10 @@ namespace UI
 			L"BUTTON",
 			L"Регистрация",
 			WS_CHILDWINDOW,
-			centerWrapper.x + authorizationScreen::enterButtonWidth,
-			centerWrapper.y + authorizationScreen::defaultOffset * 2 + authorizationScreen::loginEditHeight + authorizationScreen::passwordEditHeight,
-			authorizationScreen::toRegistrationScreenButtonWidth,
-			authorizationScreen::toRegistrationScreenButtonHeight,
+			centerWrapper.x + screens::authorizationScreen::enterButtonWidth,
+			centerWrapper.y + screens::authorizationScreen::defaultOffset * 2 + screens::authorizationScreen::loginEditHeight + screens::authorizationScreen::passwordEditHeight,
+			screens::authorizationScreen::toRegistrationScreenButtonWidth,
+			screens::authorizationScreen::toRegistrationScreenButtonHeight,
 			BaseScreen::wrapper,
 			HMENU(UI::buttons::toRegistrationScreen),
 			nullptr,
@@ -115,8 +115,8 @@ namespace UI
 		SendMessageW(login, EM_SETCUEBANNER, TRUE, reinterpret_cast<LPARAM>(L"Логин"));
 		SendMessageW(password, EM_SETCUEBANNER, TRUE, reinterpret_cast<LPARAM>(L"Пароль"));
 
-		SendMessageW(login, EM_LIMITTEXT, UI::authorizationScreen::loginLimitCharacters, NULL);
-		SendMessageW(password, EM_LIMITTEXT, UI::authorizationScreen::passwordLimitCharacters, NULL);
+		SendMessageW(login, EM_LIMITTEXT, UI::screens::authorizationScreen::loginLimitCharacters, NULL);
+		SendMessageW(password, EM_LIMITTEXT, UI::screens::authorizationScreen::passwordLimitCharacters, NULL);
 
 		SendMessageW(password, EM_SETPASSWORDCHAR, static_cast<WPARAM>(L'●'), NULL);
 
@@ -130,17 +130,17 @@ namespace UI
 
 	void AuthorizationScreen::resize()
 	{
-		POINT centerWrapper = utility::centerCoordinates(authorizationScreen::loginEditWidth, authorizationScreen::loginEditHeight, BaseScreen::wrapper);
+		POINT centerWrapper = utility::centerCoordinates(screens::authorizationScreen::loginEditWidth, screens::authorizationScreen::loginEditHeight, BaseScreen::wrapper);
 		centerWrapper.y /= 2;
 
 		SetWindowPos
 		(
 			screenName,
 			HWND_BOTTOM,
-			centerWrapper.x + authorizationScreen::loginEditWidth / 3,
-			centerWrapper.y - authorizationScreen::defaultOffset - authorizationScreen::loginEditHeight,
-			authorizationScreen::screenNameStaticWidth,
-			authorizationScreen::screenNameStaticHeight,
+			centerWrapper.x + screens::authorizationScreen::loginEditWidth / 3,
+			centerWrapper.y - screens::authorizationScreen::defaultOffset - screens::authorizationScreen::loginEditHeight,
+			screens::authorizationScreen::screenNameStaticWidth,
+			screens::authorizationScreen::screenNameStaticHeight,
 			SWP_SHOWWINDOW
 		);
 		SetWindowPos
@@ -149,8 +149,8 @@ namespace UI
 			HWND_BOTTOM,
 			centerWrapper.x,
 			centerWrapper.y,
-			authorizationScreen::loginEditWidth,
-			authorizationScreen::loginEditHeight,
+			screens::authorizationScreen::loginEditWidth,
+			screens::authorizationScreen::loginEditHeight,
 			SWP_SHOWWINDOW
 		);
 		SetWindowPos
@@ -158,9 +158,9 @@ namespace UI
 			password,
 			HWND_BOTTOM,
 			centerWrapper.x,
-			centerWrapper.y + authorizationScreen::defaultOffset + authorizationScreen::loginEditHeight,
-			authorizationScreen::passwordEditWidth,
-			authorizationScreen::passwordEditHeight,
+			centerWrapper.y + screens::authorizationScreen::defaultOffset + screens::authorizationScreen::loginEditHeight,
+			screens::authorizationScreen::passwordEditWidth,
+			screens::authorizationScreen::passwordEditHeight,
 			SWP_SHOWWINDOW
 		);
 		SetWindowPos
@@ -168,19 +168,19 @@ namespace UI
 			enterButton,
 			HWND_BOTTOM,
 			centerWrapper.x,
-			centerWrapper.y + authorizationScreen::defaultOffset * 2 + authorizationScreen::loginEditHeight + authorizationScreen::passwordEditHeight,
-			authorizationScreen::enterButtonWidth,
-			authorizationScreen::enterButtonHeight,
+			centerWrapper.y + screens::authorizationScreen::defaultOffset * 2 + screens::authorizationScreen::loginEditHeight + screens::authorizationScreen::passwordEditHeight,
+			screens::authorizationScreen::enterButtonWidth,
+			screens::authorizationScreen::enterButtonHeight,
 			SWP_SHOWWINDOW
 		);
 		SetWindowPos
 		(
 			toRegistrationScreenButton,
 			HWND_BOTTOM,
-			centerWrapper.x + authorizationScreen::enterButtonWidth,
-			centerWrapper.y + authorizationScreen::defaultOffset * 2 + authorizationScreen::loginEditHeight + authorizationScreen::passwordEditHeight,
-			authorizationScreen::toRegistrationScreenButtonWidth,
-			authorizationScreen::toRegistrationScreenButtonHeight,
+			centerWrapper.x + screens::authorizationScreen::enterButtonWidth,
+			centerWrapper.y + screens::authorizationScreen::defaultOffset * 2 + screens::authorizationScreen::loginEditHeight + screens::authorizationScreen::passwordEditHeight,
+			screens::authorizationScreen::toRegistrationScreenButtonWidth,
+			screens::authorizationScreen::toRegistrationScreenButtonHeight,
 			SWP_SHOWWINDOW
 		);
 	}

@@ -29,7 +29,7 @@ namespace UI
 	}
 
 	CloudStorageScreen::CloudStorageScreen(HWND parentWindow) :
-		BaseScreen(parentWindow, screens::cloudStorageScreen, CloudStorageScreenProcedure)
+		BaseScreen(parentWindow, screens::cloudStorageScreenName, CloudStorageScreenProcedure)
 	{
 		RECT wrapperSizes;
 

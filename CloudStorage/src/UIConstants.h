@@ -33,85 +33,85 @@ namespace UI
 
 	namespace screens
 	{
-		inline const std::wstring authorizationScreen = L"Authorization";
-		inline const std::wstring registrationScreen = L"Registration";
-		inline const std::wstring cloudStorageScreen = L"CloudStorage";
+		inline const std::wstring authorizationScreenName = L"Authorization";
+		inline const std::wstring registrationScreenName = L"Registration";
+		inline const std::wstring cloudStorageScreenName = L"CloudStorage";
+
+		namespace authorizationScreen
+		{
+			inline constexpr int loginLimitCharacters = 16;
+			inline constexpr int passwordLimitCharacters = 16;
+
+			inline constexpr int defaultOffset = 10;
+
+			inline constexpr int screenNameStaticWidth = 100;
+			inline constexpr int screenNameStaticHeight = 20;
+
+			inline constexpr int loginEditWidth = 300;
+			inline constexpr int loginEditHeight = 20;
+
+			inline constexpr int passwordEditWidth = 300;
+			inline constexpr int passwordEditHeight = 20;
+
+			inline constexpr int enterButtonWidth = 120;
+			inline constexpr int enterButtonHeight = 20;
+
+			inline constexpr int toRegistrationScreenButtonWidth = 180;
+			inline constexpr int toRegistrationScreenButtonHeight = 20;
+		}
+
+		namespace registrationScreen
+		{
+			inline constexpr int loginLimitCharacters = 16;
+			inline constexpr int passwordLimitCharacters = 16;
+
+			inline constexpr int defaultOffset = 10;
+
+			inline constexpr int screenNameStaticWidth = 100;
+			inline constexpr int screenNameStaticHeight = 20;
+
+			inline constexpr int loginEditWidth = 300;
+			inline constexpr int loginEditHeight = 20;
+
+			inline constexpr int passwordEditWidth = 300;
+			inline constexpr int passwordEditHeight = 20;
+
+			inline constexpr int repeatPasswordEditWidth = 300;
+			inline constexpr int repeatPasswordEditHeight = 20;
+
+			inline constexpr int registrationButtonWidth = 180;
+			inline constexpr int registrationButtonHeight = 20;
+
+			inline constexpr int toAuthorizationScreenButtonWidth = 120;
+			inline constexpr int toAuthorizationScreenButtonHeight = 20;
+		}
 	}
 
 	namespace popupWindows
 	{
-		inline const std::wstring uploadFilePopupWindow = L"UploadFilePopupWindow";
-		inline const std::wstring downloadFilePopupWidnow = L"DownloadFilePopupWindow";
-	}
+		inline const std::wstring uploadFilePopupWindowName = L"UploadFilePopupWindow";
+		inline const std::wstring downloadFilePopupWindowName = L"DownloadFilePopupWindow";
 
-	namespace authorizationScreen
-	{
-		inline constexpr int loginLimitCharacters = 16;
-		inline constexpr int passwordLimitCharacters = 16;
+		namespace basePopupWindow
+		{
+			inline constexpr int popupWindowWidth = 800;
+			inline constexpr int popupWindowHeight = 600;
 
-		inline constexpr int defaultOffset = 10;
+			inline constexpr int messageStaticHeight = 20;
 
-		inline constexpr int screenNameStaticWidth = 100;
-		inline constexpr int screenNameStaticHeight = 20;
+			inline constexpr int cancelButtonWidth = 200;
+			inline constexpr int cancelButtonHeight = 20;
+		}
 
-		inline constexpr int loginEditWidth = 300;
-		inline constexpr int loginEditHeight = 20;
+		namespace uploadFilePopupWindow
+		{
+			inline const std::wstring title = L"Загрузка файла";
+		}
 
-		inline constexpr int passwordEditWidth = 300;
-		inline constexpr int passwordEditHeight = 20;
-
-		inline constexpr int enterButtonWidth = 120;
-		inline constexpr int enterButtonHeight = 20;
-
-		inline constexpr int toRegistrationScreenButtonWidth = 180;
-		inline constexpr int toRegistrationScreenButtonHeight = 20;
-	}
-
-	namespace registrationScreen
-	{
-		inline constexpr int loginLimitCharacters = 16;
-		inline constexpr int passwordLimitCharacters = 16;
-
-		inline constexpr int defaultOffset = 10;
-
-		inline constexpr int screenNameStaticWidth = 100;
-		inline constexpr int screenNameStaticHeight = 20;
-
-		inline constexpr int loginEditWidth = 300;
-		inline constexpr int loginEditHeight = 20;
-
-		inline constexpr int passwordEditWidth = 300;
-		inline constexpr int passwordEditHeight = 20;
-
-		inline constexpr int repeatPasswordEditWidth = 300;
-		inline constexpr int repeatPasswordEditHeight = 20;
-
-		inline constexpr int registrationButtonWidth = 180;
-		inline constexpr int registrationButtonHeight = 20;
-
-		inline constexpr int toAuthorizationScreenButtonWidth = 120;
-		inline constexpr int toAuthorizationScreenButtonHeight = 20;
-	}
-
-	namespace basePopupWindow
-	{
-		inline constexpr int popupWindowWidth = 800;
-		inline constexpr int popupWindowHeight = 600;
-
-		inline constexpr int messageStaticHeight = 20;
-
-		inline constexpr int cancelButtonWidth = 200;
-		inline constexpr int cancelButtonHeight = 20;
-	}
-
-	namespace uploadFilePopupWindow
-	{
-		inline const std::wstring title = L"Загрузка файла";
-	}
-
-	namespace downloadFilePopupWindow
-	{
-		inline const std::wstring title = L"Скачивание файла";
+		namespace downloadFilePopupWindow
+		{
+			inline const std::wstring title = L"Скачивание файла";
+		}
 	}
 
 	namespace buttons

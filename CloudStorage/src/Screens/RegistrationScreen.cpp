@@ -28,10 +28,10 @@ namespace UI
 	}
 
 	RegistrationScreen::RegistrationScreen(HWND parentWindow) :
-		BaseScreen(parentWindow, screens::registrationScreen, RegistrationScreenProcedure)
+		BaseScreen(parentWindow, screens::registrationScreenName, RegistrationScreenProcedure)
 	{
 
-		POINT centerWrapper = utility::centerCoordinates(registrationScreen::loginEditWidth, registrationScreen::loginEditHeight, BaseScreen::wrapper);
+		POINT centerWrapper = utility::centerCoordinates(screens::registrationScreen::loginEditWidth, screens::registrationScreen::loginEditHeight, BaseScreen::wrapper);
 		centerWrapper.y /= 2;
 
 		screenName = CreateWindowExW
@@ -40,10 +40,10 @@ namespace UI
 			L"STATIC",
 			L"Регистрация",
 			WS_CHILDWINDOW | SS_CENTER | SS_SIMPLE,
-			centerWrapper.x + registrationScreen::loginEditWidth / 3,
-			centerWrapper.y - registrationScreen::defaultOffset - registrationScreen::loginEditHeight,
-			registrationScreen::screenNameStaticWidth,
-			registrationScreen::screenNameStaticHeight,
+			centerWrapper.x + screens::registrationScreen::loginEditWidth / 3,
+			centerWrapper.y - screens::registrationScreen::defaultOffset - screens::registrationScreen::loginEditHeight,
+			screens::registrationScreen::screenNameStaticWidth,
+			screens::registrationScreen::screenNameStaticHeight,
 			BaseScreen::wrapper,
 			HMENU(),
 			nullptr,
@@ -58,8 +58,8 @@ namespace UI
 			WS_CHILDWINDOW,
 			centerWrapper.x,
 			centerWrapper.y,
-			registrationScreen::loginEditWidth,
-			registrationScreen::loginEditHeight,
+			screens::registrationScreen::loginEditWidth,
+			screens::registrationScreen::loginEditHeight,
 			BaseScreen::wrapper,
 			HMENU(),
 			nullptr,
@@ -73,9 +73,9 @@ namespace UI
 			nullptr,
 			WS_CHILDWINDOW,
 			centerWrapper.x,
-			centerWrapper.y + registrationScreen::defaultOffset + registrationScreen::loginEditHeight,
-			registrationScreen::passwordEditWidth,
-			registrationScreen::passwordEditHeight,
+			centerWrapper.y + screens::registrationScreen::defaultOffset + screens::registrationScreen::loginEditHeight,
+			screens::registrationScreen::passwordEditWidth,
+			screens::registrationScreen::passwordEditHeight,
 			BaseScreen::wrapper,
 			HMENU(),
 			nullptr,
@@ -89,9 +89,9 @@ namespace UI
 			nullptr,
 			WS_CHILDWINDOW,
 			centerWrapper.x,
-			centerWrapper.y + registrationScreen::defaultOffset * 2 + registrationScreen::loginEditHeight + registrationScreen::passwordEditHeight,
-			registrationScreen::repeatPasswordEditWidth,
-			registrationScreen::repeatPasswordEditHeight,
+			centerWrapper.y + screens::registrationScreen::defaultOffset * 2 + screens::registrationScreen::loginEditHeight + screens::registrationScreen::passwordEditHeight,
+			screens::registrationScreen::repeatPasswordEditWidth,
+			screens::registrationScreen::repeatPasswordEditHeight,
 			BaseScreen::wrapper,
 			HMENU(),
 			nullptr,
@@ -105,9 +105,9 @@ namespace UI
 			L"Зарегистрироваться",
 			WS_CHILDWINDOW,
 			centerWrapper.x,
-			centerWrapper.y + registrationScreen::defaultOffset * 3 + registrationScreen::loginEditHeight + registrationScreen::passwordEditHeight + registrationScreen::repeatPasswordEditHeight,
-			registrationScreen::registrationButtonWidth,
-			registrationScreen::registrationButtonHeight,
+			centerWrapper.y + screens::registrationScreen::defaultOffset * 3 + screens::registrationScreen::loginEditHeight + screens::registrationScreen::passwordEditHeight + screens::registrationScreen::repeatPasswordEditHeight,
+			screens::registrationScreen::registrationButtonWidth,
+			screens::registrationScreen::registrationButtonHeight,
 			BaseScreen::wrapper,
 			HMENU(UI::buttons::registration),
 			nullptr,
@@ -120,10 +120,10 @@ namespace UI
 			L"BUTTON",
 			L"Авторизация",
 			WS_CHILDWINDOW,
-			centerWrapper.x + registrationScreen::registrationButtonWidth,
-			centerWrapper.y + registrationScreen::defaultOffset * 3 + registrationScreen::loginEditHeight + registrationScreen::passwordEditHeight + registrationScreen::repeatPasswordEditHeight,
-			registrationScreen::toAuthorizationScreenButtonWidth,
-			registrationScreen::toAuthorizationScreenButtonHeight,
+			centerWrapper.x + screens::registrationScreen::registrationButtonWidth,
+			centerWrapper.y + screens::registrationScreen::defaultOffset * 3 + screens::registrationScreen::loginEditHeight + screens::registrationScreen::passwordEditHeight + screens::registrationScreen::repeatPasswordEditHeight,
+			screens::registrationScreen::toAuthorizationScreenButtonWidth,
+			screens::registrationScreen::toAuthorizationScreenButtonHeight,
 			BaseScreen::wrapper,
 			HMENU(UI::buttons::toAuthorizationScreen),
 			nullptr,
@@ -134,9 +134,9 @@ namespace UI
 		SendMessageW(password, EM_SETCUEBANNER, TRUE, reinterpret_cast<LPARAM>(L"Пароль"));
 		SendMessageW(repeatPassword, EM_SETCUEBANNER, TRUE, reinterpret_cast<LPARAM>(L"Подтвердите пароль"));
 
-		SendMessageW(login, EM_LIMITTEXT, UI::registrationScreen::loginLimitCharacters, NULL);
-		SendMessageW(password, EM_LIMITTEXT, UI::registrationScreen::passwordLimitCharacters, NULL);
-		SendMessageW(password, EM_LIMITTEXT, UI::registrationScreen::passwordLimitCharacters, NULL);
+		SendMessageW(login, EM_LIMITTEXT, UI::screens::registrationScreen::loginLimitCharacters, NULL);
+		SendMessageW(password, EM_LIMITTEXT, UI::screens::registrationScreen::passwordLimitCharacters, NULL);
+		SendMessageW(password, EM_LIMITTEXT, UI::screens::registrationScreen::passwordLimitCharacters, NULL);
 
 		SendMessageW(password, EM_SETPASSWORDCHAR, static_cast<WPARAM>(L'●'), NULL);
 		SendMessageW(repeatPassword, EM_SETPASSWORDCHAR, static_cast<WPARAM>(L'●'), NULL);
@@ -152,17 +152,17 @@ namespace UI
 
 	void RegistrationScreen::resize()
 	{
-		POINT centerWrapper = utility::centerCoordinates(registrationScreen::loginEditWidth, registrationScreen::loginEditHeight, BaseScreen::wrapper);
+		POINT centerWrapper = utility::centerCoordinates(screens::registrationScreen::loginEditWidth, screens::registrationScreen::loginEditHeight, BaseScreen::wrapper);
 		centerWrapper.y /= 2;
 
 		SetWindowPos
 		(
 			screenName,
 			HWND_BOTTOM,
-			centerWrapper.x + registrationScreen::loginEditWidth / 3,
-			centerWrapper.y - registrationScreen::defaultOffset - registrationScreen::loginEditHeight,
-			registrationScreen::screenNameStaticWidth,
-			registrationScreen::screenNameStaticHeight,
+			centerWrapper.x + screens::registrationScreen::loginEditWidth / 3,
+			centerWrapper.y - screens::registrationScreen::defaultOffset - screens::registrationScreen::loginEditHeight,
+			screens::registrationScreen::screenNameStaticWidth,
+			screens::registrationScreen::screenNameStaticHeight,
 			SWP_SHOWWINDOW
 		);
 		SetWindowPos
@@ -171,8 +171,8 @@ namespace UI
 			HWND_BOTTOM,
 			centerWrapper.x,
 			centerWrapper.y,
-			registrationScreen::loginEditWidth,
-			registrationScreen::loginEditHeight,
+			screens::registrationScreen::loginEditWidth,
+			screens::registrationScreen::loginEditHeight,
 			SWP_SHOWWINDOW
 		);
 		SetWindowPos
@@ -180,9 +180,9 @@ namespace UI
 			password,
 			HWND_BOTTOM,
 			centerWrapper.x,
-			centerWrapper.y + registrationScreen::defaultOffset + registrationScreen::loginEditHeight,
-			registrationScreen::passwordEditWidth,
-			registrationScreen::passwordEditHeight,
+			centerWrapper.y + screens::registrationScreen::defaultOffset + screens::registrationScreen::loginEditHeight,
+			screens::registrationScreen::passwordEditWidth,
+			screens::registrationScreen::passwordEditHeight,
 			SWP_SHOWWINDOW
 		);
 		SetWindowPos
@@ -190,9 +190,9 @@ namespace UI
 			repeatPassword,
 			HWND_BOTTOM,
 			centerWrapper.x,
-			centerWrapper.y + registrationScreen::defaultOffset * 2 + registrationScreen::loginEditHeight + registrationScreen::passwordEditHeight,
-			registrationScreen::repeatPasswordEditWidth,
-			registrationScreen::repeatPasswordEditHeight,
+			centerWrapper.y + screens::registrationScreen::defaultOffset * 2 + screens::registrationScreen::loginEditHeight + screens::registrationScreen::passwordEditHeight,
+			screens::registrationScreen::repeatPasswordEditWidth,
+			screens::registrationScreen::repeatPasswordEditHeight,
 			SWP_SHOWWINDOW
 		);
 		SetWindowPos
@@ -200,19 +200,19 @@ namespace UI
 			registrationButton,
 			HWND_BOTTOM,
 			centerWrapper.x,
-			centerWrapper.y + registrationScreen::defaultOffset * 3 + registrationScreen::loginEditHeight + registrationScreen::passwordEditHeight + registrationScreen::repeatPasswordEditHeight,
-			registrationScreen::registrationButtonWidth,
-			registrationScreen::registrationButtonHeight,
+			centerWrapper.y + screens::registrationScreen::defaultOffset * 3 + screens::registrationScreen::loginEditHeight + screens::registrationScreen::passwordEditHeight + screens::registrationScreen::repeatPasswordEditHeight,
+			screens::registrationScreen::registrationButtonWidth,
+			screens::registrationScreen::registrationButtonHeight,
 			SWP_SHOWWINDOW
 		);
 		SetWindowPos
 		(
 			toAuthorizationScreenButton,
 			HWND_BOTTOM,
-			centerWrapper.x + registrationScreen::registrationButtonWidth,
-			centerWrapper.y + registrationScreen::defaultOffset * 3 + registrationScreen::loginEditHeight + registrationScreen::passwordEditHeight + registrationScreen::repeatPasswordEditHeight,
-			registrationScreen::toAuthorizationScreenButtonWidth,
-			registrationScreen::toAuthorizationScreenButtonHeight,
+			centerWrapper.x + screens::registrationScreen::registrationButtonWidth,
+			centerWrapper.y + screens::registrationScreen::defaultOffset * 3 + screens::registrationScreen::loginEditHeight + screens::registrationScreen::passwordEditHeight + screens::registrationScreen::repeatPasswordEditHeight,
+			screens::registrationScreen::toAuthorizationScreenButtonWidth,
+			screens::registrationScreen::toAuthorizationScreenButtonHeight,
 			SWP_SHOWWINDOW
 		);
 	}

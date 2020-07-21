@@ -12,7 +12,7 @@ using namespace std;
 namespace UI
 {
 	UploadFilePopupWindow::UploadFilePopupWindow(HWND disableWindow, const wstring& message) :
-		BasePopupWindow(disableWindow, popupWindows::uploadFilePopupWindow, uploadFilePopupWindow::title, UploadFilePopupWindowProcedure, message)
+		BasePopupWindow(disableWindow, popupWindows::uploadFilePopupWindowName, popupWindows::uploadFilePopupWindow::title, UploadFilePopupWindowProcedure, message)
 	{
 		RECT messagePos = utility::getWindowPosition(BasePopupWindow::messageStatic);
 		RECT sizes;
@@ -31,7 +31,7 @@ namespace UI
 			nullptr,
 			WS_CHILDWINDOW | WS_VISIBLE,
 			0,
-			messagePos.top + basePopupWindow::messageStaticHeight,
+			messagePos.top + popupWindows::basePopupWindow::messageStaticHeight,
 			width,
 			GetSystemMetrics(SM_CYVSCROLL),
 			BasePopupWindow::popupWindow,

@@ -12,7 +12,7 @@ namespace UI
 		disableWindow(disableWindow)
 	{
 		WNDCLASSEXW popup = {};
-		POINT centerOfDesktop = utility::centerCoordinates(basePopupWindow::popupWindowWidth, basePopupWindow::popupWindowHeight);
+		POINT centerOfDesktop = utility::centerCoordinates(popupWindows::basePopupWindow::popupWindowWidth, popupWindows::basePopupWindow::popupWindowHeight);
 		POINT centerPopup;
 		RECT sizes;
 		LONG width;
@@ -35,8 +35,8 @@ namespace UI
 			WS_OVERLAPPEDWINDOW ^ WS_THICKFRAME | WS_VISIBLE,
 			centerOfDesktop.x,
 			centerOfDesktop.y,
-			basePopupWindow::popupWindowWidth,
-			basePopupWindow::popupWindowHeight,
+			popupWindows::basePopupWindow::popupWindowWidth,
+			popupWindows::basePopupWindow::popupWindowHeight,
 			nullptr,
 			HMENU(),
 			nullptr,
@@ -47,7 +47,7 @@ namespace UI
 
 		width = sizes.right - sizes.left;
 		height = sizes.bottom - sizes.top;
-		centerPopup = utility::centerCoordinates(width, basePopupWindow::messageStaticHeight, popupWindow);
+		centerPopup = utility::centerCoordinates(width, popupWindows::basePopupWindow::messageStaticHeight, popupWindow);
 		centerPopup.y /= 2;
 
 		messageStatic = CreateWindowExW
@@ -59,7 +59,7 @@ namespace UI
 			0,
 			centerPopup.y,
 			width,
-			basePopupWindow::messageStaticHeight,
+			popupWindows::basePopupWindow::messageStaticHeight,
 			popupWindow,
 			HMENU(),
 			nullptr,
@@ -72,10 +72,10 @@ namespace UI
 			L"BUTTON",
 			L"Отмена",
 			WS_CHILDWINDOW | WS_VISIBLE,
-			width - basePopupWindow::cancelButtonWidth,
-			height - basePopupWindow::cancelButtonHeight,
-			basePopupWindow::cancelButtonWidth,
-			basePopupWindow::cancelButtonHeight,
+			width - popupWindows::basePopupWindow::cancelButtonWidth,
+			height - popupWindows::basePopupWindow::cancelButtonHeight,
+			popupWindows::basePopupWindow::cancelButtonWidth,
+			popupWindows::basePopupWindow::cancelButtonHeight,
 			popupWindow,
 			HMENU(cancel),
 			nullptr,

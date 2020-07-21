@@ -12,7 +12,7 @@ using namespace std;
 namespace UI
 {
 	DownloadFilePopupWindow::DownloadFilePopupWindow(HWND disableWindow, const wstring& message) :
-		BasePopupWindow(disableWindow, popupWindows::downloadFilePopupWidnow, downloadFilePopupWindow::title, DownloadFilePopupWindowProcedure, message)
+		BasePopupWindow(disableWindow, popupWindows::downloadFilePopupWindowName, popupWindows::downloadFilePopupWindow::title, DownloadFilePopupWindowProcedure, message)
 	{
 		RECT messagePos = utility::getWindowPosition(BasePopupWindow::messageStatic);
 		RECT sizes;
@@ -31,7 +31,7 @@ namespace UI
 			nullptr,
 			WS_CHILDWINDOW | WS_VISIBLE,
 			0,
-			messagePos.top + basePopupWindow::messageStaticHeight,
+			messagePos.top + popupWindows::basePopupWindow::messageStaticHeight,
 			width,
 			GetSystemMetrics(SM_CYVSCROLL),
 			BasePopupWindow::popupWindow,
