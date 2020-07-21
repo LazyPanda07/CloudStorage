@@ -3,6 +3,7 @@
 #include "UploadFilePopupWindow.h"
 #include "UtilityFunctions.h"
 #include "../UIConstants.h"
+#include "../WindowProcedures/UploadFilePopupWindowProcedure.h"
 
 #include <commctrl.h>
 
@@ -10,8 +11,8 @@ using namespace std;
 
 namespace UI
 {
-	UploadFilePopupWindow::UploadFilePopupWindow(HWND disableWindow, const wstring& popupWindowTitle, WNDPROC procedure, const wstring& message) :
-		BasePopupWindow(disableWindow, popupWindows::uploadFilePopupWindow, popupWindowTitle, procedure, message)
+	UploadFilePopupWindow::UploadFilePopupWindow(HWND disableWindow, const wstring& message) :
+		BasePopupWindow(disableWindow, popupWindows::uploadFilePopupWindow, uploadFilePopupWindow::title, UploadFilePopupWindowProcedure, message)
 	{
 		RECT messagePos = utility::getWindowPosition(BasePopupWindow::messageStatic);
 		RECT sizes;

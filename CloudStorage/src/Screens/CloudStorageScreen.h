@@ -22,7 +22,7 @@ namespace UI
 		void destroy() override;
 
 	public:
-		CloudStorageScreen(HWND parentWindow, WNDPROC procedure);
+		CloudStorageScreen(HWND parentWindow);
 
 		void resize() override;
 

@@ -4,6 +4,7 @@
 #include "UtilityFunctions.h"
 #include "../UIConstants.h"
 #include "../SubclassProcedures/RegistrationScreenElementsSubclass.h"
+#include "../WindowProcedures/RegistrationScreenProcedure.h"
 
 #include <Commctrl.h>
 
@@ -26,8 +27,8 @@ namespace UI
 
 	}
 
-	RegistrationScreen::RegistrationScreen(HWND parentWindow, WNDPROC procedure) :
-		BaseScreen(parentWindow, screens::registrationScreen, procedure)
+	RegistrationScreen::RegistrationScreen(HWND parentWindow) :
+		BaseScreen(parentWindow, screens::registrationScreen, RegistrationScreenProcedure)
 	{
 
 		POINT centerWrapper = utility::centerCoordinates(registrationScreen::loginEditWidth, registrationScreen::loginEditHeight, BaseScreen::wrapper);

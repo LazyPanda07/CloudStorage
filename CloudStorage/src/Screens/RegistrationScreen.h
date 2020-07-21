@@ -23,7 +23,7 @@ namespace UI
 		void destroy() override;
 
 	public:
-		RegistrationScreen(HWND parentWindow, WNDPROC procedure);
+		RegistrationScreen(HWND parentWindow);
 
 		void resize() override;
 

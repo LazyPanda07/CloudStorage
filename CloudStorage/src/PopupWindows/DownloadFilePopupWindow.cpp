@@ -3,6 +3,7 @@
 #include "DownloadFilePopupWindow.h"
 #include "UtilityFunctions.h"
 #include "../UIConstants.h"
+#include "../WindowProcedures/DownloadFilePopupWindowProcedure.h"
 
 #include <commctrl.h>
 
@@ -10,8 +11,8 @@ using namespace std;
 
 namespace UI
 {
-	DownloadFilePopupWindow::DownloadFilePopupWindow(HWND disableWindow, const wstring& popupWindowTitle, WNDPROC procedure, const wstring& message) :
-		BasePopupWindow(disableWindow, popupWindows::downloadFilePopupWidnow, popupWindowTitle, procedure, message)
+	DownloadFilePopupWindow::DownloadFilePopupWindow(HWND disableWindow, const wstring& message) :
+		BasePopupWindow(disableWindow, popupWindows::downloadFilePopupWidnow, downloadFilePopupWindow::title, DownloadFilePopupWindowProcedure, message)
 	{
 		RECT messagePos = utility::getWindowPosition(BasePopupWindow::messageStatic);
 		RECT sizes;

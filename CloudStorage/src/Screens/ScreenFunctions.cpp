@@ -6,9 +6,6 @@
 #include "AuthorizationScreen.h"
 #include "UtilityFunctions.h"
 #include "../UIConstants.h"
-#include "../WindowProcedures/AuthorizationScreenProcedure.h"
-#include "../WindowProcedures/RegistrationScreenProcedure.h"
-#include "../WindowProcedures/CloudStorageScreenProcedure.h"
 
 #include <commctrl.h>
 
@@ -28,17 +25,17 @@ void updateSizeColumn(UI::MainWindow& ref, const vector<db::fileDataRepresentati
 
 void initCloudStorageScreen(UI::MainWindow& ref)
 {
-	ref.setCurrentScreen(new UI::CloudStorageScreen(ref.getMainWindow(), CloudStorageScreenProcedure));
+	ref.setCurrentScreen(new UI::CloudStorageScreen(ref.getMainWindow()));
 }
 
 void initRegistrationScreen(UI::MainWindow& ref)
 {
-	ref.setCurrentScreen(new UI::RegistrationScreen(ref.getMainWindow(), RegistrationScreenProcedure));
+	ref.setCurrentScreen(new UI::RegistrationScreen(ref.getMainWindow()));
 }
 
 void initAuthorizationScreen(UI::MainWindow& ref)
 {
-	ref.setCurrentScreen(new UI::AuthorizationScreen(ref.getMainWindow(), AuthorizationScreenProcedure));
+	ref.setCurrentScreen(new UI::AuthorizationScreen(ref.getMainWindow()));
 }
 
 bool removeFileDialog(UI::MainWindow& ref, const std::wstring& fileName)

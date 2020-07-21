@@ -2,6 +2,7 @@
 
 #include "CloudStorageScreen.h"
 #include "../UIConstants.h"
+#include "../WindowProcedures/CloudStorageScreenProcedure.h"
 
 #include <Richedit.h>
 #include <commctrl.h>
@@ -27,8 +28,8 @@ namespace UI
 
 	}
 
-	CloudStorageScreen::CloudStorageScreen(HWND parentWindow, WNDPROC procedure) :
-		BaseScreen(parentWindow, screens::cloudStorageScreen, procedure)
+	CloudStorageScreen::CloudStorageScreen(HWND parentWindow) :
+		BaseScreen(parentWindow, screens::cloudStorageScreen, CloudStorageScreenProcedure)
 	{
 		RECT wrapperSizes;
 

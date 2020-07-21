@@ -24,7 +24,7 @@ namespace UI
 		void destroy() override;
 
 	public:
-		AuthorizationScreen(HWND parentWindow, WNDPROC procedure);
+		AuthorizationScreen(HWND parentWindow);
 
 		void resize() override;
 

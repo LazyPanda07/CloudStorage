@@ -4,6 +4,7 @@
 #include "UtilityFunctions.h"
 #include "../UIConstants.h"
 #include "../SubclassProcedures/AuthorizationScreenElementsSubclass.h"
+#include "../WindowProcedures/AuthorizationScreenProcedure.h"
 
 #include <Commctrl.h>
 
@@ -25,8 +26,8 @@ namespace UI
 
 	}
 
-	AuthorizationScreen::AuthorizationScreen(HWND parentWindow, WNDPROC procedure) :
-		BaseScreen(parentWindow, screens::authorizationScreen, procedure)
+	AuthorizationScreen::AuthorizationScreen(HWND parentWindow) :
+		BaseScreen(parentWindow, screens::authorizationScreen, AuthorizationScreenProcedure)
 	{
 		POINT centerWrapper = utility::centerCoordinates(authorizationScreen::loginEditWidth, authorizationScreen::loginEditHeight, BaseScreen::wrapper);
 		centerWrapper.y /= 2;

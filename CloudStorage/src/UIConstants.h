@@ -104,6 +104,16 @@ namespace UI
 		inline constexpr int cancelButtonHeight = 20;
 	}
 
+	namespace uploadFilePopupWindow
+	{
+		inline const std::wstring title = L"Загрузка файла";
+	}
+
+	namespace downloadFilePopupWindow
+	{
+		inline const std::wstring title = L"Скачивание файла";
+	}
+
 	namespace buttons
 	{
 		enum toolbarButtons

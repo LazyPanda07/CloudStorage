@@ -10,7 +10,7 @@ namespace UI
 		HWND progressBar;
 
 	public:
-		UploadFilePopupWindow(HWND disableWindow, const std::wstring& popupWindowTitle, WNDPROC procedure, const std::wstring& message);
+		UploadFilePopupWindow(HWND disableWindow, const std::wstring& message);
 
 		HWND getProgressBar() const;
 
