@@ -543,7 +543,7 @@ void asyncDownloadFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clien
 	bool lastPacket;
 	string response;
 
-	ofstream out(sFileName, ios::binary);
+	ofstream out(ref.getDownloadFolder().append(sFileName), ios::binary);
 
 	isCancel = false;
 
@@ -568,7 +568,7 @@ void asyncDownloadFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clien
 			SendMessageW(ref.getMainWindow(), UI::events::multipleDownloadE, NULL, NULL);
 			out.close();
 
-			//TODO: delete canceled file with path from settings.ini
+			filesystem::remove(filesystem::path(ref.getDownloadFolder()).append(sFileName));
 
 			return;
 		}
@@ -620,7 +620,7 @@ void asyncDownloadFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clien
 
 	this_thread::sleep_for(0.5s);
 
-	if (filesystem::file_size(filesystem::current_path().append(sFileName)) == totalFileSize)
+	if (filesystem::file_size(ref.getDownloadFolder().append(sFileName)) == totalFileSize)
 	{
 		wstring message = fileName + L"\r\n" + filesResponses::successDownloadFile.data();
 

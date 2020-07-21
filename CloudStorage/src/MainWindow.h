@@ -1,6 +1,7 @@
 #pragma once
 
 #include <memory>
+#include <filesystem>
 
 #include "UIInterfaces/IResizable.h"
 #include "BaseClasses/BaseScreen.h"
@@ -40,10 +41,12 @@ namespace UI
 		};
 
 	private:
-		HWND mainWindow;
-
 		std::unique_ptr<BaseScreen> currentScreen;
 		std::unique_ptr<BasePopupWindow> currentPopupWindow;
+		
+		static inline std::filesystem::path downloadFolder;
+
+		HWND mainWindow;
 
 	private:
 		MainWindow();
@@ -54,6 +57,10 @@ namespace UI
 
 	public:
 		static MainWindow& get();
+
+		static void setDownloadFolder(std::string&& path) noexcept;
+
+		static std::filesystem::path getDownloadFolder() noexcept;
 
 		BaseScreen* getCurrentScreen();
 

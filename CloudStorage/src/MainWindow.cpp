@@ -131,6 +131,32 @@ namespace UI
 		return instance;
 	}
 
+	void MainWindow::setDownloadFolder(string&& path) noexcept
+	{
+		if (path == "Default")
+		{
+			downloadFolder = filesystem::current_path();
+		}
+		else
+		{
+			filesystem::path check(move(path));
+
+			if (filesystem::exists(check))
+			{
+				downloadFolder = move(check);
+			}
+			else
+			{
+				downloadFolder = filesystem::current_path();
+			}
+		}
+	}
+
+	filesystem::path MainWindow::getDownloadFolder() noexcept
+	{
+		return downloadFolder;
+	}
+
 	BaseScreen* MainWindow::getCurrentScreen()
 	{
 		return currentScreen.get();
