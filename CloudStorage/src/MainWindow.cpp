@@ -322,6 +322,13 @@ LRESULT __stdcall MainWindowProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM
 
 			break;
 
+		case UI::buttons::reconnect:
+			reconnect(*ptr, clientStream);
+
+			SendMessageW(ptr->getMainWindow(), UI::events::getFilesE, NULL, NULL);
+
+			break;
+
 		case UI::BasePopupWindow::cancel:
 			SendMessageW(ptr->getMainWindow(), UI::events::deletePopupWindowE, NULL, NULL);
 

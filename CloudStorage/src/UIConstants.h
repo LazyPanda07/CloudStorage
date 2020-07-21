@@ -121,6 +121,7 @@ namespace UI
 			refresh = 0xfff,
 			download,
 			remove,
+			reconnect,
 			toolbarButtonsCount
 		};
 

@@ -10,6 +10,7 @@
 #include "PopupWindows/PopupWindowFunctions.h"
 #include "PopupWindows/UploadFilePopupWindow.h"
 #include "PopupWindows/DownloadFilePopupWindow.h"
+#include "HTTPNetwork.h"
 #include "fileData.h"
 #include "ClientTime.h"
 #include "ErrorHandling.h"
@@ -198,6 +199,13 @@ void removeFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream
 	{
 		MessageBoxW(ref.getMainWindow(), wstring(L"Не удалось удалить " + fileName).data(), L"Ошибка", MB_OK);
 	}
+}
+
+void reconnect(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream)
+{
+	exitFromApplication(ref, clientStream);
+
+	clientStream = streams::IOSocketStream<char>(new buffers::IOSocketBuffer<char>(new web::HTTPNetwork()));
 }
 
 void exitFromApplication(UI::MainWindow& ref, streams::IOSocketStream<char>& clientSream)
@@ -556,12 +564,6 @@ void asyncDownloadFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clien
 
 		if (isCancel)
 		{
-			string cancelRequest = cancelUploadFile(sFileName, utility::to_string(login));
-
-			clientStream << cancelRequest;
-
-			clientStream >> cancelRequest;
-
 			SendMessageW(ref.getMainWindow(), UI::events::deletePopupWindowE, NULL, NULL);
 			SendMessageW(ref.getMainWindow(), UI::events::multipleDownloadE, NULL, NULL);
 			out.close();

@@ -24,6 +24,11 @@ LRESULT __stdcall CloudStorageScreenProcedure(HWND hwnd, UINT msg, WPARAM wparam
 			SendMessageW(GetParent(hwnd), WM_COMMAND, UI::buttons::remove, NULL);
 
 			break;
+			
+		case UI::buttons::reconnect:
+			SendMessageW(GetParent(hwnd), WM_COMMAND, UI::buttons::reconnect, NULL);
+
+			break;
 		}
 
 		return 0;

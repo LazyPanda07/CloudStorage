@@ -13,8 +13,7 @@ namespace UI
 		HWND downloadButton;
 		HWND removeButton;
 		HWND list;
-
-		//TODO: add reconnect button
+		HWND reconnectButton;
 
 	private:
 		void show() override;
@@ -33,6 +32,8 @@ namespace UI
 		HWND getDownloadButton() const;
 
 		HWND getRemoveButton() const;
+
+		HWND getReconnectButton() const;
 
 		HWND getList() const;
 

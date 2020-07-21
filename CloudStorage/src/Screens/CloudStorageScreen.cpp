@@ -20,6 +20,7 @@ namespace UI
 		ShowWindow(refreshButton, SW_SHOW);
 		ShowWindow(downloadButton, SW_SHOW);
 		ShowWindow(removeButton, SW_SHOW);
+		ShowWindow(reconnectButton, SW_SHOW);
 		ShowWindow(list, SW_SHOW);
 	}
 
@@ -44,8 +45,10 @@ namespace UI
 			L"BUTTON",
 			L"Обновить список файлов",
 			WS_CHILDWINDOW,
-			0, 0,
-			toolbar::toolbarButtonWidth, toolbar::toolbarButtonHeight,
+			0,
+			0,
+			toolbar::toolbarButtonWidth,
+			toolbar::toolbarButtonHeight,
 			BaseScreen::wrapper,
 			HMENU(buttons::refresh),
 			nullptr,
@@ -58,8 +61,10 @@ namespace UI
 			L"BUTTON",
 			L"Скачать файл",
 			WS_CHILDWINDOW,
-			toolbar::toolbarButtonWidth, 0,
-			toolbar::toolbarButtonWidth, toolbar::toolbarButtonHeight,
+			toolbar::toolbarButtonWidth,
+			0,
+			toolbar::toolbarButtonWidth,
+			toolbar::toolbarButtonHeight,
 			BaseScreen::wrapper,
 			HMENU(buttons::download),
 			nullptr,
@@ -72,10 +77,28 @@ namespace UI
 			L"BUTTON",
 			L"Удалить файл",
 			WS_CHILDWINDOW,
-			toolbar::toolbarButtonWidth * 2, 0,
-			toolbar::toolbarButtonWidth, toolbar::toolbarButtonHeight,
+			toolbar::toolbarButtonWidth * 2,
+			0,
+			toolbar::toolbarButtonWidth,
+			toolbar::toolbarButtonHeight,
 			BaseScreen::wrapper,
 			HMENU(buttons::remove),
+			nullptr,
+			nullptr
+		);
+
+		reconnectButton = CreateWindowExW
+		(
+			NULL,
+			L"BUTTON",
+			L"Переподключиться",
+			WS_CHILDWINDOW,
+			toolbar::toolbarButtonWidth * 3,
+			0,
+			toolbar::toolbarButtonWidth,
+			toolbar::toolbarButtonHeight,
+			BaseScreen::wrapper,
+			HMENU(buttons::reconnect),
 			nullptr,
 			nullptr
 		);
@@ -86,8 +109,10 @@ namespace UI
 			WC_LISTVIEW,
 			nullptr,
 			WS_CHILDWINDOW | LVS_EDITLABELS | LVS_REPORT,
-			0, toolbar::toolbarHeight,
-			width, height - toolbar::toolbarHeight,
+			0,
+			toolbar::toolbarHeight,
+			width,
+			height - toolbar::toolbarHeight,
 			BaseScreen::wrapper,
 			HMENU(),
 			nullptr,
@@ -132,6 +157,11 @@ namespace UI
 	HWND CloudStorageScreen::getRemoveButton() const
 	{
 		return removeButton;
+	}
+
+	HWND CloudStorageScreen::getReconnectButton() const
+	{
+		return reconnectButton;
 	}
 
 	HWND CloudStorageScreen::getList() const
