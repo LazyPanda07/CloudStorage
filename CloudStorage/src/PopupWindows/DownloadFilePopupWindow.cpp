@@ -29,7 +29,7 @@ namespace UI
 			NULL,
 			PROGRESS_CLASSW,
 			nullptr,
-			WS_CHILDWINDOW | WS_VISIBLE,
+			WS_CHILDWINDOW | WS_VISIBLE | PBS_MARQUEE,
 			0,
 			messagePos.top + popupWindows::basePopupWindow::messageStaticHeight,
 			width,
@@ -48,8 +48,13 @@ namespace UI
 		return progressBar;
 	}
 
-	void DownloadFilePopupWindow::setProgressBarRange(int min, intmax_t max)
+	void DownloadFilePopupWindow::startAnimateProgressBar() const
 	{
-		SendMessageW(progressBar, PBM_SETRANGE32, static_cast<WPARAM>(min), static_cast<LPARAM>(max));
+		SendMessageW(progressBar, PBM_SETMARQUEE, static_cast<WPARAM>(true), 0);
+	}
+
+	void DownloadFilePopupWindow::stopAnimateProgressBar() const
+	{
+		SendMessageW(progressBar, PBM_SETMARQUEE, static_cast<WPARAM>(false), 0);
 	}
 }

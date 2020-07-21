@@ -239,6 +239,7 @@ LRESULT __stdcall MainWindowProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM
 	static wstring login;
 	static vector<wstring> dragAndDropFiles;
 	static size_t uploadFileIndex;
+	static int downloadFileIndex;
 	static bool isCancel;
 #pragma endregion
 
@@ -268,7 +269,7 @@ LRESULT __stdcall MainWindowProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM
 			break;
 
 		case UI::buttons::download:
-			downloadFile(*ptr, clientStream, fileNames, login);
+			SendMessageW(ptr->getMainWindow(), UI::events::downloadFileE, NULL, NULL);
 
 			break;
 
@@ -335,12 +336,18 @@ LRESULT __stdcall MainWindowProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM
 
 		return 0;
 
-	case UI::events::recursiveUploadFileE:
+	case UI::events::multipleUploadE:
 		if (uploadFileIndex != dragAndDropFiles.size())
 		{
-			isCancel = false;
-
 			uploadFile(*ptr, clientStream, dragAndDropFiles[uploadFileIndex++], login, isCancel);
+		}
+
+		return 0;
+
+	case UI::events::multipleDownloadE:
+		if (downloadFileIndex != -1)
+		{
+			downloadFileIndex = downloadFile(*ptr, clientStream, fileNames, login, isCancel, downloadFileIndex);
 		}
 
 		return 0;
@@ -353,8 +360,10 @@ LRESULT __stdcall MainWindowProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM
 
 		return 0;
 
-	case UI::events::downLoadFilesE:
-		downloadFile(*ptr, clientStream, fileNames, login);
+	case UI::events::downloadFileE:
+		downloadFileIndex = -1;
+
+		downloadFileIndex = downloadFile(*ptr, clientStream, fileNames, login, isCancel, downloadFileIndex);
 
 		return 0;
 
@@ -367,7 +376,7 @@ LRESULT __stdcall MainWindowProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM
 		isCancel = true;
 
 		ptr->deleteCurrentPopupWindow();
-		
+
 		return 0;
 #pragma endregion
 

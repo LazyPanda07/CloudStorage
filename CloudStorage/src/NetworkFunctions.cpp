@@ -9,6 +9,7 @@
 #include "Screens/ScreenFunctions.h"
 #include "PopupWindows/PopupWindowFunctions.h"
 #include "PopupWindows/UploadFilePopupWindow.h"
+#include "PopupWindows/DownloadFilePopupWindow.h"
 #include "fileData.h"
 #include "ClientTime.h"
 #include "ErrorHandling.h"
@@ -21,6 +22,8 @@ using namespace std;
 string cancelUploadFile(const string& fileName, const string& login);
 
 void asyncUploadFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, const wstring& filePath, const wstring& login, bool& isCancel);
+
+void asyncDownloadFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, const wstring& fileName, const wstring& login, bool& isCancel);
 
 ////////////////////////////////////////////////////////////////
 
@@ -115,100 +118,25 @@ void getFiles(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, 
 
 void uploadFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, const wstring& filePath, const wstring& login, bool& isCancel)
 {
-	initUploadFilePopupWindow(ref, wstring(begin(filePath) + filePath.rfind('\\') + 1, end(filePath)));
+	wstring message = L"Загрузка файла " + wstring(begin(filePath) + filePath.rfind('\\') + 1, end(filePath));
+
+	initUploadFilePopupWindow(ref, message);
 
 	thread(asyncUploadFile, std::ref(ref), std::ref(clientStream), std::ref(filePath), std::ref(login), std::ref(isCancel)).detach();
 }
 
-void downloadFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, const vector<db::fileDataRepresentation>& fileNames, const wstring& login)
+int downloadFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, const vector<db::fileDataRepresentation>& fileNames, const wstring& login, bool& isCancel, int searchId)
 {
-	int id = SendMessageW(ref.getList(), LVM_GETNEXTITEM, -1, LVNI_SELECTED);
+	int id = SendMessageW(ref.getList(), LVM_GETNEXTITEM, searchId, LVNI_SELECTED);
 
-	while (id != -1)
+	if (id != -1)
 	{
-		downloadFile(ref, clientStream, fileNames[id].fileName, login);
-
-		id = SendMessageW(ref.getList(), LVM_GETNEXTITEM, id, LVNI_SELECTED);
-	}
-}
-
-void downloadFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, const wstring& fileName, const wstring& login)
-{
-	//TODO: make downloadFile function async with progress bar
-	intmax_t offset = 0;
-	intmax_t totalFileSize;
-	const string sFileName = utility::to_string(fileName);
-	bool lastPacket;
-	string response;
-
-	ofstream out(sFileName, ios::binary);
-
-	while (true)
-	{
-		string request = web::HTTPBuilder().postRequest().headers
-		(
-			requestType::filesType, filesRequests::downloadFile,
-			"Login", utility::to_string(login),
-			"Directory", "Home",
-			"File-Name", sFileName,
-			"Range", offset
-		).build();
-
-		utility::insertSizeHeaderToHTTPMessage(request);
-
-		try
-		{
-			clientStream << request;
-		}
-		catch (const web::WebException&)
-		{
-			UI::serverRequestError(ref);
-			out.close();
-			return;
-		}
-
-		try
-		{
-			clientStream >> response;
-		}
-		catch (const web::WebException&)
-		{
-			UI::serverResponseError(ref);
-			out.close();
-			return;
-		}
-
-		web::HTTPParser parser(response);
-		const map<string, string>& headers = parser.getHeaders();
-		auto it = headers.find("Total-File-Size");
-		lastPacket = it != end(headers);
-		const string& data = parser.getBody();
-
-		out.write(data.data(), data.size());
-
-		offset = out.tellp();
-
-		if (lastPacket)
-		{
-			totalFileSize = stoull(it->second);
-			break;
-		}
+		initDownloadFilePopupWindow(ref, wstring(L"Скачивание файла ") + fileNames[id].fileName);
+		
+		thread(asyncDownloadFile, std::ref(ref), std::ref(clientStream), std::ref(fileNames[id].fileName), std::ref(login), std::ref(isCancel)).detach();
 	}
 
-	out.close();
-
-	if (filesystem::file_size(filesystem::current_path().append(sFileName)) == totalFileSize)
-	{
-		wstring message = fileName + L"\r\n" + filesResponses::successDownloadFile.data();
-
-		MessageBoxW(ref.getMainWindow(), message.data(), L"Успех", MB_OK);
-	}
-	else
-	{
-		wstring message = fileName + L"\r\n" + filesResponses::failDownloadFile.data();
-
-		MessageBoxW(ref.getMainWindow(), message.data(), L"Ошибка", MB_OK);
-	}
+	return id;
 }
 
 void removeFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, const vector<db::fileDataRepresentation>& fileNames, const wstring& login)
@@ -287,7 +215,7 @@ void exitFromApplication(UI::MainWindow& ref, streams::IOSocketStream<char>& cli
 	}
 	catch (const web::WebException&)
 	{
-		
+
 	}
 }
 
@@ -486,7 +414,7 @@ void asyncUploadFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientS
 			clientStream >> cancelRequest;
 
 			SendMessageW(ref.getMainWindow(), UI::events::deletePopupWindowE, NULL, NULL);
-			SendMessageW(ref.getMainWindow(), UI::events::recursiveUploadFileE, NULL, NULL);
+			SendMessageW(ref.getMainWindow(), UI::events::multipleUploadE, NULL, NULL);
 			in.close();
 			return;
 		}
@@ -577,7 +505,7 @@ void asyncUploadFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientS
 		if (ok == IDOK)
 		{
 			SendMessageW(ref.getMainWindow(), UI::events::deletePopupWindowE, NULL, NULL);
-			SendMessageW(ref.getMainWindow(), UI::events::recursiveUploadFileE, NULL, NULL);
+			SendMessageW(ref.getMainWindow(), UI::events::multipleUploadE, NULL, NULL);
 		}
 	}
 	else
@@ -594,7 +522,124 @@ void asyncUploadFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientS
 		{
 			SendMessageW(ref.getMainWindow(), UI::events::getFilesE, NULL, NULL);
 			SendMessageW(ref.getMainWindow(), UI::events::deletePopupWindowE, NULL, NULL);
-			SendMessageW(ref.getMainWindow(), UI::events::recursiveUploadFileE, NULL, NULL);
+			SendMessageW(ref.getMainWindow(), UI::events::multipleUploadE, NULL, NULL);
+		}
+	}
+}
+
+void asyncDownloadFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, const wstring& fileName, const wstring& login, bool& isCancel)
+{
+	intmax_t offset = 0;
+	intmax_t totalFileSize;
+	const string sFileName = utility::to_string(fileName);
+	bool lastPacket;
+	string response;
+
+	ofstream out(sFileName, ios::binary);
+
+	isCancel = false;
+
+	static_cast<UI::DownloadFilePopupWindow*>(ref.getCurrentPopupWindow())->startAnimateProgressBar();
+
+	while (true)
+	{
+		string request = web::HTTPBuilder().postRequest().headers
+		(
+			requestType::filesType, filesRequests::downloadFile,
+			"Login", utility::to_string(login),
+			"Directory", "Home",
+			"File-Name", sFileName,
+			"Range", offset
+		).build();
+
+		utility::insertSizeHeaderToHTTPMessage(request);
+
+		if (isCancel)
+		{
+			string cancelRequest = cancelUploadFile(sFileName, utility::to_string(login));
+
+			clientStream << cancelRequest;
+
+			clientStream >> cancelRequest;
+
+			SendMessageW(ref.getMainWindow(), UI::events::deletePopupWindowE, NULL, NULL);
+			SendMessageW(ref.getMainWindow(), UI::events::multipleDownloadE, NULL, NULL);
+			out.close();
+
+			//TODO: delete canceled file with path from settings.ini
+
+			return;
+		}
+
+		try
+		{
+			clientStream << request;
+		}
+		catch (const web::WebException&)
+		{
+			UI::serverRequestError(ref);
+			out.close();
+			return;
+		}
+
+		try
+		{
+			clientStream >> response;
+		}
+		catch (const web::WebException&)
+		{
+			UI::serverResponseError(ref);
+			out.close();
+			return;
+		}
+
+		web::HTTPParser parser(response);
+		const map<string, string>& headers = parser.getHeaders();
+		auto it = headers.find("Total-File-Size");
+		lastPacket = it != end(headers);
+		const string& data = parser.getBody();
+
+		out.write(data.data(), data.size());
+
+		offset = out.tellp();
+
+		if (lastPacket)
+		{
+			totalFileSize = stoull(it->second);
+			break;
+		}
+	}
+
+	out.close();
+
+	this_thread::sleep_for(0.5s);
+
+	static_cast<UI::DownloadFilePopupWindow*>(ref.getCurrentPopupWindow())->stopAnimateProgressBar();
+
+	this_thread::sleep_for(0.5s);
+
+	if (filesystem::file_size(filesystem::current_path().append(sFileName)) == totalFileSize)
+	{
+		wstring message = fileName + L"\r\n" + filesResponses::successDownloadFile.data();
+
+		int ok = MessageBoxW(ref.getPopupWindow(), message.data(), L"Успех", MB_OK);
+
+		if (ok == IDOK)
+		{
+			SendMessageW(ref.getMainWindow(), UI::events::deletePopupWindowE, NULL, NULL);
+			SendMessageW(ref.getMainWindow(), UI::events::multipleDownloadE, NULL, NULL);
+		}
+	}
+	else
+	{
+		wstring message = fileName + L"\r\n" + filesResponses::failDownloadFile.data();
+
+		int ok = MessageBoxW(ref.getPopupWindow(), message.data(), L"Ошибка", MB_OK);
+
+		if (ok == IDOK)
+		{
+			SendMessageW(ref.getMainWindow(), UI::events::deletePopupWindowE, NULL, NULL);
+			SendMessageW(ref.getMainWindow(), UI::events::multipleDownloadE, NULL, NULL);
 		}
 	}
 }

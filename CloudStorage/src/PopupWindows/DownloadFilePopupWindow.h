@@ -14,7 +14,9 @@ namespace UI
 
 		HWND getProgressBar() const;
 
-		void setProgressBarRange(int min, intmax_t max);
+		void startAnimateProgressBar() const;
+
+		void stopAnimateProgressBar() const;
 
 		~DownloadFilePopupWindow() = default;
 	};

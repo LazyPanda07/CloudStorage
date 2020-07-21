@@ -145,8 +145,9 @@ namespace UI
 		{
 			getFilesE = buttons::authorizationScreenButtonsCount + 1,
 			uploadFileE,
-			recursiveUploadFileE,
-			downLoadFilesE,
+			multipleUploadE,
+			downloadFileE,
+			multipleDownloadE,
 			networkEventsCount
 		};
 
