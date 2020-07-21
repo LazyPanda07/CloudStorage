@@ -14,5 +14,6 @@
 #include <thread>
 
 #include <algorithm>
+#include <cmath>
 #include <random>
 #include <memory>

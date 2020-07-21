@@ -45,7 +45,13 @@ namespace db
 		fileExtension(move(fileExtension)),
 		uploadDate(move(uploadDate)),
 		dateOfChange(move(dateOfChange)),
-		fileSize(to_wstring(fileSize))
+		fileSize
+		(
+			to_wstring
+			(
+				static_cast<unsigned int>(round(static_cast<long double>(fileSize) / 1024))
+			) + L" สม"
+		)
 	{
 
 	}
