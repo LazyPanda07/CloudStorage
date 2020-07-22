@@ -25,7 +25,8 @@ namespace db
 		std::wstring fileExtension;
 		std::wstring uploadDate;
 		std::wstring dateOfChange;
-		std::wstring fileSize;
+		std::wstring fileSizeS;
+		unsigned int fileSize;
 
 		fileDataRepresentation(std::wstring&& fileName, std::wstring&& filePath, std::wstring&& fileExtension, std::wstring&& uploadDate, std::wstring&& dateOfChange, unsigned int fileSize) noexcept;
 	};

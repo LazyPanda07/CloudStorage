@@ -159,7 +159,7 @@ void updateSizeColumn(UI::MainWindow& ref, const vector<db::fileDataRepresentati
 
 	for (size_t i = 0; i < data.size(); i++)
 	{
-		item.pszText = const_cast<wchar_t*>(data[i].fileSize.data());
+		item.pszText = const_cast<wchar_t*>(data[i].fileSizeS.data());
 		item.iItem = i;
 		item.iSubItem = UI::mainWindowUI::sizeColumnIndex;
 
