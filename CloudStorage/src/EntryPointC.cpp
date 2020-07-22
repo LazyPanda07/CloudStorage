@@ -11,7 +11,7 @@
 
 int __stdcall wWinMain(HINSTANCE hInstance, HINSTANCE, PWSTR pCmdLine, int nCmdShow)
 {
-	Log::init(false);
+	Log::init();
 
 	utility::INIParser parser(settingsFile);
 

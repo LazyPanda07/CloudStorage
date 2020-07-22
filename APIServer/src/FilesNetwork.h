@@ -7,7 +7,7 @@ namespace web
 	class FilesNetwork : public Network<char>
 	{
 	private:
-		void log(const char* message) override;
+		void log(std::string&& message) noexcept override;
 
 	private:
 		static inline std::string cloudStorageServerIp;

@@ -8,9 +8,9 @@ using namespace std;
 
 namespace web
 {
-	void DataBaseNetwork::log(const char* message)
+	void DataBaseNetwork::log(string&& message) noexcept
 	{
-		Log::error(message);
+		Log::error(move(message));
 	}
 
 	DataBaseNetwork::DataBaseNetwork() :

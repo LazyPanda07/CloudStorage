@@ -13,7 +13,7 @@ using namespace std;
 
 int main(int argc, char** argv)
 {
-	Log::init(false);
+	Log::init();
 	SetConsoleOutputCP(1251);
 
 	utility::INIParser parser(settingsFile);

@@ -8,9 +8,9 @@ using namespace std;
 
 namespace web
 {
-	void FilesNetwork::log(const char* message)
+	void FilesNetwork::log(string&& message) noexcept
 	{
-		Log::error(message);
+		Log::error(move(message));
 	}
 
 	FilesNetwork::FilesNetwork() :

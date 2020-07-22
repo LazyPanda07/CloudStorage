@@ -9,9 +9,9 @@ using namespace std;
 
 namespace web
 {
-	void HTTPNetwork::log(const char* message)
+	void HTTPNetwork::log(string&& message) noexcept
 	{
-		Log::error(message);
+		Log::error(move(message));
 	}
 
 	int HTTPNetwork::sendData(const dataContainer& data)
