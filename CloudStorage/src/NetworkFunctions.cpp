@@ -133,7 +133,7 @@ int downloadFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStrea
 	if (id != -1)
 	{
 		initDownloadFilePopupWindow(ref, wstring(L"Скачивание файла ") + fileNames[id].fileName);
-		
+
 		thread(asyncDownloadFile, std::ref(ref), std::ref(clientStream), std::ref(fileNames[id].fileName), std::ref(login), std::ref(isCancel)).detach();
 	}
 
@@ -227,20 +227,25 @@ void exitFromApplication(UI::MainWindow& ref, streams::IOSocketStream<char>& cli
 	}
 }
 
-wstring authorization(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream)
+tuple<wstring, wstring> authorization(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, wstring&& inLogin, wstring&& inPassword)
 {
-	wstring wLogin;
-	wstring wPassword;
+	wstring wLogin = move(inLogin);
+	wstring wPassword = move(inPassword);
 	string response;
+	HWND authorizationLoginEdit = nullptr;
+	HWND authorizationPasswordEdit = nullptr;
 
-	HWND authorizationLoginEdit = ref.getAuthorizationLoginEdit();
-	HWND authorizationPasswordEdit = ref.getAuthorizationPasswordEdit();
+	if (wLogin.empty() && wPassword.empty())
+	{
+		authorizationLoginEdit = ref.getAuthorizationLoginEdit();
+		authorizationPasswordEdit = ref.getAuthorizationPasswordEdit();
 
-	wLogin.resize(GetWindowTextLengthW(authorizationLoginEdit));
-	wPassword.resize(GetWindowTextLengthW(authorizationPasswordEdit));
+		wLogin.resize(GetWindowTextLengthW(authorizationLoginEdit));
+		wPassword.resize(GetWindowTextLengthW(authorizationPasswordEdit));
 
-	GetWindowTextW(authorizationLoginEdit, wLogin.data(), wLogin.size() + 1);
-	GetWindowTextW(authorizationPasswordEdit, wPassword.data(), wPassword.size() + 1);
+		GetWindowTextW(authorizationLoginEdit, wLogin.data(), wLogin.size() + 1);
+		GetWindowTextW(authorizationPasswordEdit, wPassword.data(), wPassword.size() + 1);
+	}
 
 	string login = utility::to_string(wLogin);
 	string password = utility::to_string(wPassword);
@@ -261,7 +266,7 @@ wstring authorization(UI::MainWindow& ref, streams::IOSocketStream<char>& client
 	catch (const web::WebException&)
 	{
 		UI::serverRequestError(ref);
-		return wstring();
+		return { wstring(), wstring() };
 	}
 
 	try
@@ -271,27 +276,30 @@ wstring authorization(UI::MainWindow& ref, streams::IOSocketStream<char>& client
 	catch (const web::WebException&)
 	{
 		UI::serverResponseError(ref);
-		return wstring();
+		return { wstring(), wstring() };
 	}
 
 	web::HTTPParser parser(response);
 
 	if (parser.getHeaders().at("Error") == "0")
 	{
-		return wLogin;
+		return { wLogin, wPassword };
 	}
 	else
 	{
-		SetWindowTextW(authorizationLoginEdit, L"");
-		SetWindowTextW(authorizationPasswordEdit, L"");
+		if (authorizationLoginEdit && authorizationPasswordEdit)
+		{
+			SetWindowTextW(authorizationLoginEdit, L"");
+			SetWindowTextW(authorizationPasswordEdit, L"");
+		}
 
 		MessageBoxW(ref.getMainWindow(), utility::to_wstring(parser.getBody()).data(), L"Ошибка", MB_OK);
 
-		return wstring();
+		return { wstring(), wstring() };
 	}
 }
 
-wstring registration(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream)
+tuple<wstring, wstring> registration(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream)
 {
 	wstring wLogin;
 	wstring wPassword;
@@ -318,7 +326,7 @@ wstring registration(UI::MainWindow& ref, streams::IOSocketStream<char>& clientS
 
 		MessageBoxW(ref.getMainWindow(), L"Пароли не совпадают", L"Ошибка", MB_OK);
 
-		return wstring();
+		return { wstring(), wstring() };
 	}
 
 	string login = utility::to_string(wLogin);
@@ -341,7 +349,7 @@ wstring registration(UI::MainWindow& ref, streams::IOSocketStream<char>& clientS
 	catch (const web::WebException&)
 	{
 		UI::serverRequestError(ref);
-		return wstring();
+		return { wstring(), wstring() };
 	}
 
 	try
@@ -351,14 +359,14 @@ wstring registration(UI::MainWindow& ref, streams::IOSocketStream<char>& clientS
 	catch (const web::WebException&)
 	{
 		UI::serverResponseError(ref);
-		return wstring();
+		return { wstring(), wstring() };
 	}
 
 	web::HTTPParser parser(response);
 
 	if (parser.getHeaders().at("Error") == "0")
 	{
-		return wLogin;
+		return { wLogin, wPassword };
 	}
 	else
 	{
@@ -368,7 +376,7 @@ wstring registration(UI::MainWindow& ref, streams::IOSocketStream<char>& clientS
 
 		MessageBoxW(ref.getMainWindow(), utility::to_wstring(parser.getBody()).data(), L"Ошибка", MB_OK);
 
-		return wstring();
+		return { wstring(), wstring() };
 	}
 }
 

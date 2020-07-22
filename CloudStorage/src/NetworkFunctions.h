@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include <tuple>
 #include <string>
 
 #include "IOSocketStream.h"
@@ -21,6 +22,6 @@ void reconnect(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream)
 
 void exitFromApplication(UI::MainWindow& ref, streams::IOSocketStream<char>& clientSream);
 
-std::wstring authorization(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream);
+std::tuple<std::wstring, std::wstring> authorization(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, std::wstring&& inLogin = L"", std::wstring&& inPassword = L"");
 
-std::wstring registration(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream);
+std::tuple<std::wstring, std::wstring> registration(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream);

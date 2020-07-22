@@ -263,6 +263,7 @@ LRESULT __stdcall MainWindowProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM
 	static UI::MainWindow* ptr = nullptr;
 	static vector<db::fileDataRepresentation> fileNames;
 	static wstring login;
+	static wstring password;
 	static vector<wstring> dragAndDropFiles;
 	static size_t uploadFileIndex;
 	static int downloadFileIndex;
@@ -307,7 +308,7 @@ LRESULT __stdcall MainWindowProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM
 			break;
 
 		case UI::buttons::authorization:
-			login = authorization(*ptr, clientStream);
+			tie(login, password) = authorization(*ptr, clientStream, move(login), move(password));
 
 			if (login.size())
 			{
@@ -328,7 +329,7 @@ LRESULT __stdcall MainWindowProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM
 			break;
 
 		case UI::buttons::registration:
-			login = registration(*ptr, clientStream);
+			tie(login, password) = registration(*ptr, clientStream);
 
 			if (login.size())
 			{
@@ -350,6 +351,8 @@ LRESULT __stdcall MainWindowProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM
 
 		case UI::buttons::reconnect:
 			reconnect(*ptr, clientStream);
+
+			SendMessageW(ptr->getMainWindow(), WM_COMMAND, UI::buttons::authorization, NULL);
 
 			SendMessageW(ptr->getMainWindow(), UI::events::getFilesE, NULL, NULL);
 
