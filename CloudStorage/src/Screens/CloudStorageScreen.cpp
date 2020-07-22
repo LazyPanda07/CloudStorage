@@ -108,7 +108,7 @@ namespace UI
 			WS_EX_CLIENTEDGE,
 			WC_LISTVIEW,
 			nullptr,
-			WS_CHILDWINDOW | LVS_EDITLABELS | LVS_REPORT,
+			WS_CHILDWINDOW | LVS_REPORT,
 			0,
 			toolbar::toolbarHeight,
 			width,
