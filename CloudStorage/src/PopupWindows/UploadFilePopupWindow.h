@@ -12,7 +12,7 @@ namespace UI
 	public:
 		UploadFilePopupWindow(HWND disableWindow, const std::wstring& message);
 
-		HWND getProgressBar() const;
+		HWND getUploadProgressBar() const;
 
 		void setProgressBarRange(int min, intmax_t max);
 

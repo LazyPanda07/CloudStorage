@@ -22,6 +22,7 @@ namespace UI
 			refreshButton,
 			downloadButton,
 			removeButton,
+			reconnectButton,
 			list,
 #pragma endregion
 #pragma region AuthorizationScreen
@@ -35,8 +36,16 @@ namespace UI
 #pragma endregion
 #pragma region BasePopupWindow
 			popupWindow,
-			cancelButton
+			cancelButton,
+			disableWindow,
 #pragma endregion
+#pragma region UploadFilePopupWindow
+			uploadProgressBar,
+#pragma endregion
+#pragma region DownloadFilePopupWindow
+			downloadProgressBar
+#pragma endregion
+
 
 		};
 
@@ -82,6 +91,8 @@ namespace UI
 
 		HWND getRemoveButton() const;
 
+		HWND getReconnectButton() const;
+
 		HWND getList() const;
 
 		HWND getAuthorizationLoginEdit() const;
@@ -98,6 +109,12 @@ namespace UI
 
 		HWND getCancelButton() const;
 
+		HWND getDisableWindow() const;
+
 		HWND getWrapper() const;
+
+		HWND getUploadProgressBar() const;
+
+		HWND getDownloadProgressBar() const;
 	};
 }

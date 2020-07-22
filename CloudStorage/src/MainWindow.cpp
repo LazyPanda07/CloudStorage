@@ -8,6 +8,8 @@
 #include "Screens/AuthorizationScreen.h"
 #include "Screens/RegistrationScreen.h"
 #include "Screens/CloudStorageScreen.h"
+#include "PopupWindows/UploadFilePopupWindow.h"
+#include "PopupWindows/DownloadFilePopupWindow.h"
 #include "fileData.h"
 #include "UIConstants.h"
 #include "MainWindow.h"
@@ -90,6 +92,9 @@ namespace UI
 		case UI::MainWindow::elementsEnum::removeButton:
 			return static_cast<CloudStorageScreen*>(currentScreen.get())->getRemoveButton();
 
+		case UI::MainWindow::elementsEnum::reconnectButton:
+			return static_cast<CloudStorageScreen*>(currentScreen.get())->getReconnectButton();
+
 		case UI::MainWindow::elementsEnum::list:
 			return static_cast<CloudStorageScreen*>(currentScreen.get())->getList();
 
@@ -113,6 +118,15 @@ namespace UI
 
 		case UI::MainWindow::elementsEnum::cancelButton:
 			return currentPopupWindow->getCancelButton();
+
+		case UI::MainWindow::elementsEnum::disableWindow:
+			return currentPopupWindow->getDisableWindow();
+
+		case UI::MainWindow::elementsEnum::uploadProgressBar:
+			return static_cast<UI::UploadFilePopupWindow*>(currentPopupWindow.get())->getUploadProgressBar();
+
+		case UI::MainWindow::elementsEnum::downloadProgressBar:
+			return static_cast<UI::DownloadFilePopupWindow*>(currentPopupWindow.get())->getDownloadProgressBar();
 
 		default:
 			return nullptr;
@@ -210,6 +224,11 @@ namespace UI
 		return this->getHWND(elementsEnum::removeButton);
 	}
 
+	HWND MainWindow::getReconnectButton() const
+	{
+		return this->getHWND(elementsEnum::reconnectButton);
+	}
+
 	HWND MainWindow::getList() const
 	{
 		return this->getHWND(elementsEnum::list);
@@ -250,9 +269,24 @@ namespace UI
 		return this->getHWND(elementsEnum::cancelButton);
 	}
 
+	HWND MainWindow::getDisableWindow() const
+	{
+		return this->getHWND(elementsEnum::disableWindow);
+	}
+
 	HWND MainWindow::getWrapper() const
 	{
 		return this->getHWND(elementsEnum::wrapper);
+	}
+
+	HWND MainWindow::getUploadProgressBar() const
+	{
+		return this->getHWND(elementsEnum::uploadProgressBar);
+	}
+
+	HWND MainWindow::getDownloadProgressBar() const
+	{
+		return this->getHWND(elementsEnum::downloadProgressBar);
 	}
 }
 

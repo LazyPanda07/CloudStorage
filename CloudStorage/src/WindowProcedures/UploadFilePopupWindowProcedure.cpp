@@ -24,7 +24,7 @@ LRESULT __stdcall UploadFilePopupWindowProcedure(HWND hwnd, UINT msg, WPARAM wpa
 		return 0;
 
 	case UI::events::updateProgressBarE:
-		SendMessageW(ptr->getProgressBar(), PBM_SETPOS, wparam, NULL);
+		SendMessageW(ptr->getUploadProgressBar(), PBM_SETPOS, wparam, NULL);
 
 		return 0;
 

@@ -43,7 +43,7 @@ namespace UI
 		SendMessageW(BasePopupWindow::popupWindow, UI::events::initPopupWindowE, reinterpret_cast<WPARAM>(this), NULL);
 	}
 
-	HWND DownloadFilePopupWindow::getProgressBar() const
+	HWND DownloadFilePopupWindow::getDownloadProgressBar() const
 	{
 		return progressBar;
 	}

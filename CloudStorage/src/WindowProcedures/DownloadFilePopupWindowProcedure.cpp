@@ -24,7 +24,7 @@ LRESULT __stdcall DownloadFilePopupWindowProcedure(HWND hwnd, UINT msg, WPARAM w
 		return 0;
 
 	case UI::events::updateProgressBarE:
-		SendMessageW(ptr->getProgressBar(), PBM_SETPOS, wparam, NULL);
+		SendMessageW(ptr->getDownloadProgressBar(), PBM_SETPOS, wparam, NULL);
 
 		return 0;
 

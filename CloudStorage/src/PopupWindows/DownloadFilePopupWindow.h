@@ -12,7 +12,7 @@ namespace UI
 	public:
 		DownloadFilePopupWindow(HWND disableWindow, const std::wstring& message);
 
-		HWND getProgressBar() const;
+		HWND getDownloadProgressBar() const;
 
 		void startAnimateProgressBar() const;
 
