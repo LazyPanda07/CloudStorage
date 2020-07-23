@@ -47,11 +47,11 @@ namespace web
 
 						if (request == accountRequests::authorization)
 						{
-							authorization(clientStream, dataBaseStream, parser.getBody());
+							authorization(clientStream,filesStream, dataBaseStream, parser.getBody());
 						}
 						else if (request == accountRequests::registration)
 						{
-							registration(clientStream, dataBaseStream, parser.getBody());
+							registration(clientStream,filesStream, dataBaseStream, parser.getBody());
 						}
 						else if (request == accountRequests::setLogin)
 						{

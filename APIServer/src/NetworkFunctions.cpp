@@ -109,7 +109,7 @@ void uploadFile(streams::IOSocketStream<char>& clientStream, streams::IOSocketSt
 		}
 		catch (const web::WebException& e)
 		{
-			
+
 		}
 	}
 }
@@ -256,7 +256,7 @@ void setLogin(streams::IOSocketStream<char>& filesStream, streams::IOSocketStrea
 	}
 }
 
-void authorization(streams::IOSocketStream<char>& clientStream, streams::IOSocketStream<char>& dataBaseStream, const string& data)
+void authorization(streams::IOSocketStream<char>& clientStream, streams::IOSocketStream<char>& filesStream, streams::IOSocketStream<char>& dataBaseStream, const string& data)
 {
 	auto [login, password] = userDataParse(data);
 	string response;
@@ -290,6 +290,9 @@ void authorization(streams::IOSocketStream<char>& clientStream, streams::IOSocke
 			(
 				"Error", error
 			).build();
+
+			filesStream << accountRequests::setLogin;
+			filesStream << login;
 		}
 
 		utility::insertSizeHeaderToHTTPMessage(response);
@@ -302,7 +305,7 @@ void authorization(streams::IOSocketStream<char>& clientStream, streams::IOSocke
 	}
 }
 
-void registration(streams::IOSocketStream<char>& clientStream, streams::IOSocketStream<char>& dataBaseStream, const string& data)
+void registration(streams::IOSocketStream<char>& clientStream, streams::IOSocketStream<char>& filesStream, streams::IOSocketStream<char>& dataBaseStream, const string& data)
 {
 	auto [login, password] = userDataParse(data);
 	string response;
@@ -336,6 +339,9 @@ void registration(streams::IOSocketStream<char>& clientStream, streams::IOSocket
 			(
 				"Error", error
 			).build();
+
+			filesStream << accountRequests::setLogin;
+			filesStream << login;
 		}
 
 		utility::insertSizeHeaderToHTTPMessage(response);

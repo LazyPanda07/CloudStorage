@@ -20,8 +20,8 @@ void cancelUploadFile(streams::IOSocketStream<char>& clientStream, streams::IOSo
 
 void setLogin(streams::IOSocketStream<char>& filesStream, streams::IOSocketStream<char>& dataBaseStream, const std::string& data);
 
-void authorization(streams::IOSocketStream<char>& clientStream, streams::IOSocketStream<char>& dataBaseStream, const std::string& data);
+void authorization(streams::IOSocketStream<char>& clientStream,streams::IOSocketStream<char>& filesStream, streams::IOSocketStream<char>& dataBaseStream, const std::string& data);
 
-void registration(streams::IOSocketStream<char>& clientStream, streams::IOSocketStream<char>& dataBaseStream, const std::string& data);
+void registration(streams::IOSocketStream<char>& clientStream,streams::IOSocketStream<char>& filesStream, streams::IOSocketStream<char>& dataBaseStream, const std::string& data);
 
 std::tuple<std::string, std::string> userDataParse(const std::string& data);
