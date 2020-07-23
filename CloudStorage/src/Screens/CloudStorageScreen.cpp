@@ -5,7 +5,7 @@
 #include "../WindowProcedures/CloudStorageScreenProcedure.h"
 
 #include <Richedit.h>
-#include <commctrl.h>
+#include <CommCtrl.h>
 
 using namespace std;
 

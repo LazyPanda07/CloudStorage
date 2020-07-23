@@ -15,7 +15,7 @@
 #include "MainWindow.h"
 #include "Log.h"
 
-#include <commctrl.h>
+#include <CommCtrl.h>
 
 #pragma comment (lib, "HTTP.lib")
 #pragma comment (lib, "SocketStreams.lib")

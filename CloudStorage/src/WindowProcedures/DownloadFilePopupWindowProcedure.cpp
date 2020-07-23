@@ -4,7 +4,7 @@
 #include "../PopupWindows/DownloadFilePopupWindow.h"
 #include "../UIConstants.h"
 
-#include <commctrl.h>
+#include <CommCtrl.h>
 
 using namespace std;
 

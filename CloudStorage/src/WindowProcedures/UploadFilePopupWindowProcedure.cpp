@@ -4,7 +4,7 @@
 #include "../PopupWindows/UploadFilePopupWindow.h"
 #include "../UIConstants.h"
 
-#include <commctrl.h>
+#include <CommCtrl.h>
 
 using namespace std;
 
