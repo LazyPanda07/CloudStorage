@@ -22,8 +22,10 @@ void reconnect(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream)
 
 void createFolder(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, const std::filesystem::path& currentPath);
 
+void setLogin(streams::IOSocketStream<char>& clientStream, const std::wstring& login, const std::wstring password);
+
 void exitFromApplication(UI::MainWindow& ref, streams::IOSocketStream<char>& clientSream);
 
-std::tuple<std::wstring, std::wstring> authorization(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, std::wstring&& inLogin = L"", std::wstring&& inPassword = L"");
+std::tuple<std::wstring, std::wstring> authorization(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream);
 
 std::tuple<std::wstring, std::wstring> registration(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream);

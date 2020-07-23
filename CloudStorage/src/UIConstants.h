@@ -171,6 +171,7 @@ namespace UI
 			multipleUploadE,
 			downloadFileE,
 			multipleDownloadE,
+			setLoginE,
 			networkEventsCount
 		};
 

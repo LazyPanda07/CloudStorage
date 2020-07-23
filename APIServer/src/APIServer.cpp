@@ -53,6 +53,10 @@ namespace web
 						{
 							registration(clientStream, dataBaseStream, parser.getBody());
 						}
+						else if (request == accountRequests::setLogin)
+						{
+							setLogin(filesStream, dataBaseStream, parser.getBody());
+						}
 					}
 					else
 					{

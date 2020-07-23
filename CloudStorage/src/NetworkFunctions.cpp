@@ -213,6 +213,28 @@ void createFolder(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStre
 
 }
 
+void setLogin(streams::IOSocketStream<char>& clientStream, const wstring& login, const wstring password)
+{
+	string body = "login=" + utility::to_string(login) + "&" + "password=" + utility::to_string(password);
+
+	string request = web::HTTPBuilder().postRequest().headers
+	(
+		requestType::accountType, accountRequests::setLogin,
+		"Content-Length", body.size()
+	).build(&body);
+
+	utility::insertSizeHeaderToHTTPMessage(request);
+
+	try
+	{
+		clientStream << request;
+	}
+	catch (const web::WebException&)
+	{
+		
+	}
+}
+
 void exitFromApplication(UI::MainWindow& ref, streams::IOSocketStream<char>& clientSream)
 {
 	string request = web::HTTPBuilder().postRequest().headers
@@ -232,29 +254,24 @@ void exitFromApplication(UI::MainWindow& ref, streams::IOSocketStream<char>& cli
 	}
 }
 
-tuple<wstring, wstring> authorization(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, wstring&& inLogin, wstring&& inPassword)
+tuple<wstring, wstring> authorization(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream)
 {
-	wstring wLogin = move(inLogin);
-	wstring wPassword = move(inPassword);
+	wstring wLogin;
+	wstring wPassword;
 	string response;
-	HWND authorizationLoginEdit = nullptr;
-	HWND authorizationPasswordEdit = nullptr;
+	HWND authorizationLoginEdit;
+	HWND authorizationPasswordEdit;
 
-	if (wLogin.empty() && wPassword.empty())
-	{
-		authorizationLoginEdit = ref.getAuthorizationLoginEdit();
-		authorizationPasswordEdit = ref.getAuthorizationPasswordEdit();
+	authorizationLoginEdit = ref.getAuthorizationLoginEdit();
+	authorizationPasswordEdit = ref.getAuthorizationPasswordEdit();
 
-		wLogin.resize(GetWindowTextLengthW(authorizationLoginEdit));
-		wPassword.resize(GetWindowTextLengthW(authorizationPasswordEdit));
+	wLogin.resize(GetWindowTextLengthW(authorizationLoginEdit));
+	wPassword.resize(GetWindowTextLengthW(authorizationPasswordEdit));
 
-		GetWindowTextW(authorizationLoginEdit, wLogin.data(), wLogin.size() + 1);
-		GetWindowTextW(authorizationPasswordEdit, wPassword.data(), wPassword.size() + 1);
-	}
+	GetWindowTextW(authorizationLoginEdit, wLogin.data(), wLogin.size() + 1);
+	GetWindowTextW(authorizationPasswordEdit, wPassword.data(), wPassword.size() + 1);
 
-	string login = utility::to_string(wLogin);
-	string password = utility::to_string(wPassword);
-	string body = "login=" + login + "&" + "password=" + password;
+	string body = "login=" + utility::to_string(wLogin) + "&" + "password=" + utility::to_string(wPassword);
 
 	string request = web::HTTPBuilder().postRequest().headers
 	(
@@ -334,10 +351,7 @@ tuple<wstring, wstring> registration(UI::MainWindow& ref, streams::IOSocketStrea
 		return { wstring(), wstring() };
 	}
 
-	string login = utility::to_string(wLogin);
-	string password = utility::to_string(wPassword);
-
-	string body = "login=" + login + "&" + "password=" + password;
+	string body = "login=" + utility::to_string(wLogin) + "&" + "password=" + utility::to_string(wPassword);
 
 	string request = web::HTTPBuilder().postRequest().headers
 	(

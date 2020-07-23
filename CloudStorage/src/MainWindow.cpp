@@ -361,7 +361,7 @@ LRESULT __stdcall MainWindowProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM
 			break;
 
 		case UI::buttons::authorization:
-			tie(login, password) = authorization(*ptr, clientStream, move(login), move(password));
+			tie(login, password) = authorization(*ptr, clientStream);
 
 			if (login.size())
 			{
@@ -405,7 +405,7 @@ LRESULT __stdcall MainWindowProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM
 		case UI::buttons::reconnect:
 			reconnect(*ptr, clientStream);
 
-			SendMessageW(ptr->getMainWindow(), WM_COMMAND, UI::buttons::authorization, NULL);
+			SendMessageW(ptr->getMainWindow(), UI::events::setLoginE, NULL, NULL);
 
 			SendMessageW(ptr->getMainWindow(), UI::events::getFilesE, NULL, NULL);
 
@@ -479,6 +479,11 @@ LRESULT __stdcall MainWindowProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM
 		isCancel = true;
 
 		ptr->deleteCurrentPopupWindow();
+
+		return 0;
+
+	case UI::events::setLoginE:
+		setLogin(clientStream, login, password);
 
 		return 0;
 #pragma endregion

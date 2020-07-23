@@ -223,6 +223,39 @@ void cancelUploadFile(streams::IOSocketStream<char>& clientStream, streams::IOSo
 	clientStream << response;
 }
 
+void setLogin(streams::IOSocketStream<char>& filesStream, streams::IOSocketStream<char>& dataBaseStream, const string& data)
+{
+	auto [login, password] = userDataParse(data);
+	string response;
+	string responseMessage;
+	bool error;
+
+	try
+	{
+		dataBaseStream << accountRequests::authorization;
+		dataBaseStream << login;
+		dataBaseStream << password;
+
+		dataBaseStream >> response;
+
+		error = response != responses::okResponse;
+
+		if (error)
+		{
+			//TODO: error message
+		}
+		else
+		{
+			filesStream << accountRequests::setLogin;
+			filesStream << login;
+		}
+	}
+	catch (const web::WebException& e)
+	{
+		cout << e.what() << endl;
+	}
+}
+
 void authorization(streams::IOSocketStream<char>& clientStream, streams::IOSocketStream<char>& dataBaseStream, const string& data)
 {
 	auto [login, password] = userDataParse(data);

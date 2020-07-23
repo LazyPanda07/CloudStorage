@@ -39,6 +39,7 @@ namespace accountRequests
 {
 	inline constexpr std::string_view authorization = "Authorization";
 	inline constexpr std::string_view registration = "Registration";
+	inline constexpr std::string_view setLogin = "Set login";
 }
 
 namespace filesRequests
