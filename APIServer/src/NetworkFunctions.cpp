@@ -13,7 +13,7 @@ bool checkHTTP(const string& request)
 	return request.find("HTTP") != string::npos ? true : false;
 }
 
-void showAllFilesInDirectory(streams::IOSocketStream<char>& clientStream, streams::IOSocketStream<char>& filesStream, const string& directory)
+void showAllFilesInFolder(streams::IOSocketStream<char>& clientStream, streams::IOSocketStream<char>& filesStream, const string& directory)
 {
 	string responseMessage;
 	bool error;
@@ -21,7 +21,7 @@ void showAllFilesInDirectory(streams::IOSocketStream<char>& clientStream, stream
 
 	try
 	{
-		filesStream << filesRequests::showAllFilesInDirectory;
+		filesStream << filesRequests::showAllFilesInFolder;
 		filesStream << directory;
 
 		filesStream >> responseMessage;
@@ -57,7 +57,7 @@ void uploadFile(streams::IOSocketStream<char>& clientStream, streams::IOSocketSt
 {
 	const string& fileName = headers.at("File-Name");
 	const string& login = headers.at("Login");
-	const string& directory = headers.at("Directory");
+	const string& directory = headers.at("Folder");
 	intmax_t offset = stoull(headers.at("Range"));
 	auto it = headers.find("Total-File-Size");
 	bool needResponse = it != end(headers);
@@ -118,7 +118,7 @@ void downloadFile(streams::IOSocketStream<char>& clientStream, streams::IOSocket
 {
 	const string& fileName = headers.at("File-Name");
 	const string& login = headers.at("Login");
-	const string& directory = headers.at("Directory");
+	const string& directory = headers.at("Folder");
 	bool isLast;
 	string data;
 	intmax_t offset = stoull(headers.at("Range"));
@@ -160,7 +160,7 @@ void downloadFile(streams::IOSocketStream<char>& clientStream, streams::IOSocket
 void removeFile(streams::IOSocketStream<char>& clientStream, streams::IOSocketStream<char>& filesStream, streams::IOSocketStream<char>& dataBaseStream, const map<string, string>& headers)
 {
 	const string& login = headers.at("Login");
-	const string& directory = headers.at("Directory");
+	const string& directory = headers.at("Folder");
 	const string& fileName = headers.at("File-Name");
 	bool error;
 	string responseMessage;
@@ -204,7 +204,7 @@ void removeFile(streams::IOSocketStream<char>& clientStream, streams::IOSocketSt
 void cancelUploadFile(streams::IOSocketStream<char>& clientStream, streams::IOSocketStream<char>& filesStream, const map<string, string>& headers)
 {
 	const string& login = headers.at("Login");
-	const string& directory = headers.at("Directory");
+	const string& directory = headers.at("Folder");
 	const string& fileName = headers.at("File-Name");
 	string response = web::HTTPBuilder().responseCode(web::ResponseCodes::ok).headers
 	(

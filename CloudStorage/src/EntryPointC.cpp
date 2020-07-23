@@ -18,7 +18,7 @@ int __stdcall wWinMain(HINSTANCE hInstance, HINSTANCE, PWSTR pCmdLine, int nCmdS
 	web::HTTPNetwork::setAPIServerIp(parser.getKeyValue("APIServer", "ServerIp"));
 	web::HTTPNetwork::setAPIServerPort(parser.getKeyValue("APIServer", "ServerPort"));
 
-	UI::MainWindow::setDownloadFolder(parser.getKeyValue("UserSettings", "DownloadDirectory"));
+	UI::MainWindow::setDownloadFolder(parser.getKeyValue("UserSettings", "DownloadFolder"));
 
 	UI::MainWindow& instance = UI::MainWindow::get();
 

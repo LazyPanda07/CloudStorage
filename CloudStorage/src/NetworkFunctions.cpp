@@ -33,8 +33,8 @@ void getFiles(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, 
 	utility::ClientTime& instance = utility::ClientTime::get();
 	string request = web::HTTPBuilder().postRequest().headers
 	(
-		requestType::filesType, filesRequests::showAllFilesInDirectory,
-		"Directory", "Home"
+		requestType::filesType, filesRequests::showAllFilesInFolder,
+		"Folder", "Home"
 	).build();
 	string response;
 	fileNames.clear();
@@ -162,7 +162,7 @@ void removeFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream
 		requestType::filesType, filesRequests::removeFile,
 		"Login", utility::to_string(login),
 		"File-Name", utility::to_string(fileName),
-		"Directory", "Home"
+		"Folder", "Home"
 	).build();
 	string response;
 
@@ -394,7 +394,7 @@ string cancelUploadFile(const string& fileName, const string& login)
 		requestType::cancelType, networkRequests::cancelOperation,
 		"Operation-Type", filesRequests::uploadFile,
 		"Login", login,
-		"Directory", "Home",
+		"Folder", "Home",
 		"File-Name", fileName
 	).build();
 
@@ -461,7 +461,7 @@ void asyncUploadFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientS
 		(
 			requestType::filesType, filesRequests::uploadFile,
 			"Login", utility::to_string(login),
-			"Directory", "Home",
+			"Folder", "Home",
 			"File-Name", file.filename().string(),
 			"Range", offset,
 			"Content-Length", data->size(),
@@ -568,7 +568,7 @@ void asyncDownloadFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clien
 		(
 			requestType::filesType, filesRequests::downloadFile,
 			"Login", utility::to_string(login),
-			"Directory", "Home",
+			"Folder", "Home",
 			"File-Name", sFileName,
 			"Range", offset
 		).build();

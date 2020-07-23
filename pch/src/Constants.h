@@ -8,7 +8,7 @@ typedef unsigned long DWORD;
 
 inline constexpr std::string_view settingsFile = "settings.ini";
 
-inline constexpr std::string_view usersDirectory = "Data";
+inline constexpr std::string_view usersFolder = "Data";
 
 inline constexpr short HTTPPacketSize = 4096;
 inline constexpr int filePacketSize = 10 * 1024 * 1024;	//10 MB
@@ -45,7 +45,7 @@ namespace filesRequests
 {
 	inline constexpr std::string_view uploadFile = "Upload file";
 	inline constexpr std::string_view downloadFile = "Download file";
-	inline constexpr std::string_view showAllFilesInDirectory = "Show all files in directory";
+	inline constexpr std::string_view showAllFilesInFolder = "Show all files in directory";
 	inline constexpr std::string_view removeFile = "Remove file";
 }
 
@@ -65,7 +65,7 @@ namespace accountResponses
 
 namespace filesResponses
 {
-	inline constexpr std::string_view emptyDirectory = "Эта папка пуста";
+	inline constexpr std::string_view emptyFolder = "Эта папка пуста";
 	inline constexpr std::string_view successUploadFile = "Файл успешно загружен";
 	inline constexpr std::string_view failUploadFile = "Ошибка при загрузке файла";
 	inline constexpr std::wstring_view successDownloadFile = L"Файл успешно скачан";

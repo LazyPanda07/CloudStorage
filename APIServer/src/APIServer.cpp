@@ -62,9 +62,9 @@ namespace web
 						{
 							const string& request = it->second;
 
-							if (request == filesRequests::showAllFilesInDirectory)
+							if (request == filesRequests::showAllFilesInFolder)
 							{
-								showAllFilesInDirectory(clientStream, dataBaseStream, headers.at("Directory"));
+								showAllFilesInFolder(clientStream, dataBaseStream, headers.at("Folder"));
 							}
 							else if (request == filesRequests::uploadFile)
 							{

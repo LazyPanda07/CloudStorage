@@ -39,7 +39,7 @@ void registration(streams::IOSocketStream<char>& clientStream, const db::CloudDa
 	}
 }
 
-void showAllFilesInDirectory(streams::IOSocketStream<char>& clientStream, const db::CloudDataBase& db, const string& login)
+void showAllFilesInFolder(streams::IOSocketStream<char>& clientStream, const db::CloudDataBase& db, const string& login)
 {
 	string directory;
 	string result;
@@ -57,7 +57,7 @@ void showAllFilesInDirectory(streams::IOSocketStream<char>& clientStream, const 
 	{
 		clientStream << responses::failResponse;
 
-		clientStream << filesResponses::emptyDirectory;
+		clientStream << filesResponses::emptyFolder;
 	}
 	else
 	{
