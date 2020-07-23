@@ -39,12 +39,9 @@ void registration(streams::IOSocketStream<char>& clientStream, const db::CloudDa
 	}
 }
 
-void showAllFilesInFolder(streams::IOSocketStream<char>& clientStream, const db::CloudDataBase& db, const string& login)
+void showAllFilesInFolder(streams::IOSocketStream<char>& clientStream, const db::CloudDataBase& db, const string& login, const filesystem::path& currentPath)
 {
-	string directory;
 	string result;
-
-	clientStream >> directory;
 
 	vector<db::fileData> data = db.getFiles(login);
 
@@ -67,28 +64,24 @@ void showAllFilesInFolder(streams::IOSocketStream<char>& clientStream, const db:
 	}
 }
 
-void uploadFileData(streams::IOSocketStream<char>& clientStream, const db::CloudDataBase& db, const string& login)
+void uploadFileData(streams::IOSocketStream<char>& clientStream, const db::CloudDataBase& db, const string& login, const filesystem::path& currentPath)
 {
 	string fileName;
-	string filePath;
 	string fileExtension;
 	intmax_t fileSize;
 
 	clientStream >> fileName;
-	clientStream >> filePath;
 	clientStream >> fileExtension;
 	clientStream >> fileSize;
 
-	db.uploadFileData(login, move(fileName), move(filePath), move(fileExtension), fileSize);
+	db.uploadFileData(login, move(fileName), currentPath.string(), move(fileExtension), fileSize);
 }
 
-void removeFileData(streams::IOSocketStream<char>& clientStream, const db::CloudDataBase& db, const std::string& login)
+void removeFileData(streams::IOSocketStream<char>& clientStream, const db::CloudDataBase& db, const std::string& login, const filesystem::path& currentPath)
 {
 	string fileName;
-	string filePath;
 
 	clientStream >> fileName;
-	clientStream >> filePath;
 
-	db.removeFileData(login, move(fileName), move(filePath));
+	db.removeFileData(login, move(fileName), currentPath.string());
 }

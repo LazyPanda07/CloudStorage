@@ -13,7 +13,7 @@ bool checkHTTP(const string& request)
 	return request.find("HTTP") != string::npos ? true : false;
 }
 
-void showAllFilesInFolder(streams::IOSocketStream<char>& clientStream, streams::IOSocketStream<char>& filesStream, const string& directory)
+void showAllFilesInFolder(streams::IOSocketStream<char>& clientStream, streams::IOSocketStream<char>& filesStream)
 {
 	string responseMessage;
 	bool error;
@@ -22,7 +22,6 @@ void showAllFilesInFolder(streams::IOSocketStream<char>& clientStream, streams::
 	try
 	{
 		filesStream << filesRequests::showAllFilesInFolder;
-		filesStream << directory;
 
 		filesStream >> responseMessage;
 
@@ -56,15 +55,12 @@ void showAllFilesInFolder(streams::IOSocketStream<char>& clientStream, streams::
 void uploadFile(streams::IOSocketStream<char>& clientStream, streams::IOSocketStream<char>& filesStream, streams::IOSocketStream<char>& dataBaseStream, const string& data, const map<string, string>& headers)
 {
 	const string& fileName = headers.at("File-Name");
-	const string& login = headers.at("Login");
-	const string& directory = headers.at("Folder");
 	intmax_t offset = stoull(headers.at("Range"));
 	auto it = headers.find("Total-File-Size");
 	bool needResponse = it != end(headers);
 
 	filesStream << filesRequests::uploadFile;
-	filesStream << login;
-	filesStream << directory;
+
 	filesStream << fileName;
 	filesStream << offset;
 	filesStream << data;
@@ -89,7 +85,6 @@ void uploadFile(streams::IOSocketStream<char>& clientStream, streams::IOSocketSt
 
 			dataBaseStream << filesRequests::uploadFile;
 			dataBaseStream << fileName;
-			dataBaseStream << directory;
 			dataBaseStream << extension;
 			dataBaseStream << uploadSize;
 
@@ -117,8 +112,6 @@ void uploadFile(streams::IOSocketStream<char>& clientStream, streams::IOSocketSt
 void downloadFile(streams::IOSocketStream<char>& clientStream, streams::IOSocketStream<char>& filesStream, const map<string, string>& headers)
 {
 	const string& fileName = headers.at("File-Name");
-	const string& login = headers.at("Login");
-	const string& directory = headers.at("Folder");
 	bool isLast;
 	string data;
 	intmax_t offset = stoull(headers.at("Range"));
@@ -127,8 +120,6 @@ void downloadFile(streams::IOSocketStream<char>& clientStream, streams::IOSocket
 	try
 	{
 		filesStream << filesRequests::downloadFile;
-		filesStream << login;
-		filesStream << directory;
 
 		filesStream << fileName;
 		filesStream << offset;
@@ -159,8 +150,6 @@ void downloadFile(streams::IOSocketStream<char>& clientStream, streams::IOSocket
 
 void removeFile(streams::IOSocketStream<char>& clientStream, streams::IOSocketStream<char>& filesStream, streams::IOSocketStream<char>& dataBaseStream, const map<string, string>& headers)
 {
-	const string& login = headers.at("Login");
-	const string& directory = headers.at("Folder");
 	const string& fileName = headers.at("File-Name");
 	bool error;
 	string responseMessage;
@@ -168,8 +157,6 @@ void removeFile(streams::IOSocketStream<char>& clientStream, streams::IOSocketSt
 	try
 	{
 		filesStream << filesRequests::removeFile;
-		filesStream << login;
-		filesStream << directory;
 
 		filesStream << fileName;
 
@@ -182,8 +169,6 @@ void removeFile(streams::IOSocketStream<char>& clientStream, streams::IOSocketSt
 			dataBaseStream << filesRequests::removeFile;
 
 			dataBaseStream << fileName;
-
-			dataBaseStream << directory;
 		}
 
 		string response = web::HTTPBuilder().responseCode(web::ResponseCodes::ok).headers
@@ -203,8 +188,6 @@ void removeFile(streams::IOSocketStream<char>& clientStream, streams::IOSocketSt
 
 void cancelUploadFile(streams::IOSocketStream<char>& clientStream, streams::IOSocketStream<char>& filesStream, const map<string, string>& headers)
 {
-	const string& login = headers.at("Login");
-	const string& directory = headers.at("Folder");
 	const string& fileName = headers.at("File-Name");
 	string response = web::HTTPBuilder().responseCode(web::ResponseCodes::ok).headers
 	(
@@ -214,8 +197,6 @@ void cancelUploadFile(streams::IOSocketStream<char>& clientStream, streams::IOSo
 	utility::insertSizeHeaderToHTTPMessage(response);
 
 	filesStream << networkRequests::cancelOperation;
-	filesStream << login;
-	filesStream << directory;
 
 	filesStream << fileName;
 	filesStream << filesRequests::uploadFile;

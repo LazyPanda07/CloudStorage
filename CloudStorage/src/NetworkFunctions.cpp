@@ -20,11 +20,11 @@
 
 using namespace std;
 
-string cancelUploadFile(const string& fileName, const string& login);
+string cancelUploadFile(const string& fileName);
 
-void asyncUploadFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, const wstring& filePath, const wstring& login, bool& isCancel);
+void asyncUploadFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, const wstring& filePath, bool& isCancel);
 
-void asyncDownloadFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, const wstring& fileName, const wstring& login, bool& isCancel);
+void asyncDownloadFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, const wstring& fileName, bool& isCancel);
 
 ////////////////////////////////////////////////////////////////
 
@@ -33,8 +33,7 @@ void getFiles(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, 
 	utility::ClientTime& instance = utility::ClientTime::get();
 	string request = web::HTTPBuilder().postRequest().headers
 	(
-		requestType::filesType, filesRequests::showAllFilesInFolder,
-		"Folder", "Home"
+		requestType::filesType, filesRequests::showAllFilesInFolder
 	).build();
 	string response;
 	fileNames.clear();
@@ -117,16 +116,16 @@ void getFiles(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, 
 	}
 }
 
-void uploadFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, const wstring& filePath, const wstring& login, bool& isCancel)
+void uploadFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, const wstring& filePath, bool& isCancel)
 {
 	wstring message = L"Загрузка файла " + wstring(begin(filePath) + filePath.rfind('\\') + 1, end(filePath));
 
 	initUploadFilePopupWindow(ref, message);
 
-	thread(asyncUploadFile, std::ref(ref), std::ref(clientStream), std::ref(filePath), std::ref(login), std::ref(isCancel)).detach();
+	thread(asyncUploadFile, std::ref(ref), std::ref(clientStream), std::ref(filePath), std::ref(isCancel)).detach();
 }
 
-int downloadFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, const vector<db::fileDataRepresentation>& fileNames, const wstring& login, bool& isCancel, int searchId)
+int downloadFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, const vector<db::fileDataRepresentation>& fileNames, bool& isCancel, int searchId)
 {
 	int id = SendMessageW(ref.getList(), LVM_GETNEXTITEM, searchId, LVNI_SELECTED);
 
@@ -134,13 +133,13 @@ int downloadFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStrea
 	{
 		initDownloadFilePopupWindow(ref, wstring(L"Скачивание файла ") + fileNames[id].fileName);
 
-		thread(asyncDownloadFile, std::ref(ref), std::ref(clientStream), std::ref(fileNames[id].fileName), std::ref(login), std::ref(isCancel)).detach();
+		thread(asyncDownloadFile, std::ref(ref), std::ref(clientStream), std::ref(fileNames[id].fileName), std::ref(isCancel)).detach();
 	}
 
 	return id;
 }
 
-void removeFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, const vector<db::fileDataRepresentation>& fileNames, const wstring& login)
+void removeFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, const vector<db::fileDataRepresentation>& fileNames)
 {
 	int id = SendMessageW(ref.getList(), LVM_GETNEXTITEM, -1, LVNI_SELECTED);
 
@@ -148,21 +147,19 @@ void removeFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream
 	{
 		if (removeFileDialog(ref, fileNames[id].fileName))
 		{
-			removeFile(ref, clientStream, fileNames[id].fileName, login);
+			removeFile(ref, clientStream, fileNames[id].fileName);
 		}
 
 		id = SendMessageW(ref.getList(), LVM_GETNEXTITEM, id, LVNI_SELECTED);
 	}
 }
 
-void removeFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, const std::wstring& fileName, const std::wstring& login)
+void removeFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, const std::wstring& fileName)
 {
 	string request = web::HTTPBuilder().postRequest().headers
 	(
 		requestType::filesType, filesRequests::removeFile,
-		"Login", utility::to_string(login),
-		"File-Name", utility::to_string(fileName),
-		"Folder", "Home"
+		"File-Name", utility::to_string(fileName)
 	).build();
 	string response;
 
@@ -401,14 +398,12 @@ tuple<wstring, wstring> registration(UI::MainWindow& ref, streams::IOSocketStrea
 
 ////////////////////////////////////////////////////////////////
 
-string cancelUploadFile(const string& fileName, const string& login)
+string cancelUploadFile(const string& fileName)
 {
 	string result = web::HTTPBuilder().postRequest().headers
 	(
 		requestType::cancelType, networkRequests::cancelOperation,
 		"Operation-Type", filesRequests::uploadFile,
-		"Login", login,
-		"Folder", "Home",
 		"File-Name", fileName
 	).build();
 
@@ -417,7 +412,7 @@ string cancelUploadFile(const string& fileName, const string& login)
 	return result;
 }
 
-void asyncUploadFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, const wstring& filePath, const wstring& login, bool& isCancel)
+void asyncUploadFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, const wstring& filePath, bool& isCancel)
 {
 	const filesystem::path file(filePath);
 	intmax_t fileSize = filesystem::file_size(file);
@@ -442,7 +437,7 @@ void asyncUploadFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientS
 
 		if (isCancel)
 		{
-			string cancelRequest = cancelUploadFile(file.filename().string(), utility::to_string(login));
+			string cancelRequest = cancelUploadFile(file.filename().string());
 
 			clientStream << cancelRequest;
 
@@ -474,8 +469,6 @@ void asyncUploadFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientS
 		string message = web::HTTPBuilder().postRequest().headers
 		(
 			requestType::filesType, filesRequests::uploadFile,
-			"Login", utility::to_string(login),
-			"Folder", "Home",
 			"File-Name", file.filename().string(),
 			"Range", offset,
 			"Content-Length", data->size(),
@@ -562,7 +555,7 @@ void asyncUploadFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientS
 	}
 }
 
-void asyncDownloadFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, const wstring& fileName, const wstring& login, bool& isCancel)
+void asyncDownloadFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, const wstring& fileName, bool& isCancel)
 {
 	intmax_t offset = 0;
 	intmax_t totalFileSize;
@@ -581,8 +574,6 @@ void asyncDownloadFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clien
 		string request = web::HTTPBuilder().postRequest().headers
 		(
 			requestType::filesType, filesRequests::downloadFile,
-			"Login", utility::to_string(login),
-			"Folder", "Home",
 			"File-Name", sFileName,
 			"Range", offset
 		).build();

@@ -18,7 +18,7 @@ namespace web
 	{
 		streams::IOSocketStream<char> clientStream(new buffers::IOSocketBuffer<char>(new DataBaseNetwork(clientSocket)));
 		string login;
-		//TODO: filesystem::path currentFolder that save user's current directory
+		filesystem::path currentPath("Home");
 
 		while (true)
 		{
@@ -38,15 +38,15 @@ namespace web
 				}
 				else if (request == filesRequests::showAllFilesInFolder)
 				{
-					showAllFilesInFolder(clientStream, db, login);
+					showAllFilesInFolder(clientStream, db, login, currentPath);
 				}
 				else if (request == filesRequests::uploadFile)
 				{
-					uploadFileData(clientStream, db, login);
+					uploadFileData(clientStream, db, login, currentPath);
 				}
 				else if (request == filesRequests::removeFile)
 				{
-					removeFileData(clientStream, db, login);
+					removeFileData(clientStream, db, login, currentPath);
 				}
 				else if (request == networkRequests::exit)
 				{

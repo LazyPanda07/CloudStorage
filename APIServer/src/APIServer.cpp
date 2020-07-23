@@ -68,7 +68,7 @@ namespace web
 
 							if (request == filesRequests::showAllFilesInFolder)
 							{
-								showAllFilesInFolder(clientStream, dataBaseStream, headers.at("Folder"));
+								showAllFilesInFolder(clientStream, dataBaseStream);
 							}
 							else if (request == filesRequests::uploadFile)
 							{

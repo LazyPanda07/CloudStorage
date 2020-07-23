@@ -354,7 +354,7 @@ LRESULT __stdcall MainWindowProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM
 			break;
 
 		case UI::buttons::remove:
-			removeFile(*ptr, clientStream, fileNames, login);
+			removeFile(*ptr, clientStream, fileNames);
 
 			SendMessageW(ptr->getMainWindow(), UI::events::getFilesE, NULL, NULL);
 
@@ -442,7 +442,7 @@ LRESULT __stdcall MainWindowProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM
 	case UI::events::multipleUploadE:
 		if (uploadFileIndex != dragAndDropFiles.size())
 		{
-			uploadFile(*ptr, clientStream, dragAndDropFiles[uploadFileIndex++], login, isCancel);
+			uploadFile(*ptr, clientStream, dragAndDropFiles[uploadFileIndex++], isCancel);
 		}
 
 		return 0;
@@ -450,7 +450,7 @@ LRESULT __stdcall MainWindowProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM
 	case UI::events::multipleDownloadE:
 		if (downloadFileIndex != -1)
 		{
-			downloadFileIndex = downloadFile(*ptr, clientStream, fileNames, login, isCancel, downloadFileIndex);
+			downloadFileIndex = downloadFile(*ptr, clientStream, fileNames, isCancel, downloadFileIndex);
 		}
 
 		return 0;
@@ -459,14 +459,14 @@ LRESULT __stdcall MainWindowProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM
 		uploadFileIndex = 0;
 		dragAndDropFiles = move(*reinterpret_cast<vector<wstring>*>(wparam));
 
-		uploadFile(*ptr, clientStream, dragAndDropFiles[uploadFileIndex++], login, isCancel);
+		uploadFile(*ptr, clientStream, dragAndDropFiles[uploadFileIndex++], isCancel);
 
 		return 0;
 
 	case UI::events::downloadFileE:
 		downloadFileIndex = -1;
 
-		downloadFileIndex = downloadFile(*ptr, clientStream, fileNames, login, isCancel, downloadFileIndex);
+		downloadFileIndex = downloadFile(*ptr, clientStream, fileNames, isCancel, downloadFileIndex);
 
 		return 0;
 
