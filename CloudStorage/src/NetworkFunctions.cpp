@@ -208,7 +208,7 @@ void reconnect(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream)
 	clientStream = streams::IOSocketStream<char>(new buffers::IOSocketBuffer<char>(new web::HTTPNetwork()));
 }
 
-void createFolder(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, const filesystem::path& currentPath, const wstring& folderName)
+void createFolder(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, const filesystem::path& currentPath)
 {
 
 }

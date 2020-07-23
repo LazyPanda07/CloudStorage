@@ -91,6 +91,7 @@ namespace UI
 	{
 		inline const std::wstring uploadFilePopupWindowName = L"UploadFilePopupWindow";
 		inline const std::wstring downloadFilePopupWindowName = L"DownloadFilePopupWindow";
+		inline const std::wstring setFolderNamePopupWindowName = L"SetFolderNamePopupWindow";
 
 		namespace basePopupWindow
 		{
@@ -111,6 +112,14 @@ namespace UI
 		namespace downloadFilePopupWindow
 		{
 			inline const std::wstring title = L"Скачивание файла";
+		}
+
+		namespace setFolderNamePopupWindow
+		{
+			inline const std::wstring title = L"Создание новой папки";
+
+			inline constexpr int saveFolderNameButtonWidth = 200;
+			inline constexpr int saveFolderNameButtonHeight = 20;
 		}
 	}
 
@@ -139,9 +148,15 @@ namespace UI
 			authorizationScreenButtonsCount
 		};
 
+		enum setFolderNamePopupWindowButtons
+		{
+			saveFolderName = authorizationScreenButtonsCount + 1,
+			setFolderNamePopupWindowButtonsCount
+		};
+
 		enum popupMenuButtons
 		{
-			createFolder = authorizationScreenButtonsCount + 1,
+			createFolder = setFolderNamePopupWindowButtonsCount + 1,
 			uploadFiles,
 			popupMenuButtonsCount
 		};

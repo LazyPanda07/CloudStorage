@@ -1,16 +1,14 @@
 #include "pch.h"
 
-#include "DownloadFilePopupWindowProcedure.h"
-#include "../PopupWindows/DownloadFilePopupWindow.h"
+#include "SetFolderNamePopupWindowProcedure.h"
+#include "../PopupWindows/SetFolderNamePopupWindow.h"
 #include "../UIConstants.h"
-
-#include <CommCtrl.h>
 
 using namespace std;
 
-LRESULT __stdcall DownloadFilePopupWindowProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
+LRESULT __stdcall SetFolderNamePopupWindowProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 {
-	static UI::DownloadFilePopupWindow* ptr = nullptr;
+	static UI::SetFolderNamePopupWindow* ptr = nullptr;
 
 	switch (msg)
 	{
@@ -21,17 +19,17 @@ LRESULT __stdcall DownloadFilePopupWindowProcedure(HWND hwnd, UINT msg, WPARAM w
 			SendMessageW(ptr->getDisableWindow(), WM_COMMAND, UI::BasePopupWindow::cancel, NULL);
 
 			break;
+
+		case UI::buttons::saveFolderName:
+			SendMessageW(ptr->getDisableWindow(), WM_COMMAND, UI::buttons::saveFolderName, NULL);
+
+			break;
 		}
 
 		return 0;
 
-	case UI::events::updateProgressBarE:
-		SendMessageW(ptr->getDownloadProgressBar(), PBM_SETPOS, wparam, NULL);
-
-		return 0;
-
 	case UI::events::initPopupWindowE:
-		ptr = reinterpret_cast<UI::DownloadFilePopupWindow*>(wparam);
+		ptr = reinterpret_cast<UI::SetFolderNamePopupWindow*>(wparam);
 
 		return 0;
 

@@ -43,9 +43,12 @@ namespace UI
 			uploadProgressBar,
 #pragma endregion
 #pragma region DownloadFilePopupWindow
-			downloadProgressBar
+			downloadProgressBar,
 #pragma endregion
-
+#pragma region SetFolderNamePopupWindow
+			enterFolderNameEdit,
+			saveFolderNameButton
+#pragma endregion
 
 		};
 
@@ -116,5 +119,9 @@ namespace UI
 		HWND getUploadProgressBar() const;
 
 		HWND getDownloadProgressBar() const;
+
+		HWND getEnterFolderNameEdit() const;
+
+		HWND getEnterFolderNameButton() const;
 	};
 }

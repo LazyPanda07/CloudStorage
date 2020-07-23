@@ -20,7 +20,7 @@ void removeFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream
 
 void reconnect(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream);
 
-void createFolder(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, const std::filesystem::path& currentPath, const std::wstring& folderName);
+void createFolder(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, const std::filesystem::path& currentPath);
 
 void exitFromApplication(UI::MainWindow& ref, streams::IOSocketStream<char>& clientSream);
 

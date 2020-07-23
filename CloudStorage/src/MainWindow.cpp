@@ -8,8 +8,10 @@
 #include "Screens/AuthorizationScreen.h"
 #include "Screens/RegistrationScreen.h"
 #include "Screens/CloudStorageScreen.h"
+#include "PopupWindows/PopupWindowFunctions.h"
 #include "PopupWindows/UploadFilePopupWindow.h"
 #include "PopupWindows/DownloadFilePopupWindow.h"
+#include "PopupWindows/SetFolderNamePopupWindow.h"
 #include "fileData.h"
 #include "UIConstants.h"
 #include "MainWindow.h"
@@ -127,6 +129,12 @@ namespace UI
 
 		case UI::MainWindow::elementsEnum::downloadProgressBar:
 			return static_cast<UI::DownloadFilePopupWindow*>(currentPopupWindow.get())->getDownloadProgressBar();
+
+		case UI::MainWindow::elementsEnum::enterFolderNameEdit:
+			return static_cast<UI::SetFolderNamePopupWindow*>(currentPopupWindow.get())->getEnterFolderNameEdit();
+
+		case UI::MainWindow::elementsEnum::saveFolderNameButton:
+			return static_cast<UI::SetFolderNamePopupWindow*>(currentPopupWindow.get())->getSaveFolderNameButton();
 
 		default:
 			return nullptr;
@@ -288,6 +296,16 @@ namespace UI
 	{
 		return this->getHWND(elementsEnum::downloadProgressBar);
 	}
+
+	HWND MainWindow::getEnterFolderNameEdit() const
+	{
+		return this->getHWND(elementsEnum::enterFolderNameEdit);
+	}
+
+	HWND MainWindow::getEnterFolderNameButton() const
+	{
+		return this->getHWND(elementsEnum::saveFolderNameButton);
+	}
 }
 
 LRESULT __stdcall MainWindowProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
@@ -393,8 +411,13 @@ LRESULT __stdcall MainWindowProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM
 
 			break;
 
+		case UI::buttons::saveFolderName:
+			createFolder(*ptr, clientStream, currentPath);
+
+			break;
+
 		case UI::buttons::createFolder:
-			
+			initSetFolderNamePopupWidow(*ptr);
 
 			break;
 
