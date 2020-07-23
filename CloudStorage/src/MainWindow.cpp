@@ -295,10 +295,11 @@ LRESULT __stdcall MainWindowProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM
 #pragma region Variables
 	static streams::IOSocketStream<char> clientStream(new buffers::IOSocketBuffer<char>(new web::HTTPNetwork()));
 	static UI::MainWindow* ptr = nullptr;
+	static filesystem::path currentPath("Home");
 	static vector<db::fileDataRepresentation> fileNames;
+	static vector<wstring> dragAndDropFiles;
 	static wstring login;
 	static wstring password;
-	static vector<wstring> dragAndDropFiles;
 	static size_t uploadFileIndex;
 	static int downloadFileIndex;
 	static bool isCancel;
@@ -389,6 +390,15 @@ LRESULT __stdcall MainWindowProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM
 			SendMessageW(ptr->getMainWindow(), WM_COMMAND, UI::buttons::authorization, NULL);
 
 			SendMessageW(ptr->getMainWindow(), UI::events::getFilesE, NULL, NULL);
+
+			break;
+
+		case UI::buttons::createFolder:
+			
+
+			break;
+
+		case UI::buttons::uploadFiles:
 
 			break;
 

@@ -138,13 +138,20 @@ namespace UI
 			toRegistrationScreen,
 			authorizationScreenButtonsCount
 		};
+
+		enum popupMenuButtons
+		{
+			createFolder = authorizationScreenButtonsCount + 1,
+			uploadFiles,
+			popupMenuButtonsCount
+		};
 	}
 
 	namespace events
 	{
 		enum networkEvents
 		{
-			getFilesE = buttons::authorizationScreenButtonsCount + 1,
+			getFilesE = buttons::popupMenuButtonsCount + 1,
 			uploadFileE,
 			multipleUploadE,
 			downloadFileE,

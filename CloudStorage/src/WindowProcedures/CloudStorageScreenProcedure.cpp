@@ -8,6 +8,7 @@
 LRESULT __stdcall CloudStorageScreenProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 {
 	static NMITEMACTIVATE* listViewHdr;
+	static HMENU popupMenu = nullptr;
 
 	switch (msg)
 	{
@@ -33,6 +34,16 @@ LRESULT __stdcall CloudStorageScreenProcedure(HWND hwnd, UINT msg, WPARAM wparam
 			SendMessageW(GetParent(hwnd), WM_COMMAND, UI::buttons::reconnect, NULL);
 
 			break;
+
+		case UI::buttons::createFolder:
+			SendMessageW(GetParent(hwnd), WM_COMMAND, UI::buttons::createFolder, NULL);
+
+			break;
+
+		case UI::buttons::uploadFiles:
+			SendMessageW(GetParent(hwnd), WM_COMMAND, UI::buttons::uploadFiles, NULL);
+
+			break;
 		}
 
 		return 0;
@@ -52,16 +63,35 @@ LRESULT __stdcall CloudStorageScreenProcedure(HWND hwnd, UINT msg, WPARAM wparam
 			return 0;
 
 		case NM_RCLICK:
-			//TODO: popup menu for element
+			
 			listViewHdr = reinterpret_cast<NMITEMACTIVATE*>(lparam);
+
+			if (listViewHdr->iItem != -1)
+			{
+				//TODO: popup menu for element
+			}
+			else
+			{
+				//TODO: popup menu with create folder and upload files
+				if (popupMenu)
+				{
+					DestroyMenu(popupMenu);
+				}
+
+				POINT cursorPos;
+
+				popupMenu = CreatePopupMenu();
+
+				GetCursorPos(&cursorPos);
+
+				InsertMenuW(popupMenu, -1, MF_BYPOSITION | MF_STRING, UI::buttons::createFolder, L"Новая папка");
+				InsertMenuW(popupMenu, -1, MF_BYPOSITION | MF_STRING, UI::buttons::uploadFiles, L"Загрузить файлы");
+
+				TrackPopupMenu(popupMenu, TPM_TOPALIGN | TPM_LEFTALIGN, cursorPos.x, cursorPos.y, NULL, hwnd, nullptr);
+			}
 
 			return 0;
 		}
-
-		return 0;
-
-	case WM_RBUTTONDOWN:
-		//TODO: popup menu with create folder and upload files
 
 		return 0;
 
