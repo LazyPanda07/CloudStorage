@@ -26,6 +26,8 @@ void asyncUploadFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientS
 
 void asyncDownloadFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, const wstring& fileName, bool& isCancel);
 
+string folderControlMessages(streams::IOSocketStream<char>& clientStream, const string_view& controlRequest, string&& data = "");
+
 ////////////////////////////////////////////////////////////////
 
 void getFiles(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, vector<db::fileDataRepresentation>& fileNames, bool showError)
@@ -205,6 +207,21 @@ void reconnect(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream)
 	clientStream = streams::IOSocketStream<char>(new buffers::IOSocketBuffer<char>(new web::HTTPNetwork()));
 }
 
+void nextFolder(streams::IOSocketStream<char>& clientStream, const wstring& folderName)
+{
+	folderControlMessages(clientStream, controlRequests::nextFolder, utility::to_string(folderName));
+}
+
+void prevFolder(streams::IOSocketStream<char>& clientStream)
+{
+	folderControlMessages(clientStream, controlRequests::prevFolder);
+}
+
+void setPath(streams::IOSocketStream<char>& clientStream, string&& path)
+{
+	folderControlMessages(clientStream, controlRequests::setPath, move(path));
+}
+
 void createFolder(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, const filesystem::path& currentPath)
 {
 
@@ -228,7 +245,7 @@ void setLogin(streams::IOSocketStream<char>& clientStream, const wstring& login,
 	}
 	catch (const web::WebException&)
 	{
-		
+
 	}
 }
 
@@ -662,4 +679,48 @@ void asyncDownloadFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clien
 			SendMessageW(ref.getMainWindow(), UI::events::multipleDownloadE, NULL, NULL);
 		}
 	}
+}
+
+string folderControlMessages(streams::IOSocketStream<char>& clientStream, const string_view& controlRequest, string&& data)
+{
+	string request;
+	string response;
+
+	if (data.empty())
+	{
+		request = web::HTTPBuilder().postRequest().headers
+		(
+			requestType::controlType, controlRequest
+		).build();
+	}
+	else
+	{
+		request = web::HTTPBuilder().postRequest().headers
+		(
+			requestType::controlType, controlRequest,
+			"Content-Length", data.size()
+		).build(&data);
+	}
+
+	utility::insertSizeHeaderToHTTPMessage(request);
+
+	try
+	{
+		clientStream << request;
+	}
+	catch (const web::WebException&)
+	{
+
+	}
+
+	try
+	{
+		clientStream >> response;
+	}
+	catch (const web::WebException&)
+	{
+
+	}
+
+	return response;
 }

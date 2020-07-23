@@ -19,22 +19,15 @@ namespace web
 	{
 		streams::IOSocketStream<char> clientStream(new buffers::IOSocketBuffer<char>(new FilesNetwork(clientSocket)));
 		string login;
-		//TODO: filesystem::path currentFolder that save user's current directory
+		filesystem::path currentPath(filesystem::current_path());
 
 		while (true)
 		{
 			try
 			{
-				filesystem::path currentPath(filesystem::current_path());
 				string request;
 
 				clientStream >> request;
-
-				if (login.size())
-				{
-					currentPath.append(usersFolder);
-					currentPath.append(login);
-				}
 
 				if (!filesystem::exists(currentPath))
 				{
@@ -60,6 +53,8 @@ namespace web
 				else if (request == accountRequests::setLogin)
 				{
 					clientStream >> login;
+
+					currentPath.append(usersFolder).append(login);
 				}
 				else if (request == networkRequests::exit)
 				{

@@ -27,12 +27,20 @@ namespace requestType
 	inline const std::string filesType = "Files request";
 	inline const std::string exitType = "Exit request";
 	inline const std::string cancelType = "Cancel request";
+	inline const std::string controlType = "Control request";
 }
 
 namespace networkRequests
 {
 	inline constexpr std::string_view exit = "EOSS";
 	inline constexpr std::string_view cancelOperation = "Cancel operation";
+}
+
+namespace controlRequests
+{
+	inline constexpr std::string_view nextFolder = "Next folder";
+	inline constexpr std::string_view prevFolder = "Previous folder";
+	inline constexpr std::string_view setPath = "Set path";
 }
 
 namespace accountRequests
@@ -48,6 +56,7 @@ namespace filesRequests
 	inline constexpr std::string_view downloadFile = "Download file";
 	inline constexpr std::string_view showAllFilesInFolder = "Show all files in directory";
 	inline constexpr std::string_view removeFile = "Remove file";
+	inline constexpr std::string_view createFolder = "Create folder";
 }
 
 namespace responses

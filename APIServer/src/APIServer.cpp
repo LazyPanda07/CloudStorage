@@ -113,6 +113,28 @@ namespace web
 										cancelUploadFile(clientStream,filesStream, headers);
 									}
 								}
+								else
+								{
+									it = headers.find(requestType::controlType);
+									
+									if (it != end(headers))
+									{
+										const string& request = it->second;
+
+										if (request == controlRequests::nextFolder)
+										{
+											nextFolder(clientStream, filesStream, dataBaseStream, parser.getBody());
+										}
+										else if (request == controlRequests::prevFolder)
+										{
+											prevFolder(clientStream, filesStream, dataBaseStream);
+										}
+										else if (request == controlRequests::setPath)
+										{
+											setPath(clientStream, filesStream, dataBaseStream, parser.getBody());
+										}
+									}
+								}
 							}
 						}
 					}

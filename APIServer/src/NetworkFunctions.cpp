@@ -237,6 +237,103 @@ void setLogin(streams::IOSocketStream<char>& filesStream, streams::IOSocketStrea
 	}
 }
 
+void nextFolder(streams::IOSocketStream<char>& clientStream, streams::IOSocketStream<char>& filesStream, streams::IOSocketStream<char>& dataBaseStream, const string& data)
+{
+	const string folder(begin(data) + data.find('=' + 1), end(data));
+	string ok(responses::okResponse);
+	string fail(responses::failResponse);
+	bool filesStreamResponse = false;
+	bool dataBaseStreamResponse = false;
+
+	filesStream << controlRequests::nextFolder;
+	filesStream << folder;
+	filesStream >> filesStreamResponse;
+
+	dataBaseStream << controlRequests::nextFolder;
+	dataBaseStream << folder;
+	dataBaseStream >> dataBaseStreamResponse;
+
+	if (filesStreamResponse && dataBaseStreamResponse)
+	{
+		string response = web::HTTPBuilder().responseCode(web::ResponseCodes::ok).headers
+		(
+			"Content-Length", ok.size()
+		).build(&ok);
+
+		utility::insertSizeHeaderToHTTPMessage(response);
+
+		clientStream << response;
+	}
+	else
+	{
+		//TODO:: error handling
+	}
+}
+
+void prevFolder(streams::IOSocketStream<char>& clientStream, streams::IOSocketStream<char>& filesStream, streams::IOSocketStream<char>& dataBaseStream)
+{
+	string ok(responses::okResponse);
+	string fail(responses::failResponse);
+	bool filesStreamResponse = false;
+	bool dataBaseStreamResponse = false;
+
+	filesStream << controlRequests::prevFolder;
+	filesStream >> filesStreamResponse;
+
+	dataBaseStream << controlRequests::prevFolder;
+	dataBaseStream >> dataBaseStreamResponse;
+
+	if (filesStreamResponse && dataBaseStreamResponse)
+	{
+		string response = web::HTTPBuilder().responseCode(web::ResponseCodes::ok).headers
+		(
+			"Content-Length", ok.size()
+		).build(&ok);
+
+		utility::insertSizeHeaderToHTTPMessage(response);
+
+		clientStream << response;
+	}
+	else
+	{
+		//TODO:: error handling
+	}
+}
+
+void setPath(streams::IOSocketStream<char>& clientStream, streams::IOSocketStream<char>& filesStream, streams::IOSocketStream<char>& dataBaseStream, const string& data)
+{
+	const string folder(begin(data) + data.find('=' + 1), end(data));
+	string ok(responses::okResponse);
+	string fail(responses::failResponse);
+
+	bool filesStreamResponse = false;
+	bool dataBaseStreamResponse = false;
+
+	filesStream << controlRequests::setPath;
+	filesStream << folder;
+	filesStream >> filesStreamResponse;
+
+	dataBaseStream << controlRequests::setPath;
+	dataBaseStream << folder;
+	dataBaseStream >> dataBaseStreamResponse;
+
+	if (filesStreamResponse && dataBaseStreamResponse)
+	{
+		string response = web::HTTPBuilder().responseCode(web::ResponseCodes::ok).headers
+		(
+			"Content-Length", ok.size()
+		).build(&ok);
+
+		utility::insertSizeHeaderToHTTPMessage(response);
+
+		clientStream << response;
+	}
+	else
+	{
+		//TODO:: error handling
+	}
+}
+
 void authorization(streams::IOSocketStream<char>& clientStream, streams::IOSocketStream<char>& filesStream, streams::IOSocketStream<char>& dataBaseStream, const string& data)
 {
 	auto [login, password] = userDataParse(data);
