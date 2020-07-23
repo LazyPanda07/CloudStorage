@@ -12,8 +12,8 @@ namespace UI
 	SetFolderNamePopupWindow::SetFolderNamePopupWindow(HWND disableWindow) :
 		BasePopupWindow(disableWindow, popupWindows::setFolderNamePopupWindowName, popupWindows::setFolderNamePopupWindow::title, SetFolderNamePopupWindowProcedure, L"Укажите название папки")
 	{
-		RECT messageStaticPos = utility::getWindowPosition(BasePopupWindow::messageStatic);
-		RECT cancelButtonPos = utility::getWindowPosition(BasePopupWindow::cancelButton);
+		RECT messageStaticPos = utility::UI::getWindowPosition(BasePopupWindow::messageStatic);
+		RECT cancelButtonPos = utility::UI::getWindowPosition(BasePopupWindow::cancelButton);
 		RECT sizes;
 		LONG width;
 		LONG height;

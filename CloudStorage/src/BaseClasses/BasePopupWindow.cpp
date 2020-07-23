@@ -12,7 +12,7 @@ namespace UI
 		disableWindow(disableWindow)
 	{
 		WNDCLASSEXW popup = {};
-		POINT centerOfDesktop = utility::centerCoordinates(popupWindows::basePopupWindow::popupWindowWidth, popupWindows::basePopupWindow::popupWindowHeight);
+		POINT centerOfDesktop = utility::UI::centerCoordinates(popupWindows::basePopupWindow::popupWindowWidth, popupWindows::basePopupWindow::popupWindowHeight);
 		POINT centerPopup;
 		RECT sizes;
 		LONG width;
@@ -47,7 +47,7 @@ namespace UI
 
 		width = sizes.right - sizes.left;
 		height = sizes.bottom - sizes.top;
-		centerPopup = utility::centerCoordinates(width, popupWindows::basePopupWindow::messageStaticHeight, popupWindow);
+		centerPopup = utility::UI::centerCoordinates(width, popupWindows::basePopupWindow::messageStaticHeight, popupWindow);
 		centerPopup.y /= 2;
 
 		messageStatic = CreateWindowExW

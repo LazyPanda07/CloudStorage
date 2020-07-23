@@ -31,7 +31,7 @@ namespace UI
 		BaseScreen(parentWindow, screens::registrationScreenName, RegistrationScreenProcedure)
 	{
 
-		POINT centerWrapper = utility::centerCoordinates(screens::registrationScreen::loginEditWidth, screens::registrationScreen::loginEditHeight, BaseScreen::wrapper);
+		POINT centerWrapper = utility::UI::centerCoordinates(screens::registrationScreen::loginEditWidth, screens::registrationScreen::loginEditHeight, BaseScreen::wrapper);
 		centerWrapper.y /= 2;
 
 		screenName = CreateWindowExW
@@ -152,7 +152,7 @@ namespace UI
 
 	void RegistrationScreen::resize()
 	{
-		POINT centerWrapper = utility::centerCoordinates(screens::registrationScreen::loginEditWidth, screens::registrationScreen::loginEditHeight, BaseScreen::wrapper);
+		POINT centerWrapper = utility::UI::centerCoordinates(screens::registrationScreen::loginEditWidth, screens::registrationScreen::loginEditHeight, BaseScreen::wrapper);
 		centerWrapper.y /= 2;
 
 		SetWindowPos

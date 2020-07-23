@@ -40,7 +40,7 @@ void getFiles(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, 
 	string response;
 	fileNames.clear();
 
-	utility::insertSizeHeaderToHTTPMessage(request);
+	utility::web::insertSizeHeaderToHTTPMessage(request);
 
 	try
 	{
@@ -78,9 +78,9 @@ void getFiles(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, 
 			{
 				fileNames.emplace_back
 				(
-					utility::to_wstring(tem[0]),
-					utility::to_wstring(tem[1]),
-					utility::to_wstring(tem[2]),
+					utility::conversion::to_wstring(tem[0]),
+					utility::conversion::to_wstring(tem[1]),
+					utility::conversion::to_wstring(tem[2]),
 					instance.convertToLocal(tem[3]),
 					instance.convertToLocal(tem[4]),
 					stoul(tem[5])
@@ -111,7 +111,7 @@ void getFiles(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, 
 		MessageBoxW
 		(
 			ref.getMainWindow(),
-			utility::to_wstring(body).data(),
+			utility::conversion::to_wstring(body).data(),
 			L"Ошибка",
 			MB_OK
 		);
@@ -161,11 +161,11 @@ void removeFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream
 	string request = web::HTTPBuilder().postRequest().headers
 	(
 		requestType::filesType, filesRequests::removeFile,
-		"File-Name", utility::to_string(fileName)
+		"File-Name", utility::conversion::to_string(fileName)
 	).build();
 	string response;
 
-	utility::insertSizeHeaderToHTTPMessage(request);
+	utility::web::insertSizeHeaderToHTTPMessage(request);
 
 	try
 	{
@@ -209,7 +209,7 @@ void reconnect(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream)
 
 void nextFolder(streams::IOSocketStream<char>& clientStream, const wstring& folderName)
 {
-	folderControlMessages(clientStream, controlRequests::nextFolder, utility::to_string(folderName));
+	folderControlMessages(clientStream, controlRequests::nextFolder, utility::conversion::to_string(folderName));
 }
 
 void prevFolder(streams::IOSocketStream<char>& clientStream)
@@ -229,7 +229,7 @@ void createFolder(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStre
 
 void setLogin(streams::IOSocketStream<char>& clientStream, const wstring& login, const wstring password)
 {
-	string body = "login=" + utility::to_string(login) + "&" + "password=" + utility::to_string(password);
+	string body = "login=" + utility::conversion::to_string(login) + "&" + "password=" + utility::conversion::to_string(password);
 
 	string request = web::HTTPBuilder().postRequest().headers
 	(
@@ -237,7 +237,7 @@ void setLogin(streams::IOSocketStream<char>& clientStream, const wstring& login,
 		"Content-Length", body.size()
 	).build(&body);
 
-	utility::insertSizeHeaderToHTTPMessage(request);
+	utility::web::insertSizeHeaderToHTTPMessage(request);
 
 	try
 	{
@@ -256,7 +256,7 @@ void exitFromApplication(UI::MainWindow& ref, streams::IOSocketStream<char>& cli
 		requestType::exitType, networkRequests::exit
 	).build();
 
-	utility::insertSizeHeaderToHTTPMessage(request);
+	utility::web::insertSizeHeaderToHTTPMessage(request);
 
 	try
 	{
@@ -285,7 +285,7 @@ tuple<wstring, wstring> authorization(UI::MainWindow& ref, streams::IOSocketStre
 	GetWindowTextW(authorizationLoginEdit, wLogin.data(), wLogin.size() + 1);
 	GetWindowTextW(authorizationPasswordEdit, wPassword.data(), wPassword.size() + 1);
 
-	string body = "login=" + utility::to_string(wLogin) + "&" + "password=" + utility::to_string(wPassword);
+	string body = "login=" + utility::conversion::to_string(wLogin) + "&" + "password=" + utility::conversion::to_string(wPassword);
 
 	string request = web::HTTPBuilder().postRequest().headers
 	(
@@ -293,7 +293,7 @@ tuple<wstring, wstring> authorization(UI::MainWindow& ref, streams::IOSocketStre
 		"Content-Length", body.size()
 	).build(&body);
 
-	utility::insertSizeHeaderToHTTPMessage(request);
+	utility::web::insertSizeHeaderToHTTPMessage(request);
 
 	try
 	{
@@ -329,7 +329,7 @@ tuple<wstring, wstring> authorization(UI::MainWindow& ref, streams::IOSocketStre
 			SetWindowTextW(authorizationPasswordEdit, L"");
 		}
 
-		MessageBoxW(ref.getMainWindow(), utility::to_wstring(parser.getBody()).data(), L"Ошибка", MB_OK);
+		MessageBoxW(ref.getMainWindow(), utility::conversion::to_wstring(parser.getBody()).data(), L"Ошибка", MB_OK);
 
 		return { wstring(), wstring() };
 	}
@@ -365,7 +365,7 @@ tuple<wstring, wstring> registration(UI::MainWindow& ref, streams::IOSocketStrea
 		return { wstring(), wstring() };
 	}
 
-	string body = "login=" + utility::to_string(wLogin) + "&" + "password=" + utility::to_string(wPassword);
+	string body = "login=" + utility::conversion::to_string(wLogin) + "&" + "password=" + utility::conversion::to_string(wPassword);
 
 	string request = web::HTTPBuilder().postRequest().headers
 	(
@@ -373,7 +373,7 @@ tuple<wstring, wstring> registration(UI::MainWindow& ref, streams::IOSocketStrea
 		"Content-Length", body.size()
 	).build(&body);
 
-	utility::insertSizeHeaderToHTTPMessage(request);
+	utility::web::insertSizeHeaderToHTTPMessage(request);
 
 	try
 	{
@@ -407,7 +407,7 @@ tuple<wstring, wstring> registration(UI::MainWindow& ref, streams::IOSocketStrea
 		SetWindowTextW(registrationPasswordEdit, L"");
 		SetWindowTextW(registrationRepeatPasswordEdit, L"");
 
-		MessageBoxW(ref.getMainWindow(), utility::to_wstring(parser.getBody()).data(), L"Ошибка", MB_OK);
+		MessageBoxW(ref.getMainWindow(), utility::conversion::to_wstring(parser.getBody()).data(), L"Ошибка", MB_OK);
 
 		return { wstring(), wstring() };
 	}
@@ -424,7 +424,7 @@ string cancelUploadFile(const string& fileName)
 		"File-Name", fileName
 	).build();
 
-	utility::insertSizeHeaderToHTTPMessage(result);
+	utility::web::insertSizeHeaderToHTTPMessage(result);
 
 	return result;
 }
@@ -492,7 +492,7 @@ void asyncUploadFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientS
 			isLast ? "Total-File-Size" : "Reserved", isLast ? fileSize : 0
 		).build(data);
 
-		utility::insertSizeHeaderToHTTPMessage(message);
+		utility::web::insertSizeHeaderToHTTPMessage(message);
 
 		try
 		{
@@ -542,7 +542,7 @@ void asyncUploadFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientS
 		int ok = MessageBoxW
 		(
 			ref.getPopupWindow(),
-			utility::to_wstring(parser.getBody()).data(),
+			utility::conversion::to_wstring(parser.getBody()).data(),
 			L"Ошибка",
 			MB_OK
 		);
@@ -576,7 +576,7 @@ void asyncDownloadFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clien
 {
 	intmax_t offset = 0;
 	intmax_t totalFileSize;
-	const string sFileName = utility::to_string(fileName);
+	const string sFileName = utility::conversion::to_string(fileName);
 	bool lastPacket;
 	string response;
 
@@ -595,7 +595,7 @@ void asyncDownloadFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clien
 			"Range", offset
 		).build();
 
-		utility::insertSizeHeaderToHTTPMessage(request);
+		utility::web::insertSizeHeaderToHTTPMessage(request);
 
 		if (isCancel)
 		{
@@ -702,7 +702,7 @@ string folderControlMessages(streams::IOSocketStream<char>& clientStream, const 
 		).build(&data);
 	}
 
-	utility::insertSizeHeaderToHTTPMessage(request);
+	utility::web::insertSizeHeaderToHTTPMessage(request);
 
 	try
 	{

@@ -44,7 +44,7 @@ void uploadFile(streams::IOSocketStream<char>& clientStream, const filesystem::p
 			
 			string extension
 			(
-				utility::to_string
+				utility::conversion::to_string
 				(
 					wstring(extensionInfo.szTypeName, extensionInfo.szTypeName + wcslen(extensionInfo.szTypeName))
 				)

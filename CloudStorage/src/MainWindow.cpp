@@ -40,7 +40,7 @@ namespace UI
 	{
 		INITCOMMONCONTROLSEX init = {};
 		WNDCLASSEXW wndClass = {};
-		POINT centerOfDesktop = utility::centerCoordinates(UI::mainWindowUI::mainWindowWidth, UI::mainWindowUI::mainWindowHeight);
+		POINT centerOfDesktop = utility::UI::centerCoordinates(UI::mainWindowUI::mainWindowWidth, UI::mainWindowUI::mainWindowHeight);
 
 		init.dwICC = ICC_LISTVIEW_CLASSES;
 		wndClass.cbSize = sizeof(WNDCLASSEXW);

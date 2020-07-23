@@ -5,15 +5,24 @@
 
 namespace utility
 {
-	std::wstring to_wstring(const std::string& source);
+	namespace conversion
+	{
+		std::wstring to_wstring(const std::string& source);
 
-	std::string to_string(const std::wstring& source);
+		std::string to_string(const std::wstring& source);
+	}
 
-	POINT centerCoordinates(HWND window = GetDesktopWindow());
+	namespace UI
+	{
+		POINT centerCoordinates(HWND window = GetDesktopWindow());
 
-	POINT centerCoordinates(LONG width, LONG height, HWND window = GetDesktopWindow());
+		POINT centerCoordinates(LONG width, LONG height, HWND window = GetDesktopWindow());
 
-	RECT getWindowPosition(HWND window);
+		RECT getWindowPosition(HWND window);
+	}
 
-	void insertSizeHeaderToHTTPMessage(std::string& HTTPMessage);
+	namespace web
+	{
+		void insertSizeHeaderToHTTPMessage(std::string& HTTPMessage);
+	}
 }

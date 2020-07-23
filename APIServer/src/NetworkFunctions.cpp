@@ -42,7 +42,7 @@ void showAllFilesInFolder(streams::IOSocketStream<char>& clientStream, streams::
 			"Error", error
 		).build(&responseMessage);
 
-		utility::insertSizeHeaderToHTTPMessage(response);
+		utility::web::insertSizeHeaderToHTTPMessage(response);
 
 		clientStream << response;
 	}
@@ -96,7 +96,7 @@ void uploadFile(streams::IOSocketStream<char>& clientStream, streams::IOSocketSt
 			"Content-Length", responseMessage.size()
 		).build(&responseMessage);
 
-		utility::insertSizeHeaderToHTTPMessage(response);
+		utility::web::insertSizeHeaderToHTTPMessage(response);
 
 		try
 		{
@@ -138,7 +138,7 @@ void downloadFile(streams::IOSocketStream<char>& clientStream, streams::IOSocket
 			"Content-Length", data.size()
 		).build(&data);
 
-		utility::insertSizeHeaderToHTTPMessage(response);
+		utility::web::insertSizeHeaderToHTTPMessage(response);
 
 		clientStream << response;
 	}
@@ -176,7 +176,7 @@ void removeFile(streams::IOSocketStream<char>& clientStream, streams::IOSocketSt
 			"Error", error
 		).build();
 
-		utility::insertSizeHeaderToHTTPMessage(response);
+		utility::web::insertSizeHeaderToHTTPMessage(response);
 
 		clientStream << response;
 	}
@@ -194,7 +194,7 @@ void cancelUploadFile(streams::IOSocketStream<char>& clientStream, streams::IOSo
 		"Reserved", 0
 	).build();
 
-	utility::insertSizeHeaderToHTTPMessage(response);
+	utility::web::insertSizeHeaderToHTTPMessage(response);
 
 	filesStream << networkRequests::cancelOperation;
 
@@ -260,7 +260,7 @@ void nextFolder(streams::IOSocketStream<char>& clientStream, streams::IOSocketSt
 			"Content-Length", ok.size()
 		).build(&ok);
 
-		utility::insertSizeHeaderToHTTPMessage(response);
+		utility::web::insertSizeHeaderToHTTPMessage(response);
 
 		clientStream << response;
 	}
@@ -290,7 +290,7 @@ void prevFolder(streams::IOSocketStream<char>& clientStream, streams::IOSocketSt
 			"Content-Length", ok.size()
 		).build(&ok);
 
-		utility::insertSizeHeaderToHTTPMessage(response);
+		utility::web::insertSizeHeaderToHTTPMessage(response);
 
 		clientStream << response;
 	}
@@ -324,7 +324,7 @@ void setPath(streams::IOSocketStream<char>& clientStream, streams::IOSocketStrea
 			"Content-Length", ok.size()
 		).build(&ok);
 
-		utility::insertSizeHeaderToHTTPMessage(response);
+		utility::web::insertSizeHeaderToHTTPMessage(response);
 
 		clientStream << response;
 	}
@@ -373,7 +373,7 @@ void authorization(streams::IOSocketStream<char>& clientStream, streams::IOSocke
 			filesStream << login;
 		}
 
-		utility::insertSizeHeaderToHTTPMessage(response);
+		utility::web::insertSizeHeaderToHTTPMessage(response);
 
 		clientStream << response;
 	}
@@ -422,7 +422,7 @@ void registration(streams::IOSocketStream<char>& clientStream, streams::IOSocket
 			filesStream << login;
 		}
 
-		utility::insertSizeHeaderToHTTPMessage(response);
+		utility::web::insertSizeHeaderToHTTPMessage(response);
 
 		clientStream << response;
 	}

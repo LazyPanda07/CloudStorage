@@ -12,97 +12,106 @@ string calculateHTTPMessageSize(const string& HTTPMessage);
 
 namespace utility
 {
-	wstring to_wstring(const string& source)
+	namespace conversion
 	{
-		wstring res;
+		wstring to_wstring(const string& source)
+		{
+			wstring res;
 
-		res.resize(MultiByteToWideChar
-		(
-			CP_ACP,
-			NULL,
-			source.data(),
-			source.size(),
-			res.data(),
-			NULL
-		));
+			res.resize(MultiByteToWideChar
+			(
+				CP_ACP,
+				NULL,
+				source.data(),
+				source.size(),
+				res.data(),
+				NULL
+			));
 
-		MultiByteToWideChar
-		(
-			CP_ACP,
-			NULL,
-			source.data(),
-			source.size(),
-			res.data(),
-			res.size()
-		);
+			MultiByteToWideChar
+			(
+				CP_ACP,
+				NULL,
+				source.data(),
+				source.size(),
+				res.data(),
+				res.size()
+			);
 
-		return res;
+			return res;
+		}
+
+		string to_string(const wstring& source)
+		{
+			string result;
+
+			result.resize(WideCharToMultiByte
+			(
+				CP_ACP,
+				NULL,
+				source.data(),
+				source.size(),
+				result.data(),
+				NULL,
+				NULL,
+				NULL
+			));
+
+			WideCharToMultiByte
+			(
+				CP_ACP,
+				NULL,
+				source.data(),
+				source.size(),
+				result.data(),
+				result.size(),
+				NULL,
+				NULL
+			);
+
+			return result;
+		}
 	}
 
-	string to_string(const wstring& source)
+	namespace UI
 	{
-		string result;
+		POINT centerCoordinates(HWND window)
+		{
+			RECT sizes;
 
-		result.resize(WideCharToMultiByte
-		(
-			CP_ACP,
-			NULL,
-			source.data(),
-			source.size(),
-			result.data(),
-			NULL,
-			NULL,
-			NULL
-		));
+			GetClientRect(window, &sizes);
 
-		WideCharToMultiByte
-		(
-			CP_ACP,
-			NULL,
-			source.data(),
-			source.size(),
-			result.data(),
-			result.size(),
-			NULL,
-			NULL
-		);
+			return { static_cast<LONG>((sizes.right - sizes.left) * 0.5), static_cast<LONG>((sizes.bottom - sizes.top) * 0.5) };
+		}
 
-		return result;
+		POINT centerCoordinates(LONG width, LONG height, HWND window)
+		{
+			RECT sizes;
+
+			GetClientRect(window, &sizes);
+
+			LONG x = (sizes.right - sizes.left) * 0.5;
+			LONG y = (sizes.bottom - sizes.top) * 0.5;
+
+			return { static_cast<LONG>(x - width * 0.5), static_cast<LONG>(y - height * 0.5) };
+		}
+
+		RECT getWindowPosition(HWND window)
+		{
+			RECT result;
+			GetWindowRect(window, &result);
+			MapWindowPoints(GetDesktopWindow(), GetParent(window), reinterpret_cast<LPPOINT>(&result), 2);
+			return result;
+		}
 	}
 
-	POINT centerCoordinates(HWND window)
+	namespace web
 	{
-		RECT sizes;
-
-		GetClientRect(window, &sizes);
-
-		return { static_cast<LONG>((sizes.right - sizes.left) * 0.5), static_cast<LONG>((sizes.bottom - sizes.top) * 0.5) };
-	}
-
-	POINT centerCoordinates(LONG width, LONG height, HWND window)
-	{
-		RECT sizes;
-
-		GetClientRect(window, &sizes);
-
-		LONG x = (sizes.right - sizes.left) * 0.5;
-		LONG y = (sizes.bottom - sizes.top) * 0.5;
-
-		return { static_cast<LONG>(x - width * 0.5), static_cast<LONG>(y - height * 0.5) };
-	}
-
-	RECT getWindowPosition(HWND window)
-	{
-		RECT result;
-		GetWindowRect(window, &result);
-		MapWindowPoints(GetDesktopWindow(), GetParent(window), reinterpret_cast<LPPOINT>(&result), 2);
-		return result;
-	}
-
-	void insertSizeHeaderToHTTPMessage(string& HTTPMessage)
-	{
-		string totalHTTPMessageSize = customHTTPHeaderSize.data() + calculateHTTPMessageSize(HTTPMessage) + "\r\n";
-		HTTPMessage.insert(begin(HTTPMessage) + HTTPMessage.find("\r\n") + 2, begin(totalHTTPMessageSize), end(totalHTTPMessageSize));
+		void insertSizeHeaderToHTTPMessage(string& HTTPMessage)
+		{
+			string totalHTTPMessageSize = customHTTPHeaderSize.data() + calculateHTTPMessageSize(HTTPMessage) + "\r\n";
+			HTTPMessage.insert(begin(HTTPMessage) + HTTPMessage.find("\r\n") + 2, begin(totalHTTPMessageSize), end(totalHTTPMessageSize));
+		}
 	}
 }
 

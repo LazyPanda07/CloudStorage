@@ -14,7 +14,7 @@ namespace UI
 	DownloadFilePopupWindow::DownloadFilePopupWindow(HWND disableWindow, const wstring& message) :
 		BasePopupWindow(disableWindow, popupWindows::downloadFilePopupWindowName, popupWindows::downloadFilePopupWindow::title, DownloadFilePopupWindowProcedure, message)
 	{
-		RECT messagePos = utility::getWindowPosition(BasePopupWindow::messageStatic);
+		RECT messagePos = utility::UI::getWindowPosition(BasePopupWindow::messageStatic);
 		RECT sizes;
 		LONG width;
 		LONG height;

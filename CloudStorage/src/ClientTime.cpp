@@ -76,6 +76,6 @@ namespace utility
 
 		result.pop_back();
 
-		return utility::to_wstring(result);
+		return utility::conversion::to_wstring(result);
 	}
 }

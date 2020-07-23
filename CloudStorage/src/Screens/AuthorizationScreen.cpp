@@ -29,7 +29,7 @@ namespace UI
 	AuthorizationScreen::AuthorizationScreen(HWND parentWindow) :
 		BaseScreen(parentWindow, screens::authorizationScreenName, AuthorizationScreenProcedure)
 	{
-		POINT centerWrapper = utility::centerCoordinates(screens::authorizationScreen::loginEditWidth, screens::authorizationScreen::loginEditHeight, BaseScreen::wrapper);
+		POINT centerWrapper = utility::UI::centerCoordinates(screens::authorizationScreen::loginEditWidth, screens::authorizationScreen::loginEditHeight, BaseScreen::wrapper);
 		centerWrapper.y /= 2;
 
 		screenName = CreateWindowExW
@@ -130,7 +130,7 @@ namespace UI
 
 	void AuthorizationScreen::resize()
 	{
-		POINT centerWrapper = utility::centerCoordinates(screens::authorizationScreen::loginEditWidth, screens::authorizationScreen::loginEditHeight, BaseScreen::wrapper);
+		POINT centerWrapper = utility::UI::centerCoordinates(screens::authorizationScreen::loginEditWidth, screens::authorizationScreen::loginEditHeight, BaseScreen::wrapper);
 		centerWrapper.y /= 2;
 
 		SetWindowPos
