@@ -188,5 +188,11 @@ namespace UI
 			initPopupWindowE,
 			initEventsCount
 		};
+
+		enum controlEvents
+		{
+			openFileFolderE = initEventsCount + 1,
+			controlEventsCount
+		};
 	}
 }

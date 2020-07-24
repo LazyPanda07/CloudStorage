@@ -57,8 +57,12 @@ LRESULT __stdcall CloudStorageScreenProcedure(HWND hwnd, UINT msg, WPARAM wparam
 		switch (reinterpret_cast<LPNMHDR>(lparam)->code)
 		{
 		case NM_DBLCLK:
-			//TODO: open file or open folder
 			listViewHdr = reinterpret_cast<NMITEMACTIVATE*>(lparam);
+
+			if (listViewHdr->iItem != -1)
+			{
+				SendMessageW(GetParent(hwnd), UI::events::openFileFolderE, static_cast<WPARAM>(listViewHdr->iItem), NULL);
+			}
 
 			return 0;
 

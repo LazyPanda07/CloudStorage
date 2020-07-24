@@ -488,6 +488,22 @@ LRESULT __stdcall MainWindowProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM
 		setLogin(clientStream, login, password);
 
 		return 0;
+
+	case UI::events::openFileFolderE:
+		if (fileNames[wparam].fileSizeS == L"")	//folder
+		{
+			currentPath.append(fileNames[wparam].fileName);
+
+			nextFolder(clientStream, fileNames[wparam].fileName);
+
+			SendMessageW(ptr->getMainWindow(), UI::events::getFilesE, NULL, NULL);
+		}
+		else	//file
+		{
+			//TODO: openFile function
+		}
+
+		return 0;
 #pragma endregion
 
 	case WM_SIZE:

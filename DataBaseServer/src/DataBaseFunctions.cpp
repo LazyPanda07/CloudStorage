@@ -43,7 +43,7 @@ void showAllFilesInFolder(streams::IOSocketStream<char>& clientStream, const db:
 {
 	string result;
 
-	vector<db::fileData> data = db.getFiles(login);
+	vector<db::fileData> data = db.getFiles(login, currentPath.string());
 
 	for (const auto& i : data)
 	{

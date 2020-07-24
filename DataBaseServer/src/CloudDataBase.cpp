@@ -206,10 +206,10 @@ namespace db
 		}
 	}
 
-	vector<fileData> CloudDataBase::getFiles(const string& login) const
+	vector<fileData> CloudDataBase::getFiles(const string& login, const string& path) const
 	{
 		vector<fileData> result;
-		const string condition = "userId = " + to_string(this->getId(login));
+		const string condition = "userId = " + to_string(this->getId(login)) + " AND filePath = '" + path + '\'';
 
 		auto callback = [](void* userData, int argc, char** argv, char** columns) -> int
 		{

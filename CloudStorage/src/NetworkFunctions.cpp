@@ -715,8 +715,9 @@ string folderControlMessages(streams::IOSocketStream<char>& clientStream, const 
 {
 	string request;
 	string response;
+	string body = "folder=" + move(data);
 
-	if (data.empty())
+	if (controlRequest == controlRequests::prevFolder)
 	{
 		request = web::HTTPBuilder().postRequest().headers
 		(
@@ -728,8 +729,8 @@ string folderControlMessages(streams::IOSocketStream<char>& clientStream, const 
 		request = web::HTTPBuilder().postRequest().headers
 		(
 			requestType::controlType, controlRequest,
-			"Content-Length", data.size()
-		).build(&data);
+			"Content-Length", body.size()
+		).build(&body);
 	}
 
 	utility::web::insertSizeHeaderToHTTPMessage(request);

@@ -239,7 +239,7 @@ void setLogin(streams::IOSocketStream<char>& filesStream, streams::IOSocketStrea
 
 void nextFolder(streams::IOSocketStream<char>& clientStream, streams::IOSocketStream<char>& filesStream, streams::IOSocketStream<char>& dataBaseStream, const string& data)
 {
-	const string folder(begin(data) + data.find('=' + 1), end(data));
+	const string folder(begin(data) + data.find('=') + 1, end(data));
 	string ok(responses::okResponse);
 	string fail(responses::failResponse);
 	bool filesStreamResponse = false;
@@ -302,7 +302,7 @@ void prevFolder(streams::IOSocketStream<char>& clientStream, streams::IOSocketSt
 
 void setPath(streams::IOSocketStream<char>& clientStream, streams::IOSocketStream<char>& filesStream, streams::IOSocketStream<char>& dataBaseStream, const string& data)
 {
-	const string folder(begin(data) + data.find('=' + 1), end(data));
+	const string folder(begin(data) + data.find('=') + 1, end(data));
 	string ok(responses::okResponse);
 	string fail(responses::failResponse);
 
