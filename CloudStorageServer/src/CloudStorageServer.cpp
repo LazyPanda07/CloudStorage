@@ -54,7 +54,19 @@ namespace web
 				{
 					clientStream >> login;
 
-					currentPath = filesystem::path(filesystem::current_path()).append(usersFolder).append(login);
+					currentPath = filesystem::current_path().append(usersFolder).append(login);
+				}
+				else if (request == controlRequests::nextFolder)
+				{
+					nextFolder(clientStream, currentPath);
+				}
+				else if (request == controlRequests::prevFolder)
+				{
+					prevFolder(clientStream, currentPath);
+				}
+				else if (request == controlRequests::setPath)
+				{
+					setPath(clientStream, currentPath, login);
 				}
 				else if (request == networkRequests::exit)
 				{

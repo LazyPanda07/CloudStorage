@@ -131,3 +131,64 @@ void cancelOperation(streams::IOSocketStream<char>& clientStream, const filesyst
 		filesystem::remove(filesystem::path(currentPath).append(fileName));
 	}
 }
+
+void nextFolder(streams::IOSocketStream<char>& clientStream, std::filesystem::path& currentPath)
+{
+	string folder;
+	bool ok = true;
+
+	clientStream >> folder;
+
+	currentPath.append(folder);
+
+	clientStream << ok;
+}
+
+void prevFolder(streams::IOSocketStream<char>& clientStream, std::filesystem::path& currentPath)
+{
+	bool ok = true;
+
+	if (currentPath.filename().string() != usersFolder)
+	{
+		const string path = currentPath.string();
+
+		currentPath = string(begin(path), begin(path) + path.rfind('\\'));
+	}
+
+	clientStream << ok;
+}
+
+void setPath(streams::IOSocketStream<char>& clientStream, std::filesystem::path& currentPath, const string& login)
+{
+	string newPath;
+	bool ok = true;
+
+	clientStream >> newPath;
+
+	if (newPath == "Home")
+	{
+		currentPath = filesystem::current_path().append(usersFolder).append(login);
+	}
+	else
+	{
+		currentPath = filesystem::current_path().append(usersFolder).append(login);
+
+		string tem;
+
+		for (size_t i = newPath.find('\\') + 1; i < newPath.size(); i++)
+		{
+			if (newPath[i] == '\\')
+			{
+				currentPath.append(tem);
+
+				tem.clear();
+			}
+			else
+			{
+				tem += newPath[i];
+			}
+		}
+	}
+
+	clientStream << ok;
+}
