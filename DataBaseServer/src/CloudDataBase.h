@@ -31,6 +31,8 @@ namespace db
 
 		bool removeFileData(const std::string& login, std::string&& fileName, std::string&& filePath) const;
 
+		void addFolder(const std::string& login, std::string&& folderName, std::string&& filePath, std::string&& fileExtension) const;
+
 		std::vector<fileData> getFiles(const std::string& login) const;
 
 		std::string registration(const std::string& login, const std::string& password) const;

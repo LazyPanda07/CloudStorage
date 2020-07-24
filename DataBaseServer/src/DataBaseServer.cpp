@@ -60,6 +60,10 @@ namespace web
 				{
 					setPath(clientStream, currentPath);
 				}
+				else if (request == filesRequests::createFolder)
+				{
+					createFolder(clientStream, db, login, currentPath);
+				}
 				else if (request == networkRequests::exit)
 				{
 					return;

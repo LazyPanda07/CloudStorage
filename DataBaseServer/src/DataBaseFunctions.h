@@ -22,3 +22,5 @@ void nextFolder(streams::IOSocketStream<char>& clientStream, std::filesystem::pa
 void prevFolder(streams::IOSocketStream<char>& clientStream, std::filesystem::path& currentPath);
 
 void setPath(streams::IOSocketStream<char>& clientStream, std::filesystem::path& currentPath);
+
+void createFolder(streams::IOSocketStream<char>& clientStream, const db::CloudDataBase& db, const std::string& login, const std::filesystem::path& currentPath);

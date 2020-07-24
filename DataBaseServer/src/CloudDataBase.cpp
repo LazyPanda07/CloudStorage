@@ -170,7 +170,7 @@ namespace db
 		}
 	}
 
-	bool CloudDataBase::removeFileData(const std::string& login, std::string&& fileName, std::string&& filePath) const
+	bool CloudDataBase::removeFileData(const string& login, string&& fileName, string&& filePath) const
 	{
 		try
 		{
@@ -184,6 +184,25 @@ namespace db
 		{
 			Log::warning(e.what());
 			return false;
+		}
+	}
+
+	void CloudDataBase::addFolder(const string& login, string&& folderName, string&& filePath, string&& fileExtension) const
+	{
+		try
+		{
+			db.insert
+			(
+				filesTable,
+				"userId", this->getId(login),
+				"fileName", move(folderName),
+				"filePath", move(filePath),
+				"fileExtension", move(fileExtension)
+			);
+		}
+		catch (const DataBaseException& e)
+		{
+			Log::warning(e.what());
 		}
 	}
 

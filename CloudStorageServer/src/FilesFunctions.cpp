@@ -199,5 +199,21 @@ void createFolder(streams::IOSocketStream<char>& clientStream, const filesystem:
 
 	clientStream >> folderName;
 
-	filesystem::create_directory(filesystem::path(currentPath).append(folderName));
+	const filesystem::path tem(filesystem::path(currentPath).append(folderName));
+
+	filesystem::create_directory(tem);
+
+	SHFILEINFOW extensionInfo = {};
+
+	SHGetFileInfoW(tem.wstring().data(), NULL, &extensionInfo, sizeof(extensionInfo), SHGFI_TYPENAME | SHGFI_USEFILEATTRIBUTES);
+
+	string extension
+	(
+		utility::conversion::to_string
+		(
+			wstring(extensionInfo.szTypeName, extensionInfo.szTypeName + wcslen(extensionInfo.szTypeName))
+		)
+	);
+
+	clientStream << extension;
 }

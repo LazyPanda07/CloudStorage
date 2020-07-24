@@ -337,12 +337,16 @@ void setPath(streams::IOSocketStream<char>& clientStream, streams::IOSocketStrea
 void createFolder(streams::IOSocketStream<char>& filesStream, streams::IOSocketStream<char>& dataBaseStream, const string& data)
 {
 	const string folderName(begin(data) + data.find('=') + 1, end(data));
+	string fileExtension;
 
 	filesStream << filesRequests::createFolder;
 	filesStream << folderName;
 
+	filesStream >> fileExtension;
+
 	dataBaseStream << filesRequests::createFolder;
 	dataBaseStream << folderName;
+	dataBaseStream << fileExtension;
 }
 
 void authorization(streams::IOSocketStream<char>& clientStream, streams::IOSocketStream<char>& filesStream, streams::IOSocketStream<char>& dataBaseStream, const string& data)

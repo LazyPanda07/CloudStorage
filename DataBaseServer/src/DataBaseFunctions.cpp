@@ -123,3 +123,14 @@ void setPath(streams::IOSocketStream<char>& clientStream, std::filesystem::path&
 
 	clientStream << ok;
 }
+
+void createFolder(streams::IOSocketStream<char>& clientStream, const db::CloudDataBase& db, const string& login, const std::filesystem::path& currentPath)
+{
+	string folderName;
+	string fileExtension;
+
+	clientStream >> folderName;
+	clientStream >> fileExtension;
+
+	db.addFolder(login, move(folderName), currentPath.string(), move(fileExtension));
+}
