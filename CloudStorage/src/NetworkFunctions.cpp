@@ -222,9 +222,28 @@ void setPath(streams::IOSocketStream<char>& clientStream, string&& path)
 	folderControlMessages(clientStream, controlRequests::setPath, move(path));
 }
 
-void createFolder(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, const filesystem::path& currentPath)
+void createFolder(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream)
 {
+	wstring wFolderName;
+	HWND enterFolderNameEdit = ref.getEnterFolderNameEdit();
+	string request;
+	string body;
 
+	wFolderName.resize(GetWindowTextLengthW(enterFolderNameEdit));
+
+	GetWindowTextW(enterFolderNameEdit, wFolderName.data(), wFolderName.size() + 1);
+
+	body = "folder=" + utility::conversion::to_string(wFolderName);
+
+	request = web::HTTPBuilder().postRequest().headers
+	(
+		requestType::filesType, filesRequests::createFolder,
+		"Content-Length", body.size()
+	).build(&body);
+
+	SendMessageW(ref.getMainWindow(), UI::events::deletePopupWindowE, NULL, NULL);
+
+	SendMessageW(ref.getMainWindow(), UI::events::getFilesE, NULL, NULL);
 }
 
 void setLogin(streams::IOSocketStream<char>& clientStream, const wstring& login, const wstring password)

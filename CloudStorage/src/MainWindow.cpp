@@ -412,7 +412,7 @@ LRESULT __stdcall MainWindowProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM
 			break;
 
 		case UI::buttons::saveFolderName:
-			createFolder(*ptr, clientStream, currentPath);
+			createFolder(*ptr, clientStream);
 
 			break;
 
