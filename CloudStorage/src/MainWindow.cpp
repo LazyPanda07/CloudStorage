@@ -405,6 +405,8 @@ LRESULT __stdcall MainWindowProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM
 		case UI::buttons::reconnect:
 			reconnect(*ptr, clientStream);
 
+			setPath(clientStream, currentPath.string());
+
 			SendMessageW(ptr->getMainWindow(), UI::events::setLoginE, NULL, NULL);
 
 			SendMessageW(ptr->getMainWindow(), UI::events::getFilesE, NULL, NULL);

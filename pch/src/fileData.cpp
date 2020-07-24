@@ -45,7 +45,7 @@ namespace db
 		fileExtension(move(fileExtension)),
 		uploadDate(move(uploadDate)),
 		dateOfChange(move(dateOfChange)),
-		fileSizeS(to_wstring(fileSize) + L" Б"),
+		fileSizeS(this->fileExtension == L"Папка с файлами" ? L"" : to_wstring(fileSize) + L" Б"),
 		fileSize(fileSize)
 	{
 

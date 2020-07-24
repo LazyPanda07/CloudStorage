@@ -68,11 +68,11 @@ LRESULT __stdcall CloudStorageScreenProcedure(HWND hwnd, UINT msg, WPARAM wparam
 
 			if (listViewHdr->iItem != -1)
 			{
-				//TODO: popup menu for element
+				//TODO: popup menu for listview element
+
 			}
 			else
 			{
-				//TODO: popup menu with create folder and upload files
 				if (popupMenu)
 				{
 					DestroyMenu(popupMenu);
