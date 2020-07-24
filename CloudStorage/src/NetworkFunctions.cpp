@@ -241,6 +241,8 @@ void createFolder(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStre
 		"Content-Length", body.size()
 	).build(&body);
 
+	utility::web::insertSizeHeaderToHTTPMessage(request);
+
 	try
 	{
 		clientStream << request;

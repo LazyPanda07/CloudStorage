@@ -40,7 +40,7 @@ void uploadFile(streams::IOSocketStream<char>& clientStream, const filesystem::p
 
 			SHFILEINFOW extensionInfo = {};
 			
-			SHGetFileInfoW(filesystem::path(currentPath).append(fileName).wstring().data(), NULL, &extensionInfo, sizeof(extensionInfo), SHGFI_TYPENAME | SHGFI_USEFILEATTRIBUTES);
+			SHGetFileInfoW(filesystem::path(currentPath).append(fileName).wstring().data(), NULL, &extensionInfo, sizeof(extensionInfo), SHGFI_TYPENAME);
 			
 			string extension
 			(
@@ -205,7 +205,7 @@ void createFolder(streams::IOSocketStream<char>& clientStream, const filesystem:
 
 	SHFILEINFOW extensionInfo = {};
 
-	SHGetFileInfoW(tem.wstring().data(), NULL, &extensionInfo, sizeof(extensionInfo), SHGFI_TYPENAME | SHGFI_USEFILEATTRIBUTES);
+	SHGetFileInfoW(tem.wstring().data(), NULL, &extensionInfo, sizeof(extensionInfo), SHGFI_TYPENAME);
 
 	string extension
 	(
