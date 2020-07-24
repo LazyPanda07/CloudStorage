@@ -17,3 +17,5 @@ void nextFolder(streams::IOSocketStream<char>& clientStream, std::filesystem::pa
 void prevFolder(streams::IOSocketStream<char>& clientStream, std::filesystem::path& currentPath);
 
 void setPath(streams::IOSocketStream<char>& clientStream, std::filesystem::path& currentPath, const std::string& login);
+
+void createFolder(streams::IOSocketStream<char>& clientStream, const std::filesystem::path& currentPath);

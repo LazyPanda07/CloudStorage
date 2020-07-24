@@ -192,3 +192,12 @@ void setPath(streams::IOSocketStream<char>& clientStream, std::filesystem::path&
 
 	clientStream << ok;
 }
+
+void createFolder(streams::IOSocketStream<char>& clientStream, const filesystem::path& currentPath)
+{
+	string folderName;
+
+	clientStream >> folderName;
+
+	filesystem::create_directory(filesystem::path(currentPath).append(folderName));
+}
