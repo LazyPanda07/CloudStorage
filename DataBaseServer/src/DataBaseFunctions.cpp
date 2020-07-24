@@ -85,3 +85,41 @@ void removeFileData(streams::IOSocketStream<char>& clientStream, const db::Cloud
 
 	db.removeFileData(login, move(fileName), currentPath.string());
 }
+
+void nextFolder(streams::IOSocketStream<char>& clientStream, std::filesystem::path& currentPath)
+{
+	string folder;
+	bool ok = true;
+
+	clientStream >> folder;
+
+	currentPath.append(folder);
+
+	clientStream << ok;
+}
+
+void prevFolder(streams::IOSocketStream<char>& clientStream, std::filesystem::path& currentPath)
+{
+	bool ok = true;
+
+	if (currentPath != "Home")
+	{
+		const string path = currentPath.string();
+
+		currentPath = string(begin(path), begin(path) + path.rfind('\\'));
+	}
+
+	clientStream << ok;
+}
+
+void setPath(streams::IOSocketStream<char>& clientStream, std::filesystem::path& currentPath)
+{
+	string newPath;
+	bool ok = true;
+
+	clientStream >> newPath;
+
+	currentPath = newPath;
+
+	clientStream << ok;
+}

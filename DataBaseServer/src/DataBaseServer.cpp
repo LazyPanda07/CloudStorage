@@ -48,6 +48,18 @@ namespace web
 				{
 					removeFileData(clientStream, db, login, currentPath);
 				}
+				else if (request == controlRequests::nextFolder)
+				{
+					nextFolder(clientStream, currentPath);
+				}
+				else if (request == controlRequests::prevFolder)
+				{
+					prevFolder(clientStream, currentPath);
+				}
+				else if (request == controlRequests::setPath)
+				{
+					setPath(clientStream, currentPath);
+				}
 				else if (request == networkRequests::exit)
 				{
 					return;

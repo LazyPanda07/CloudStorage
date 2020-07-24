@@ -16,3 +16,9 @@ void showAllFilesInFolder(streams::IOSocketStream<char>& clientStream, const db:
 void uploadFileData(streams::IOSocketStream<char>& clientStream, const db::CloudDataBase& db, const std::string& login, const std::filesystem::path& currentPath);
 
 void removeFileData(streams::IOSocketStream<char>& clientStream, const db::CloudDataBase& db, const std::string& login, const std::filesystem::path& currentPath);
+
+void nextFolder(streams::IOSocketStream<char>& clientStream, std::filesystem::path& currentPath);
+
+void prevFolder(streams::IOSocketStream<char>& clientStream, std::filesystem::path& currentPath);
+
+void setPath(streams::IOSocketStream<char>& clientStream, std::filesystem::path& currentPath);
