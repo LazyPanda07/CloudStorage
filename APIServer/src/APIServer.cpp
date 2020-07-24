@@ -82,6 +82,10 @@ namespace web
 							{
 								removeFile(clientStream, filesStream, dataBaseStream, headers);
 							}
+							else if (request == filesRequests::createFolder)
+							{
+								createFolder(filesStream, dataBaseStream, parser.getBody());
+							}
 						}
 						else
 						{

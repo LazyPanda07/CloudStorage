@@ -334,6 +334,17 @@ void setPath(streams::IOSocketStream<char>& clientStream, streams::IOSocketStrea
 	}
 }
 
+void createFolder(streams::IOSocketStream<char>& filesStream, streams::IOSocketStream<char>& dataBaseStream, const string& data)
+{
+	const string folderName(begin(data) + data.find('=') + 1, end(data));
+
+	filesStream << filesRequests::createFolder;
+	filesStream << folderName;
+
+	dataBaseStream << filesRequests::createFolder;
+	dataBaseStream << folderName;
+}
+
 void authorization(streams::IOSocketStream<char>& clientStream, streams::IOSocketStream<char>& filesStream, streams::IOSocketStream<char>& dataBaseStream, const string& data)
 {
 	auto [login, password] = userDataParse(data);

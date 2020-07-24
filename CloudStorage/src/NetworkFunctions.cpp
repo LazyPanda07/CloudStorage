@@ -241,6 +241,15 @@ void createFolder(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStre
 		"Content-Length", body.size()
 	).build(&body);
 
+	try
+	{
+		clientStream << request;
+	}
+	catch (const web::WebException&)
+	{
+
+	}
+
 	SendMessageW(ref.getMainWindow(), UI::events::deletePopupWindowE, NULL, NULL);
 
 	SendMessageW(ref.getMainWindow(), UI::events::getFilesE, NULL, NULL);
