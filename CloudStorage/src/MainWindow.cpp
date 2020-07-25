@@ -85,6 +85,9 @@ namespace UI
 		case UI::MainWindow::elementsEnum::wrapper:
 			return currentScreen->getWrapper();
 
+		case UI::MainWindow::elementsEnum::backArrowButton:
+			return static_cast<CloudStorageScreen*>(currentScreen.get())->getBackArrowButton();
+
 		case UI::MainWindow::elementsEnum::refreshButton:
 			return static_cast<CloudStorageScreen*>(currentScreen.get())->getRefreshButton();
 
@@ -215,6 +218,11 @@ namespace UI
 	HWND MainWindow::getMainWindow() const
 	{
 		return this->getHWND(elementsEnum::mainWindow);
+	}
+
+	HWND MainWindow::getBackArrowButton() const
+	{
+		return this->getHWND(elementsEnum::backArrowButton);
 	}
 
 	HWND MainWindow::getRefreshButton() const
@@ -424,6 +432,13 @@ LRESULT __stdcall MainWindowProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM
 			break;
 
 		case UI::buttons::uploadFiles:
+
+			break;
+
+		case UI::buttons::back:
+			prevFolder(clientStream, currentPath);
+
+			SendMessageW(ptr->getMainWindow(), UI::events::getFilesE, NULL, NULL);
 
 			break;
 

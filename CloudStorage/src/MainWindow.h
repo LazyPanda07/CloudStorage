@@ -19,6 +19,7 @@ namespace UI
 			mainWindow,
 			wrapper,
 #pragma region CloudStorageScreen
+			backArrowButton,
 			refreshButton,
 			downloadButton,
 			removeButton,
@@ -87,6 +88,8 @@ namespace UI
 		void resize() override;
 
 		HWND getMainWindow() const;
+
+		HWND getBackArrowButton() const;
 
 		HWND getRefreshButton() const;
 

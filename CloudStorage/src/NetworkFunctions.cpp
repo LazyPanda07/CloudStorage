@@ -212,8 +212,15 @@ void nextFolder(streams::IOSocketStream<char>& clientStream, const wstring& fold
 	folderControlMessages(clientStream, controlRequests::nextFolder, utility::conversion::to_string(folderName));
 }
 
-void prevFolder(streams::IOSocketStream<char>& clientStream)
+void prevFolder(streams::IOSocketStream<char>& clientStream, filesystem::path& currentPath)
 {
+	if (currentPath != "Home")
+	{
+		const string path = currentPath.string();
+
+		currentPath = string(begin(path), begin(path) + path.rfind('\\'));
+	}
+
 	folderControlMessages(clientStream, controlRequests::prevFolder);
 }
 

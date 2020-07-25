@@ -15,6 +15,11 @@ LRESULT __stdcall CloudStorageScreenProcedure(HWND hwnd, UINT msg, WPARAM wparam
 	case WM_COMMAND:
 		switch (wparam)
 		{
+		case UI::buttons::back:
+			SendMessageW(GetParent(hwnd), WM_COMMAND, UI::buttons::back, NULL);
+
+			break;
+
 		case UI::buttons::refresh:
 			SendMessageW(GetParent(hwnd), WM_COMMAND, UI::buttons::refresh, NULL);
 

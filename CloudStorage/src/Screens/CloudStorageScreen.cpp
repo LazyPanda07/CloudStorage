@@ -182,6 +182,11 @@ namespace UI
 		return "CloudStorageScreen";
 	}
 
+	HWND CloudStorageScreen::getBackArrowButton() const
+	{
+		return backArrowButton;
+	}
+
 	HWND CloudStorageScreen::getRefreshButton() const
 	{
 		return refreshButton;

@@ -28,6 +28,8 @@ namespace UI
 
 		const std::string getName() const override;
 
+		HWND getBackArrowButton() const;
+
 		HWND getRefreshButton() const;
 
 		HWND getDownloadButton() const;

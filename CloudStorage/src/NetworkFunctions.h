@@ -22,7 +22,7 @@ void reconnect(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream)
 
 void nextFolder(streams::IOSocketStream<char>& clientStream, const std::wstring& folderName);
 
-void prevFolder(streams::IOSocketStream<char>& clientStream);
+void prevFolder(streams::IOSocketStream<char>& clientStream, std::filesystem::path& currentPath);
 
 void setPath(streams::IOSocketStream<char>& clientStream, std::string&& path);
 
