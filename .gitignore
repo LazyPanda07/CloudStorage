@@ -35,6 +35,9 @@
 .vs/
 bin/
 
+# Resource .aps files
+*.aps
+
 # log files
 *.log
 
