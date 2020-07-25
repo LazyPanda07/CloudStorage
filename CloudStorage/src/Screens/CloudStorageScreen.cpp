@@ -3,6 +3,7 @@
 #include "CloudStorageScreen.h"
 #include "../UIConstants.h"
 #include "../WindowProcedures/CloudStorageScreenProcedure.h"
+#include "resource.h"
 
 #include <Richedit.h>
 #include <CommCtrl.h>
@@ -17,6 +18,7 @@ namespace UI
 {
 	void CloudStorageScreen::show()
 	{
+		ShowWindow(backArrowButton, SW_SHOW);
 		ShowWindow(refreshButton, SW_SHOW);
 		ShowWindow(downloadButton, SW_SHOW);
 		ShowWindow(removeButton, SW_SHOW);
@@ -32,12 +34,38 @@ namespace UI
 	CloudStorageScreen::CloudStorageScreen(HWND parentWindow) :
 		BaseScreen(parentWindow, screens::cloudStorageScreenName, CloudStorageScreenProcedure)
 	{
+		HMODULE resourceDll = nullptr;
+		HICON icon = nullptr;
 		RECT wrapperSizes;
 
 		GetClientRect(wrapper, &wrapperSizes);
 
+#ifndef PRODUCTION
+		resourceDll = LoadLibraryW(L"..\\Resources\\Resources.dll");
+#else
+		resourceDll = LoadLibraryW(L"Resources.dll");
+#endif // PRODUCTION
+
+		icon = LoadIconW(resourceDll, MAKEINTRESOURCEW(BACK_ARROW_ICON));
+
 		const LONG width = wrapperSizes.right - wrapperSizes.left;
 		const LONG height = wrapperSizes.bottom - wrapperSizes.top;
+
+		backArrowButton = CreateWindowExW
+		(
+			NULL,
+			L"BUTTON",
+			nullptr,
+			WS_CHILDWINDOW | BS_ICON,
+			0,
+			0,
+			toolbar::toolbarBackButtonWidth,
+			toolbar::toolbarBackButtonHeight,
+			BaseScreen::wrapper,
+			HMENU(buttons::back),
+			nullptr,
+			nullptr
+		);
 
 		refreshButton = CreateWindowExW
 		(
@@ -45,7 +73,7 @@ namespace UI
 			L"BUTTON",
 			L"Обновить список файлов",
 			WS_CHILDWINDOW,
-			0,
+			toolbar::toolbarBackButtonWidth,
 			0,
 			toolbar::toolbarButtonWidth,
 			toolbar::toolbarButtonHeight,
@@ -61,7 +89,7 @@ namespace UI
 			L"BUTTON",
 			L"Скачать файл",
 			WS_CHILDWINDOW,
-			toolbar::toolbarButtonWidth,
+			toolbar::toolbarButtonWidth + toolbar::toolbarBackButtonWidth,
 			0,
 			toolbar::toolbarButtonWidth,
 			toolbar::toolbarButtonHeight,
@@ -77,7 +105,7 @@ namespace UI
 			L"BUTTON",
 			L"Удалить файл",
 			WS_CHILDWINDOW,
-			toolbar::toolbarButtonWidth * 2,
+			toolbar::toolbarButtonWidth * 2 + toolbar::toolbarBackButtonWidth,
 			0,
 			toolbar::toolbarButtonWidth,
 			toolbar::toolbarButtonHeight,
@@ -93,7 +121,7 @@ namespace UI
 			L"BUTTON",
 			L"Переподключиться",
 			WS_CHILDWINDOW,
-			toolbar::toolbarButtonWidth * 3,
+			toolbar::toolbarButtonWidth * 3 + toolbar::toolbarBackButtonWidth,
 			0,
 			toolbar::toolbarButtonWidth,
 			toolbar::toolbarButtonHeight,
@@ -125,6 +153,16 @@ namespace UI
 		createColumns(*this);
 
 		SendMessageW(list, LVM_SETEXTENDEDLISTVIEWSTYLE, LVS_EX_FULLROWSELECT, LVS_EX_FULLROWSELECT);
+
+		if (icon)
+		{
+			SendMessageW(backArrowButton, BM_SETIMAGE, IMAGE_ICON, reinterpret_cast<LPARAM>(icon));
+		}
+
+		if (resourceDll)
+		{
+			FreeLibrary(resourceDll);
+		}
 	}
 
 	void CloudStorageScreen::resize()

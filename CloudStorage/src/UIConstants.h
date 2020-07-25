@@ -25,7 +25,9 @@ namespace UI
 	namespace toolbar
 	{
 		inline constexpr int toolbarWidth = mainWindowUI::mainWindowWidth;
-		inline constexpr int toolbarHeight = 20;
+		inline constexpr int toolbarHeight = 32;
+		inline constexpr int toolbarBackButtonWidth = 32;
+		inline constexpr int toolbarBackButtonHeight = toolbarHeight;
 		inline constexpr int toolbarButtonWidth = 200;
 		inline constexpr int toolbarButtonHeight = toolbarHeight;
 		inline constexpr int toolbarTopOffset = 10;
@@ -128,6 +130,7 @@ namespace UI
 		enum toolbarButtons
 		{
 			refresh = 0xfff,
+			back,
 			download,
 			remove,
 			reconnect,

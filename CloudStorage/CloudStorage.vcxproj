@@ -144,11 +144,13 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <PrecompiledHeaderOutputFile>$(SolutionDir)bin\$(Configuration)-$(Platform)\pch\pch.pch</PrecompiledHeaderOutputFile>
-      <AdditionalIncludeDirectories>$(SolutionDir)pch\src;$(SolutionDir)Log\src;$(SolutionDir)SocketStreams\src;$(SolutionDir)HTTP\src;$(SolutionDir)INIParser\src</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)pch\src;$(SolutionDir)Log\src;$(SolutionDir)SocketStreams\src;$(SolutionDir)HTTP\src;$(SolutionDir)INIParser\src;$(SolutionDir)Resources\src</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>
+      </AdditionalLibraryDirectories>
     </Link>
     <CustomBuildStep>
       <Command>IF EXIST $(SolutionDir)bin\int\$(Configuration)-$(Platform)\pch\vc$(PlatformToolsetVersion).pdb COPY /Y $(SolutionDir)bin\int\$(Configuration)-$(Platform)\pch\vc$(PlatformToolsetVersion).pdb $(IntDir)
@@ -169,13 +171,15 @@ IF EXIST $(SolutionDir)bin\int\$(Configuration)-$(Platform)\pch\vc$(PlatformTool
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <PrecompiledHeaderOutputFile>$(SolutionDir)bin\$(Configuration)-$(Platform)\pch\pch.pch</PrecompiledHeaderOutputFile>
-      <AdditionalIncludeDirectories>$(SolutionDir)pch\src;$(SolutionDir)Log\src;$(SolutionDir)SocketStreams\src;$(SolutionDir)HTTP\src;$(SolutionDir)INIParser\src</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)pch\src;$(SolutionDir)Log\src;$(SolutionDir)SocketStreams\src;$(SolutionDir)HTTP\src;$(SolutionDir)INIParser\src;$(SolutionDir)Resources\src</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>
+      </AdditionalLibraryDirectories>
     </Link>
     <CustomBuildStep>
       <Command>IF EXIST $(SolutionDir)bin\int\$(Configuration)-$(Platform)\pch\vc$(PlatformToolsetVersion).pdb COPY /Y $(SolutionDir)bin\int\$(Configuration)-$(Platform)\pch\vc$(PlatformToolsetVersion).pdb $(IntDir)
@@ -190,13 +194,13 @@ IF EXIST $(SolutionDir)bin\int\$(Configuration)-$(Platform)\pch\vc$(PlatformTool
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;PRODUCTION;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <PrecompiledHeaderOutputFile>$(SolutionDir)bin\$(Configuration)-$(Platform)\pch\pch.pch</PrecompiledHeaderOutputFile>
-      <AdditionalIncludeDirectories>$(SolutionDir)pch\src;$(SolutionDir)Log\src;$(SolutionDir)SocketStreams\src;$(SolutionDir)HTTP\src;$(SolutionDir)INIParser\src</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)pch\src;$(SolutionDir)Log\src;$(SolutionDir)SocketStreams\src;$(SolutionDir)HTTP\src;$(SolutionDir)INIParser\src;$(SolutionDir)Resources\src</AdditionalIncludeDirectories>
       <DebugInformationFormat>None</DebugInformationFormat>
     </ClCompile>
     <Link>
@@ -205,6 +209,8 @@ IF EXIST $(SolutionDir)bin\int\$(Configuration)-$(Platform)\pch\vc$(PlatformTool
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>false</GenerateDebugInformation>
       <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
+      <AdditionalLibraryDirectories>
+      </AdditionalLibraryDirectories>
     </Link>
     <CustomBuildStep>
       <Command>IF EXIST $(SolutionDir)bin\int\$(Configuration)-$(Platform)\pch\vc$(PlatformToolsetVersion).pdb COPY /Y $(SolutionDir)bin\int\$(Configuration)-$(Platform)\pch\vc$(PlatformToolsetVersion).pdb $(IntDir)
@@ -224,11 +230,13 @@ COPY /Y $(ProjectDir)settings.ini $(SolutionDir)$(Configuration)-$(Platform)\$(P
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <PrecompiledHeaderOutputFile>$(SolutionDir)bin\$(Configuration)-$(Platform)\pch\pch.pch</PrecompiledHeaderOutputFile>
-      <AdditionalIncludeDirectories>$(SolutionDir)pch\src;$(SolutionDir)Log\src;$(SolutionDir)SocketStreams\src;$(SolutionDir)HTTP\src;$(SolutionDir)INIParser\src</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)pch\src;$(SolutionDir)Log\src;$(SolutionDir)SocketStreams\src;$(SolutionDir)HTTP\src;$(SolutionDir)INIParser\src;$(SolutionDir)Resources\src</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>
+      </AdditionalLibraryDirectories>
     </Link>
     <CustomBuildStep>
       <Command>IF EXIST $(SolutionDir)bin\int\$(Configuration)-$(Platform)\pch\vc$(PlatformToolsetVersion).pdb COPY /Y $(SolutionDir)bin\int\$(Configuration)-$(Platform)\pch\vc$(PlatformToolsetVersion).pdb $(IntDir)
@@ -249,13 +257,15 @@ IF EXIST $(SolutionDir)bin\int\$(Configuration)-$(Platform)\pch\vc$(PlatformTool
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <PrecompiledHeaderOutputFile>$(SolutionDir)bin\$(Configuration)-$(Platform)\pch\pch.pch</PrecompiledHeaderOutputFile>
-      <AdditionalIncludeDirectories>$(SolutionDir)pch\src;$(SolutionDir)Log\src;$(SolutionDir)SocketStreams\src;$(SolutionDir)HTTP\src;$(SolutionDir)INIParser\src</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)pch\src;$(SolutionDir)Log\src;$(SolutionDir)SocketStreams\src;$(SolutionDir)HTTP\src;$(SolutionDir)INIParser\src;$(SolutionDir)Resources\src</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>
+      </AdditionalLibraryDirectories>
     </Link>
     <CustomBuildStep>
       <Command>IF EXIST $(SolutionDir)bin\int\$(Configuration)-$(Platform)\pch\vc$(PlatformToolsetVersion).pdb COPY /Y $(SolutionDir)bin\int\$(Configuration)-$(Platform)\pch\vc$(PlatformToolsetVersion).pdb $(IntDir)
@@ -270,13 +280,13 @@ IF EXIST $(SolutionDir)bin\int\$(Configuration)-$(Platform)\pch\vc$(PlatformTool
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>PRODUCTION;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <PrecompiledHeaderOutputFile>$(SolutionDir)bin\$(Configuration)-$(Platform)\pch\pch.pch</PrecompiledHeaderOutputFile>
-      <AdditionalIncludeDirectories>$(SolutionDir)pch\src;$(SolutionDir)Log\src;$(SolutionDir)SocketStreams\src;$(SolutionDir)HTTP\src;$(SolutionDir)INIParser\src</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)pch\src;$(SolutionDir)Log\src;$(SolutionDir)SocketStreams\src;$(SolutionDir)HTTP\src;$(SolutionDir)INIParser\src;$(SolutionDir)Resources\src</AdditionalIncludeDirectories>
       <DebugInformationFormat>None</DebugInformationFormat>
     </ClCompile>
     <Link>
@@ -285,6 +295,8 @@ IF EXIST $(SolutionDir)bin\int\$(Configuration)-$(Platform)\pch\vc$(PlatformTool
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>false</GenerateDebugInformation>
       <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
+      <AdditionalLibraryDirectories>
+      </AdditionalLibraryDirectories>
     </Link>
     <CustomBuildStep>
       <Command>IF EXIST $(SolutionDir)bin\int\$(Configuration)-$(Platform)\pch\vc$(PlatformToolsetVersion).pdb COPY /Y $(SolutionDir)bin\int\$(Configuration)-$(Platform)\pch\vc$(PlatformToolsetVersion).pdb $(IntDir)
@@ -360,6 +372,9 @@ COPY /Y $(ProjectDir)settings.ini $(SolutionDir)$(Configuration)-$(Platform)\$(P
     </ProjectReference>
     <ProjectReference Include="..\pch\pch.vcxproj">
       <Project>{00878fb3-d378-4955-954a-b005d0e232fc}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\Resources\Resources.vcxproj">
+      <Project>{621b3dce-73ed-4311-9b88-ed47c8a5d2a4}</Project>
     </ProjectReference>
     <ProjectReference Include="..\SocketStreams\SocketStreams.vcxproj">
       <Project>{8bb9f3bd-68f4-403a-acc6-f85c75f5d14f}</Project>

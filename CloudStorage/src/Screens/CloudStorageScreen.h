@@ -9,6 +9,7 @@ namespace UI
 	class CloudStorageScreen : public BaseScreen
 	{
 	private:
+		HWND backArrowButton;
 		HWND refreshButton;
 		HWND downloadButton;
 		HWND removeButton;
