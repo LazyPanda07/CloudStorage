@@ -422,7 +422,7 @@ LRESULT __stdcall MainWindowProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM
 		case UI::buttons::reconnect:
 			reconnect(*ptr, clientStream);
 
-			setPath(clientStream, currentPath.string());
+			setPath(*ptr, clientStream, currentPath.string(), isCancel);
 
 			SendMessageW(ptr->getMainWindow(), UI::events::setLoginE, NULL, NULL);
 
@@ -445,7 +445,7 @@ LRESULT __stdcall MainWindowProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM
 			break;
 
 		case UI::buttons::back:
-			prevFolder(clientStream, currentPath);
+			prevFolder(*ptr, clientStream, currentPath, isCancel);
 
 			SendMessageW(ptr->getMainWindow(), UI::events::getFilesE, NULL, NULL);
 
@@ -509,7 +509,7 @@ LRESULT __stdcall MainWindowProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM
 		return 0;
 
 	case UI::events::setLoginE:
-		setLogin(clientStream, login, password);
+		setLogin(*ptr, clientStream, login, password);
 
 		return 0;
 
@@ -518,7 +518,7 @@ LRESULT __stdcall MainWindowProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM
 		{
 			currentPath.append(fileNames[wparam].fileName);
 
-			nextFolder(clientStream, fileNames[wparam].fileName);
+			nextFolder(*ptr, clientStream, fileNames[wparam].fileName, isCancel);
 
 			SendMessageW(ptr->getMainWindow(), UI::events::getFilesE, NULL, NULL);
 		}
