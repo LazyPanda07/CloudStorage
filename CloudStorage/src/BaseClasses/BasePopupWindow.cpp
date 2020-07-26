@@ -8,8 +8,9 @@ using namespace std;
 
 namespace UI
 {
-	BasePopupWindow::BasePopupWindow(HWND disableWindow, const wstring& popupWindowClassName, const wstring& popupWindowTitle, WNDPROC procedure, const wstring& message) : 
-		disableWindow(disableWindow)
+	BasePopupWindow::BasePopupWindow(HWND disableWindow, const wstring& popupWindowClassName, const wstring& popupWindowTitle, WNDPROC procedure, const wstring& message, const chrono::duration<double>& revealDelay) :
+		disableWindow(disableWindow),
+		showPopupWindow(true)
 	{
 		WNDCLASSEXW popup = {};
 		POINT centerOfDesktop = utility::UI::centerCoordinates(popupWindows::basePopupWindow::popupWindowWidth, popupWindows::basePopupWindow::popupWindowHeight);
@@ -32,7 +33,7 @@ namespace UI
 			NULL,
 			popup.lpszClassName,
 			popupWindowTitle.data(),
-			WS_OVERLAPPEDWINDOW ^ WS_THICKFRAME | WS_VISIBLE,
+			WS_OVERLAPPEDWINDOW ^ WS_THICKFRAME,
 			centerOfDesktop.x,
 			centerOfDesktop.y,
 			popupWindows::basePopupWindow::popupWindowWidth,
@@ -42,7 +43,7 @@ namespace UI
 			nullptr,
 			nullptr
 		);
-		
+
 		GetClientRect(popupWindow, &sizes);
 
 		width = sizes.right - sizes.left;
@@ -81,6 +82,17 @@ namespace UI
 			nullptr,
 			nullptr
 		);
+
+		thread([](bool& isShow, chrono::duration<double> revealDelay, HWND popupWindow)
+			{
+				this_thread::sleep_for(revealDelay);
+
+				if (isShow)
+				{
+					ShowWindow(popupWindow, SW_SHOW);
+				}
+
+			}, ref(showPopupWindow), revealDelay, popupWindow).detach();
 	}
 
 	HWND BasePopupWindow::getPopupWindow() const
@@ -96,6 +108,16 @@ namespace UI
 	HWND BasePopupWindow::getCancelButton() const
 	{
 		return cancelButton;
+	}
+
+	void BasePopupWindow::setShowPopupWindow(bool isShow)
+	{
+		showPopupWindow = isShow;
+	}
+
+	bool BasePopupWindow::getShowPopupWindow()
+	{
+		return showPopupWindow;
 	}
 
 	BasePopupWindow::~BasePopupWindow()

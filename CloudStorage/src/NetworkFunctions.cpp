@@ -707,6 +707,7 @@ void asyncGetFiles(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStr
 	if (isCancel)
 	{
 		SendMessageW(ref.getMainWindow(), UI::events::deletePopupWindowE, NULL, NULL);
+		ref.getCurrentPopupWindow()->setShowPopupWindow(false);
 		return;
 	}
 
@@ -741,6 +742,7 @@ void asyncGetFiles(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStr
 	if (isCancel)
 	{
 		SendMessageW(ref.getMainWindow(), UI::events::deletePopupWindowE, NULL, NULL);
+		ref.getCurrentPopupWindow()->setShowPopupWindow(false);
 		return;
 	}
 

@@ -12,7 +12,7 @@ using namespace std;
 namespace UI
 {
 	WaitResponsePopupWindow::WaitResponsePopupWindow(HWND disableWindow) :
-		BasePopupWindow(disableWindow, popupWindows::waitResponsePopupWindowName, popupWindows::waitResponsePopupWindow::title, WaitResponsePopupWindowProcedure, popupWindows::waitResponsePopupWindow::message)
+		BasePopupWindow(disableWindow, popupWindows::waitResponsePopupWindowName, popupWindows::waitResponsePopupWindow::title, WaitResponsePopupWindowProcedure, popupWindows::waitResponsePopupWindow::message, 1s)
 	{
 		RECT messagePos = utility::UI::getWindowPosition(BasePopupWindow::messageStatic);
 		RECT sizes;
