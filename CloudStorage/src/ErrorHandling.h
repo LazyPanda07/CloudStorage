@@ -4,9 +4,9 @@
 
 namespace UI
 {
-	void customError(MainWindow& ref, const std::wstring& message, const std::wstring& title);
+	int customError(MainWindow& ref, const std::wstring& message, const std::wstring& title);
 	
-	void serverResponseError(MainWindow& ref);
+	int serverResponseError(MainWindow& ref);
 
-	void serverRequestError(MainWindow& ref);
+	int serverRequestError(MainWindow& ref);
 }

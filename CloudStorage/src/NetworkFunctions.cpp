@@ -10,6 +10,7 @@
 #include "PopupWindows/PopupWindowFunctions.h"
 #include "PopupWindows/UploadFilePopupWindow.h"
 #include "PopupWindows/DownloadFilePopupWindow.h"
+#include "PopupWindows/WaitResponsePopupWindow.h"
 #include "HTTPNetwork.h"
 #include "fileData.h"
 #include "ClientTime.h"
@@ -22,100 +23,21 @@ using namespace std;
 
 string cancelUploadFile(const string& fileName);
 
+string folderControlMessages(streams::IOSocketStream<char>& clientStream, const string_view& controlRequest, string&& data = "");
+
 void asyncUploadFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, const wstring& filePath, bool& isCancel);
 
 void asyncDownloadFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, const wstring& fileName, bool& isCancel);
 
-string folderControlMessages(streams::IOSocketStream<char>& clientStream, const string_view& controlRequest, string&& data = "");
+void asyncGetFiles(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, vector<db::fileDataRepresentation>& fileNames, bool showError, bool& isCancel);
 
 ////////////////////////////////////////////////////////////////
 
-void getFiles(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, vector<db::fileDataRepresentation>& fileNames, bool showError)
+void getFiles(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, vector<db::fileDataRepresentation>& fileNames, bool showError, bool& isCancel)
 {
-	utility::ClientTime& instance = utility::ClientTime::get();
-	string request = web::HTTPBuilder().postRequest().headers
-	(
-		requestType::filesType, filesRequests::showAllFilesInFolder
-	).build();
-	string response;
-	fileNames.clear();
+	initWaitResponsePopupWindow(ref);
 
-	utility::web::insertSizeHeaderToHTTPMessage(request);
-
-	try
-	{
-		clientStream << request;
-	}
-	catch (const web::WebException&)
-	{
-		UI::serverRequestError(ref);
-		return;
-	}
-
-	try
-	{
-		clientStream >> response;
-	}
-	catch (const web::WebException&)
-	{
-		UI::serverResponseError(ref);
-		return;
-	}
-
-	web::HTTPParser parser(response);
-	const string& error = parser.getHeaders().at("Error");
-	const string& body = parser.getBody();
-
-	if (error == "0")
-	{
-		array<string, 6> tem;	//each index equals member position in fileData struct
-		vector<db::fileData> data;
-		size_t curIndex = 0;
-
-		for (const auto& i : body)
-		{
-			if (i == dataDelimiter[0])
-			{
-				fileNames.emplace_back
-				(
-					utility::conversion::to_wstring(tem[0]),
-					utility::conversion::to_wstring(tem[1]),
-					utility::conversion::to_wstring(tem[2]),
-					instance.convertToLocal(tem[3]),
-					instance.convertToLocal(tem[4]),
-					stoul(tem[5])
-				);
-
-				curIndex = 0;
-
-				for (auto& i : tem)
-				{
-					i.clear();
-				}
-			}
-			else if (i == dataPartDelimiter[0])
-			{
-				curIndex++;
-			}
-			else
-			{
-				tem[curIndex] += i;
-			}
-		}
-	}
-
-	updateColumns(ref, fileNames);
-
-	if (error == "1" && showError)
-	{
-		MessageBoxW
-		(
-			ref.getMainWindow(),
-			utility::conversion::to_wstring(body).data(),
-			L"Œ¯Ë·Í‡",
-			MB_OK
-		);
-	}
+	thread(asyncGetFiles, std::ref(ref), std::ref(clientStream), std::ref(fileNames), showError, std::ref(isCancel)).detach();
 }
 
 void uploadFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, const wstring& filePath, bool& isCancel)
@@ -466,6 +388,51 @@ string cancelUploadFile(const string& fileName)
 	return result;
 }
 
+string folderControlMessages(streams::IOSocketStream<char>& clientStream, const string_view& controlRequest, string&& data)
+{
+	string request;
+	string response;
+	string body = "folder=" + move(data);
+
+	if (controlRequest == controlRequests::prevFolder)
+	{
+		request = web::HTTPBuilder().postRequest().headers
+		(
+			requestType::controlType, controlRequest
+		).build();
+	}
+	else
+	{
+		request = web::HTTPBuilder().postRequest().headers
+		(
+			requestType::controlType, controlRequest,
+			"Content-Length", body.size()
+		).build(&body);
+	}
+
+	utility::web::insertSizeHeaderToHTTPMessage(request);
+
+	try
+	{
+		clientStream << request;
+	}
+	catch (const web::WebException&)
+	{
+
+	}
+
+	try
+	{
+		clientStream >> response;
+	}
+	catch (const web::WebException&)
+	{
+
+	}
+
+	return response;
+}
+
 void asyncUploadFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, const wstring& filePath, bool& isCancel)
 {
 	const filesystem::path file(filePath);
@@ -719,29 +686,29 @@ void asyncDownloadFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clien
 	}
 }
 
-string folderControlMessages(streams::IOSocketStream<char>& clientStream, const string_view& controlRequest, string&& data)
+void asyncGetFiles(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, vector<db::fileDataRepresentation>& fileNames, bool showError, bool& isCancel)
 {
-	string request;
-	string response;
-	string body = "folder=" + move(data);
+	static_cast<UI::WaitResponsePopupWindow*>(ref.getCurrentPopupWindow())->startAnimateProgressBar();
 
-	if (controlRequest == controlRequests::prevFolder)
-	{
-		request = web::HTTPBuilder().postRequest().headers
-		(
-			requestType::controlType, controlRequest
-		).build();
-	}
-	else
-	{
-		request = web::HTTPBuilder().postRequest().headers
-		(
-			requestType::controlType, controlRequest,
-			"Content-Length", body.size()
-		).build(&body);
-	}
+	utility::ClientTime& instance = utility::ClientTime::get();
+	string request = web::HTTPBuilder().postRequest().headers
+	(
+		requestType::filesType, filesRequests::showAllFilesInFolder
+	).build();
+	string response;
+	int ok;
+
+	isCancel = false;
+
+	fileNames.clear();
 
 	utility::web::insertSizeHeaderToHTTPMessage(request);
+
+	if (isCancel)
+	{
+		SendMessageW(ref.getMainWindow(), UI::events::deletePopupWindowE, NULL, NULL);
+		return;
+	}
 
 	try
 	{
@@ -749,7 +716,12 @@ string folderControlMessages(streams::IOSocketStream<char>& clientStream, const 
 	}
 	catch (const web::WebException&)
 	{
-
+		if (UI::serverRequestError(ref) == IDOK)
+		{
+			SendMessageW(ref.getMainWindow(), UI::events::deletePopupWindowE, NULL, NULL);
+		}
+		
+		return;
 	}
 
 	try
@@ -758,8 +730,83 @@ string folderControlMessages(streams::IOSocketStream<char>& clientStream, const 
 	}
 	catch (const web::WebException&)
 	{
-
+		if (UI::serverResponseError(ref) == IDOK)
+		{
+			SendMessageW(ref.getMainWindow(), UI::events::deletePopupWindowE, NULL, NULL);
+		}
+		
+		return;
 	}
 
-	return response;
+	if (isCancel)
+	{
+		SendMessageW(ref.getMainWindow(), UI::events::deletePopupWindowE, NULL, NULL);
+		return;
+	}
+
+	web::HTTPParser parser(response);
+	const string& error = parser.getHeaders().at("Error");
+	const string& body = parser.getBody();
+
+	static_cast<UI::WaitResponsePopupWindow*>(ref.getCurrentPopupWindow())->stopAnimateProgressBar();
+
+	if (error == "0")
+	{
+		array<string, 6> tem;	//each index equals member position in fileData struct
+		vector<db::fileData> data;
+		size_t curIndex = 0;
+
+		for (const auto& i : body)
+		{
+			if (i == dataDelimiter[0])
+			{
+				fileNames.emplace_back
+				(
+					utility::conversion::to_wstring(tem[0]),
+					utility::conversion::to_wstring(tem[1]),
+					utility::conversion::to_wstring(tem[2]),
+					instance.convertToLocal(tem[3]),
+					instance.convertToLocal(tem[4]),
+					stoul(tem[5])
+				);
+
+				curIndex = 0;
+
+				for (auto& i : tem)
+				{
+					i.clear();
+				}
+			}
+			else if (i == dataPartDelimiter[0])
+			{
+				curIndex++;
+			}
+			else
+			{
+				tem[curIndex] += i;
+			}
+		}
+	}
+
+	updateColumns(ref, fileNames);
+
+	if (error == "1" && showError)
+	{
+		ok = MessageBoxW
+		(
+			ref.getPopupWindow(),
+			utility::conversion::to_wstring(body).data(),
+			L"Œ¯Ë·Í‡",
+			MB_OK
+		);
+	}
+	else
+	{
+		ok = IDOK;
+	}
+
+	if (ok == IDOK)
+	{
+		SendMessageW(ref.getMainWindow(), UI::events::deletePopupWindowE, NULL, NULL);
+	}
 }

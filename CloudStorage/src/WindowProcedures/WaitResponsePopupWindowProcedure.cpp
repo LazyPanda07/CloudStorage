@@ -28,6 +28,11 @@ LRESULT __stdcall WaitResponsePopupWindowProcedure(HWND hwnd, UINT msg, WPARAM w
 
 		return 0;
 
+	case WM_DESTROY:
+		SendMessageW(ptr->getDisableWindow(), WM_COMMAND, UI::BasePopupWindow::cancel, NULL);
+
+		return 0;
+
 	default:
 		return DefWindowProcW(hwnd, msg, wparam, lparam);
 	}

@@ -4,6 +4,7 @@
 #include "UploadFilePopupWindow.h"
 #include "DownloadFilePopupWindow.h"
 #include "SetFolderNamePopupWindow.h"
+#include "WaitResponsePopupWindow.h"
 #include "../UIConstants.h"
 
 using namespace std;
@@ -35,4 +36,9 @@ void initDownloadFilePopupWindow(UI::MainWindow& ref, const wstring& message)
 void initSetFolderNamePopupWidow(UI::MainWindow& ref)
 {
 	ref.setCurrentPopupWindow(new UI::SetFolderNamePopupWindow(ref.getMainWindow()));
+}
+
+void initWaitResponsePopupWindow(UI::MainWindow& ref)
+{
+	ref.setCurrentPopupWindow(new UI::WaitResponsePopupWindow(ref.getMainWindow()));
 }

@@ -361,7 +361,7 @@ LRESULT __stdcall MainWindowProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM
 		switch (wparam)
 		{
 		case UI::buttons::refresh:
-			getFiles(*ptr, clientStream, fileNames, true);
+			getFiles(*ptr, clientStream, fileNames, true, isCancel);
 
 			break;
 
@@ -461,7 +461,7 @@ LRESULT __stdcall MainWindowProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM
 
 #pragma region CustomEvents
 	case UI::events::getFilesE:
-		getFiles(*ptr, clientStream, fileNames, false);
+		getFiles(*ptr, clientStream, fileNames, false, isCancel);
 
 		return 0;
 
