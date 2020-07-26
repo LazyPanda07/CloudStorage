@@ -48,8 +48,12 @@ namespace UI
 #pragma endregion
 #pragma region SetFolderNamePopupWindow
 			enterFolderNameEdit,
-			saveFolderNameButton
+			saveFolderNameButton,
 #pragma endregion
+#pragma region WaitResponsePopupWindow
+			waitResponseProgressBar
+#pragma endregion
+
 
 		};
 
@@ -126,5 +130,7 @@ namespace UI
 		HWND getEnterFolderNameEdit() const;
 
 		HWND getEnterFolderNameButton() const;
+
+		HWND getWaitResponseProgressBar() const;
 	};
 }

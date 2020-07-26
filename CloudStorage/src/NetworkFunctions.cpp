@@ -611,6 +611,7 @@ void asyncUploadFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientS
 
 void asyncDownloadFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, const wstring& fileName, bool& isCancel)
 {
+	//TODO: take size from fileNames, make standard progress bar
 	intmax_t offset = 0;
 	intmax_t totalFileSize;
 	const string sFileName = utility::conversion::to_string(fileName);

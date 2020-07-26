@@ -94,6 +94,7 @@ namespace UI
 		inline const std::wstring uploadFilePopupWindowName = L"UploadFilePopupWindow";
 		inline const std::wstring downloadFilePopupWindowName = L"DownloadFilePopupWindow";
 		inline const std::wstring setFolderNamePopupWindowName = L"SetFolderNamePopupWindow";
+		inline const std::wstring waitResponsePopupWindowName = L"WaitResponsePopupWindow";
 
 		namespace basePopupWindow
 		{
@@ -122,6 +123,12 @@ namespace UI
 
 			inline constexpr int saveFolderNameButtonWidth = 200;
 			inline constexpr int saveFolderNameButtonHeight = 20;
+		}
+
+		namespace waitResponsePopupWindow
+		{
+			inline const std::wstring title = L"ќжидание...";
+			inline const std::wstring message = L"ќжидание ответа от сервера...";
 		}
 	}
 

@@ -12,6 +12,7 @@
 #include "PopupWindows/UploadFilePopupWindow.h"
 #include "PopupWindows/DownloadFilePopupWindow.h"
 #include "PopupWindows/SetFolderNamePopupWindow.h"
+#include "PopupWindows/WaitResponsePopupWindow.h"
 #include "fileData.h"
 #include "UIConstants.h"
 #include "MainWindow.h"
@@ -138,6 +139,9 @@ namespace UI
 
 		case UI::MainWindow::elementsEnum::saveFolderNameButton:
 			return static_cast<UI::SetFolderNamePopupWindow*>(currentPopupWindow.get())->getSaveFolderNameButton();
+
+		case UI::MainWindow::elementsEnum::waitResponseProgressBar:
+			return static_cast<UI::WaitResponsePopupWindow*>(currentPopupWindow.get())->getWaitResponseProgressBar();
 
 		default:
 			return nullptr;
@@ -313,6 +317,11 @@ namespace UI
 	HWND MainWindow::getEnterFolderNameButton() const
 	{
 		return this->getHWND(elementsEnum::saveFolderNameButton);
+	}
+
+	HWND MainWindow::getWaitResponseProgressBar() const
+	{
+		return this->getHWND(elementsEnum::waitResponseProgressBar);
 	}
 }
 
