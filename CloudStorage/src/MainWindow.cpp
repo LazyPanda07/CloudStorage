@@ -371,6 +371,7 @@ LRESULT __stdcall MainWindowProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM
 			break;
 
 		case UI::buttons::remove:
+			//TODO: make remove async
 			removeFile(*ptr, clientStream, fileNames);
 
 			SendMessageW(ptr->getMainWindow(), UI::events::getFilesE, NULL, NULL);
@@ -378,6 +379,7 @@ LRESULT __stdcall MainWindowProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM
 			break;
 
 		case UI::buttons::authorization:
+			//TODO: make authorization async
 			tie(login, password) = authorization(*ptr, clientStream);
 
 			if (login.size())
@@ -399,6 +401,7 @@ LRESULT __stdcall MainWindowProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM
 			break;
 
 		case UI::buttons::registration:
+			//TODO: make registration async
 			tie(login, password) = registration(*ptr, clientStream);
 
 			if (login.size())

@@ -56,15 +56,15 @@ namespace db
 		return login;
 	}
 
-	unsigned int CloudDataBase::getPassword(const string& login) const
+	intmax_t CloudDataBase::getPassword(const string& login) const
 	{
-		unsigned int password;
+		intmax_t password;
 		const string condition = "login = '" + login + "'";
 
 		auto callback = [](void* userData, int argc, char** argv, char** columns) -> int
 		{
 			char* end;
-			(*static_cast<unsigned int*>(userData)) = strtoul(argv[0], &end, 10);
+			(*static_cast<intmax_t*>(userData)) = strtoul(argv[0], &end, 10);
 
 			return 0;
 		};
@@ -81,15 +81,15 @@ namespace db
 		return password;
 	}
 
-	unsigned int CloudDataBase::getPassword(int id) const
+	intmax_t CloudDataBase::getPassword(int id) const
 	{
-		unsigned int password;
+		intmax_t password;
 		const string condition = "id = " + to_string(id);
 
 		auto callback = [](void* userData, int argc, char** argv, char** columns) -> int
 		{
 			char* end;
-			(*static_cast<unsigned int*>(userData)) = strtoul(argv[0], &end, 10);
+			(*static_cast<intmax_t*>(userData)) = strtoul(argv[0], &end, 10);
 
 			return 0;
 		};
@@ -106,10 +106,10 @@ namespace db
 		return password;
 	}
 
-	unsigned int CloudDataBase::customHash(const string& source)
+	intmax_t CloudDataBase::customHash(const string& source)
 	{
 		mt19937 someHash;
-		unsigned int result = 0;
+		intmax_t result = 0;
 
 		someHash.seed(hash<string>()(source));
 
@@ -147,7 +147,7 @@ namespace db
 		);
 	}
 
-	bool CloudDataBase::uploadFileData(const string& login, string&& fileName, string&& filePath, string&& fileExtension, unsigned int fileSize) const
+	bool CloudDataBase::uploadFileData(const string& login, string&& fileName, string&& filePath, string&& fileExtension, intmax_t fileSize) const
 	{
 		try
 		{

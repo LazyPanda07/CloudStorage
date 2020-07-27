@@ -7,7 +7,7 @@ using namespace std;
 
 namespace db
 {
-	fileData::fileData(string&& fileName, string&& filePath, string&& fileExtension, string&& uploadDate, string&& dateOfChange, unsigned int fileSize) noexcept :
+	fileData::fileData(string&& fileName, string&& filePath, string&& fileExtension, string&& uploadDate, string&& dateOfChange, intmax_t fileSize) noexcept :
 		fileName(move(fileName)),
 		filePath(move(filePath)),
 		fileExtension(move(fileExtension)),
@@ -39,7 +39,7 @@ namespace db
 		return result;
 	}
 
-	fileDataRepresentation::fileDataRepresentation(wstring&& fileName, wstring&& filePath, wstring&& fileExtension, wstring&& uploadDate, wstring&& dateOfChange, unsigned int fileSize) noexcept :
+	fileDataRepresentation::fileDataRepresentation(wstring&& fileName, wstring&& filePath, wstring&& fileExtension, wstring&& uploadDate, wstring&& dateOfChange, intmax_t fileSize) noexcept :
 		fileName(move(fileName)),
 		filePath(move(filePath)),
 		fileExtension(move(fileExtension)),

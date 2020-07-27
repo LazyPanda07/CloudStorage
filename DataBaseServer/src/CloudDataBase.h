@@ -17,17 +17,17 @@ namespace db
 
 		std::string getLogin(int id) const;
 
-		unsigned int getPassword(const std::string& login) const;
+		intmax_t getPassword(const std::string& login) const;
 
-		unsigned int getPassword(int id) const;
+		intmax_t getPassword(int id) const;
 
 	private:
-		static unsigned int customHash(const std::string& source);
+		static intmax_t customHash(const std::string& source);
 
 	public:
 		CloudDataBase();
 
-		bool uploadFileData(const std::string& login, std::string&& fileName, std::string&& filePath, std::string&& fileExtension, unsigned int fileSize) const;
+		bool uploadFileData(const std::string& login, std::string&& fileName, std::string&& filePath, std::string&& fileExtension, intmax_t fileSize) const;
 
 		bool removeFileData(const std::string& login, std::string&& fileName, std::string&& filePath) const;
 

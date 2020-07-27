@@ -11,9 +11,9 @@ namespace db
 		std::string fileExtension;
 		std::string uploadDate;
 		std::string dateOfChange;
-		unsigned int fileSize;
+		intmax_t fileSize;
 
-		fileData(std::string&& fileName, std::string&& filePath, std::string&& fileExtension, std::string&& uploadDate, std::string&& dateOfChange, unsigned int fileSize) noexcept;
+		fileData(std::string&& fileName, std::string&& filePath, std::string&& fileExtension, std::string&& uploadDate, std::string&& dateOfChange, intmax_t fileSize) noexcept;
 
 		operator std::string () const;
 	};
@@ -26,8 +26,8 @@ namespace db
 		std::wstring uploadDate;
 		std::wstring dateOfChange;
 		std::wstring fileSizeS;
-		unsigned int fileSize;
+		intmax_t fileSize;
 
-		fileDataRepresentation(std::wstring&& fileName, std::wstring&& filePath, std::wstring&& fileExtension, std::wstring&& uploadDate, std::wstring&& dateOfChange, unsigned int fileSize) noexcept;
+		fileDataRepresentation(std::wstring&& fileName, std::wstring&& filePath, std::wstring&& fileExtension, std::wstring&& uploadDate, std::wstring&& dateOfChange, intmax_t fileSize) noexcept;
 	};
 }

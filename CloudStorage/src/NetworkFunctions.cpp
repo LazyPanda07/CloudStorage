@@ -27,7 +27,7 @@ string asyncFolderControlMessages(UI::MainWindow& ref, streams::IOSocketStream<c
 
 void asyncUploadFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, const wstring& filePath, vector<db::fileDataRepresentation>& fileNames, bool& isCancel);
 
-void asyncDownloadFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, const wstring& fileName, bool& isCancel);
+void asyncDownloadFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, const wstring& fileName, intmax_t fileSize, bool& isCancel);
 
 void asyncGetFiles(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, vector<db::fileDataRepresentation>& fileNames, bool showError, bool& isCancel);
 
@@ -73,7 +73,7 @@ int downloadFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStrea
 	{
 		initDownloadFilePopupWindow(ref, wstring(L"Скачивание файла ") + fileNames[id].fileName);
 
-		thread(asyncDownloadFile, std::ref(ref), std::ref(clientStream), std::ref(fileNames[id].fileName), std::ref(isCancel)).detach();
+		thread(asyncDownloadFile, std::ref(ref), std::ref(clientStream), std::ref(fileNames[id].fileName), fileNames[id].fileSize, std::ref(isCancel)).detach();
 	}
 
 	return id;
@@ -613,9 +613,8 @@ void asyncUploadFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientS
 	}
 }
 
-void asyncDownloadFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, const wstring& fileName, bool& isCancel)
+void asyncDownloadFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, const wstring& fileName, intmax_t fileSize, bool& isCancel)
 {
-	//TODO: take size from fileNames, make standard progress bar
 	intmax_t offset = 0;
 	intmax_t totalFileSize;
 	const string sFileName = utility::conversion::to_string(fileName);
@@ -626,7 +625,7 @@ void asyncDownloadFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clien
 
 	isCancel = false;
 
-	static_cast<UI::DownloadFilePopupWindow*>(ref.getCurrentPopupWindow())->startAnimateProgressBar();
+	static_cast<UI::DownloadFilePopupWindow*>(ref.getCurrentPopupWindow())->setProgressBarRange(0, fileSize);
 
 	while (true)
 	{
@@ -687,15 +686,21 @@ void asyncDownloadFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clien
 			totalFileSize = stoull(it->second);
 			break;
 		}
+
+		if (!isCancel)
+		{
+			SendMessageW(ref.getPopupWindow(), UI::events::updateProgressBarE, static_cast<WPARAM>(offset), NULL);
+		}
 	}
 
 	out.close();
 
-	this_thread::sleep_for(0.5s);
+	if (!isCancel)
+	{
+		SendMessageW(ref.getPopupWindow(), UI::events::updateProgressBarE, static_cast<WPARAM>(fileSize), NULL);
+	}
 
-	static_cast<UI::DownloadFilePopupWindow*>(ref.getCurrentPopupWindow())->stopAnimateProgressBar();
-
-	this_thread::sleep_for(0.5s);
+	this_thread::sleep_for(1s);
 
 	if (filesystem::file_size(ref.getDownloadFolder().append(sFileName)) == totalFileSize)
 	{
