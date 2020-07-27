@@ -23,6 +23,8 @@ namespace UI
 		popup.lpfnWndProc = procedure;
 		popup.lpszClassName = popupWindowClassName.data();
 		popup.hbrBackground = CreateSolidBrush(RGB(255, 255, 255));
+		popup.hCursor = LoadCursorW(nullptr, IDC_ARROW);
+		popup.hIcon = LoadIconW(nullptr, IDI_APPLICATION);
 
 		RegisterClassExW(&popup);
 

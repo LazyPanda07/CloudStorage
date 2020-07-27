@@ -860,6 +860,11 @@ void asyncReconnect(UI::MainWindow& ref, streams::IOSocketStream<char>& clientSt
 {
 	isCancel = false;
 
+	if (ref.getCurrentPopupWindow())
+	{
+		static_cast<UI::WaitResponsePopupWindow*>(ref.getCurrentPopupWindow())->startAnimateProgressBar();
+	}
+	
 	exitFromApplication(ref, clientStream);
 
 	if (isCancel)
@@ -869,7 +874,19 @@ void asyncReconnect(UI::MainWindow& ref, streams::IOSocketStream<char>& clientSt
 		return;
 	}
 
-	clientStream = streams::IOSocketStream<char>(new buffers::IOSocketBuffer<char>(new web::HTTPNetwork()));
+	try
+	{
+		clientStream = streams::IOSocketStream<char>(new buffers::IOSocketBuffer<char>(new web::HTTPNetwork()));
+	}
+	catch (const web::WebException&)
+	{
+		if (UI::serverRequestError(ref) == IDOK)
+		{
+			ref.getCurrentPopupWindow()->showPopupWindowVar() = false;
+			SendMessageW(ref.getMainWindow(), UI::events::deletePopupWindowE, NULL, NULL);
+		}
+		return;
+	}
 
 	if (isCancel)
 	{
