@@ -8,9 +8,9 @@
 #include "fileData.h"
 #include "MainWindow.h"
 
-void getFiles(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, std::vector<db::fileDataRepresentation>& fileNames, bool showError, bool& isCancel);
+void getFiles(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, std::vector<db::fileDataRepresentation>& fileNames, bool showError, bool& isCancel, bool isDetach = true);
 
-void uploadFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, const std::wstring& filePath, bool& isCancel);
+void uploadFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, const std::wstring& filePath, std::vector<db::fileDataRepresentation>& fileNames, bool& isCancel);
 
 int downloadFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, const std::vector<db::fileDataRepresentation>& fileNames, bool& isCancel, int searchId);
 
@@ -18,17 +18,13 @@ void removeFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream
 
 void removeFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, const std::wstring& fileName);
 
-void reconnect(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream);
+void reconnect(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, std::string&& currentPath, const std::wstring& login, const std::wstring& password, std::vector<db::fileDataRepresentation>& fileNames, bool& isCancel);
 
-void nextFolder(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, const std::wstring& folderName, bool& isCancel);
+void nextFolder(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, const std::wstring& folderName, std::vector<db::fileDataRepresentation>& fileNames, bool& isCancel);
 
-void prevFolder(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, std::filesystem::path& currentPath, bool& isCancel);
+void prevFolder(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, std::filesystem::path& currentPath, std::vector<db::fileDataRepresentation>& fileNames, bool& isCancel);
 
-void setPath(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, std::string&& path, bool& isCancel);
-
-void createFolder(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream);
-
-void setLogin(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, const std::wstring& login, const std::wstring& password);
+void createFolder(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, std::vector<db::fileDataRepresentation>& fileNames, bool& isCancel);
 
 void exitFromApplication(UI::MainWindow& ref, streams::IOSocketStream<char>& clientSream);
 

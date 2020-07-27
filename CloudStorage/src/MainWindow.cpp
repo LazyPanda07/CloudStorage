@@ -420,18 +420,12 @@ LRESULT __stdcall MainWindowProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM
 			break;
 
 		case UI::buttons::reconnect:
-			reconnect(*ptr, clientStream);
-
-			setPath(*ptr, clientStream, currentPath.string(), isCancel);
-
-			SendMessageW(ptr->getMainWindow(), UI::events::setLoginE, NULL, NULL);
-
-			SendMessageW(ptr->getMainWindow(), UI::events::getFilesE, NULL, NULL);
+			reconnect(*ptr, clientStream, currentPath.string(), login, password, fileNames, isCancel);
 
 			break;
 
 		case UI::buttons::saveFolderName:
-			createFolder(*ptr, clientStream);
+			createFolder(*ptr, clientStream, fileNames, isCancel);
 
 			break;
 
@@ -445,9 +439,7 @@ LRESULT __stdcall MainWindowProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM
 			break;
 
 		case UI::buttons::back:
-			prevFolder(*ptr, clientStream, currentPath, isCancel);
-
-			SendMessageW(ptr->getMainWindow(), UI::events::getFilesE, NULL, NULL);
+			prevFolder(*ptr, clientStream, currentPath,fileNames, isCancel);
 
 			break;
 
@@ -468,7 +460,7 @@ LRESULT __stdcall MainWindowProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM
 	case UI::events::multipleUploadE:
 		if (uploadFileIndex != dragAndDropFiles.size())
 		{
-			uploadFile(*ptr, clientStream, dragAndDropFiles[uploadFileIndex++], isCancel);
+			uploadFile(*ptr, clientStream, dragAndDropFiles[uploadFileIndex++],fileNames, isCancel);
 		}
 
 		return 0;
@@ -485,7 +477,7 @@ LRESULT __stdcall MainWindowProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM
 		uploadFileIndex = 0;
 		dragAndDropFiles = move(*reinterpret_cast<vector<wstring>*>(wparam));
 
-		uploadFile(*ptr, clientStream, dragAndDropFiles[uploadFileIndex++], isCancel);
+		uploadFile(*ptr, clientStream, dragAndDropFiles[uploadFileIndex++],fileNames, isCancel);
 
 		return 0;
 
@@ -508,19 +500,12 @@ LRESULT __stdcall MainWindowProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM
 
 		return 0;
 
-	case UI::events::setLoginE:
-		setLogin(*ptr, clientStream, login, password);
-
-		return 0;
-
 	case UI::events::openFileFolderE:
 		if (fileNames[wparam].fileSizeS == L"")	//folder
 		{
 			currentPath.append(fileNames[wparam].fileName);
 
-			nextFolder(*ptr, clientStream, fileNames[wparam].fileName, isCancel);
-
-			SendMessageW(ptr->getMainWindow(), UI::events::getFilesE, NULL, NULL);
+			nextFolder(*ptr, clientStream, fileNames[wparam].fileName, fileNames, isCancel);
 		}
 		else	//file
 		{

@@ -22,6 +22,7 @@ namespace UI
 		bool showPopupWindow;
 
 	public:
+		//reveal delay doesn't work
 		BasePopupWindow(HWND disableWindow, const std::wstring& popupWindowClassName, const std::wstring& popupWindowTitle, WNDPROC procedure, const std::wstring& message, const std::chrono::duration<double>& revealDelay = 0s);
 
 		virtual HWND getPopupWindow() const final;
@@ -30,9 +31,11 @@ namespace UI
 
 		virtual HWND getCancelButton() const final;
 
-		virtual void setShowPopupWindow(bool isShow) final;
+		//showPopupWindow does nothing
+		virtual bool& showPopupWindowVar() final;
 
-		virtual bool getShowPopupWindow() final;
+		//showPopupWindow does nothing
+		virtual const bool& showPopupWindowVar() const final;
 
 		virtual ~BasePopupWindow();
 	};

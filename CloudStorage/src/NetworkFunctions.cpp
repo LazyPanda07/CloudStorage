@@ -23,32 +23,46 @@ using namespace std;
 
 string cancelUploadFile(const string& fileName);
 
-string asyncFolderControlMessages(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, const string_view& controlRequest, bool& isCancel, string&& data = "");
+string asyncFolderControlMessages(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, const string_view& controlRequest, vector<db::fileDataRepresentation>& fileNames, bool& isCancel, string&& data = "");
 
-void asyncUploadFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, const wstring& filePath, bool& isCancel);
+void asyncUploadFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, const wstring& filePath, vector<db::fileDataRepresentation>& fileNames, bool& isCancel);
 
 void asyncDownloadFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, const wstring& fileName, bool& isCancel);
 
 void asyncGetFiles(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, vector<db::fileDataRepresentation>& fileNames, bool showError, bool& isCancel);
 
-void asyncSetLogin(streams::IOSocketStream<char>& clientStream, const wstring& login, const wstring& password);
+void asyncReconnect(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, string&& currentPath, const wstring& login, const wstring& password, vector<db::fileDataRepresentation>& fileNames, bool& isCancel);
 
 ////////////////////////////////////////////////////////////////
 
-void getFiles(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, vector<db::fileDataRepresentation>& fileNames, bool showError, bool& isCancel)
-{
-	initWaitResponsePopupWindow(ref);
+void setPath(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, string&& path, vector<db::fileDataRepresentation>& fileNames, bool& isCancel);
 
-	thread(asyncGetFiles, std::ref(ref), std::ref(clientStream), std::ref(fileNames), showError, std::ref(isCancel)).detach();
+void getFiles(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, vector<db::fileDataRepresentation>& fileNames, bool showError, bool& isCancel, bool isDetach)
+{
+	if (isDetach)
+	{
+		initWaitResponsePopupWindow(ref);
+	}
+
+	thread otherThread(asyncGetFiles, std::ref(ref), std::ref(clientStream), std::ref(fileNames), showError, std::ref(isCancel));
+
+	if (isDetach)
+	{
+		otherThread.detach();
+	}
+	else
+	{
+		otherThread.join();
+	}
 }
 
-void uploadFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, const wstring& filePath, bool& isCancel)
+void uploadFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, const wstring& filePath, vector<db::fileDataRepresentation>& fileNames, bool& isCancel)
 {
 	wstring message = L"Загрузка файла " + wstring(begin(filePath) + filePath.rfind('\\') + 1, end(filePath));
 
 	initUploadFilePopupWindow(ref, message);
 
-	thread(asyncUploadFile, std::ref(ref), std::ref(clientStream), std::ref(filePath), std::ref(isCancel)).detach();
+	thread(asyncUploadFile, std::ref(ref), std::ref(clientStream), std::ref(filePath), std::ref(fileNames), std::ref(isCancel)).detach();
 }
 
 int downloadFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, const vector<db::fileDataRepresentation>& fileNames, bool& isCancel, int searchId)
@@ -124,21 +138,21 @@ void removeFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream
 	}
 }
 
-void reconnect(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream)
-{
-	exitFromApplication(ref, clientStream);
-
-	clientStream = streams::IOSocketStream<char>(new buffers::IOSocketBuffer<char>(new web::HTTPNetwork()));
-}
-
-void nextFolder(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, const wstring& folderName, bool& isCancel)
+void reconnect(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, string&& currentPath, const wstring& login, const wstring& password, vector<db::fileDataRepresentation>& fileNames, bool& isCancel)
 {
 	initWaitResponsePopupWindow(ref);
 
-	thread(asyncFolderControlMessages, std::ref(ref), std::ref(clientStream), std::ref(controlRequests::nextFolder), std::ref(isCancel), utility::conversion::to_string(folderName)).detach();
+	thread(asyncReconnect, std::ref(ref), std::ref(clientStream), move(currentPath), std::ref(login), std::ref(password), std::ref(fileNames), std::ref(isCancel)).detach();
 }
 
-void prevFolder(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, filesystem::path& currentPath, bool& isCancel)
+void nextFolder(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, const wstring& folderName, vector<db::fileDataRepresentation>& fileNames, bool& isCancel)
+{
+	initWaitResponsePopupWindow(ref);
+
+	thread(asyncFolderControlMessages, std::ref(ref), std::ref(clientStream), std::ref(controlRequests::nextFolder), std::ref(fileNames), std::ref(isCancel), utility::conversion::to_string(folderName)).detach();
+}
+
+void prevFolder(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, filesystem::path& currentPath, vector<db::fileDataRepresentation>& fileNames, bool& isCancel)
 {
 	if (currentPath != "Home")
 	{
@@ -149,17 +163,10 @@ void prevFolder(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream
 
 	initWaitResponsePopupWindow(ref);
 
-	thread(asyncFolderControlMessages, std::ref(ref), std::ref(clientStream), std::ref(controlRequests::prevFolder), std::ref(isCancel), "").detach();
+	thread(asyncFolderControlMessages, std::ref(ref), std::ref(clientStream), std::ref(controlRequests::prevFolder), std::ref(fileNames), std::ref(isCancel), "").detach();
 }
 
-void setPath(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, string&& path, bool& isCancel)
-{
-	initWaitResponsePopupWindow(ref);
-
-	thread(asyncFolderControlMessages, std::ref(ref), std::ref(clientStream), std::ref(controlRequests::setPath), std::ref(isCancel), move(path)).detach();
-}
-
-void createFolder(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream)
+void createFolder(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, vector<db::fileDataRepresentation>& fileNames, bool& isCancel)
 {
 	wstring wFolderName;
 	HWND enterFolderNameEdit = ref.getEnterFolderNameEdit();
@@ -191,14 +198,29 @@ void createFolder(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStre
 
 	SendMessageW(ref.getMainWindow(), UI::events::deletePopupWindowE, NULL, NULL);
 
-	SendMessageW(ref.getMainWindow(), UI::events::getFilesE, NULL, NULL);
+	getFiles(ref, clientStream, fileNames, true, isCancel, false);
 }
 
 void setLogin(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, const wstring& login, const wstring& password)
 {
-	initWaitResponsePopupWindow(ref);
+	string body = "login=" + utility::conversion::to_string(login) + "&" + "password=" + utility::conversion::to_string(password);
 
-	thread(asyncSetLogin, std::ref(clientStream), std::ref(login), std::ref(password)).detach();
+	string request = web::HTTPBuilder().postRequest().headers
+	(
+		requestType::accountType, accountRequests::setLogin,
+		"Content-Length", body.size()
+	).build(&body);
+
+	utility::web::insertSizeHeaderToHTTPMessage(request);
+
+	try
+	{
+		clientStream << request;
+	}
+	catch (const web::WebException&)
+	{
+
+	}
 }
 
 void exitFromApplication(UI::MainWindow& ref, streams::IOSocketStream<char>& clientSream)
@@ -365,6 +387,11 @@ tuple<wstring, wstring> registration(UI::MainWindow& ref, streams::IOSocketStrea
 	}
 }
 
+void setPath(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, string&& path, vector<db::fileDataRepresentation>& fileNames, bool& isCancel)
+{
+	asyncFolderControlMessages(ref, clientStream, controlRequests::setPath, fileNames, isCancel, move(path));
+}
+
 ////////////////////////////////////////////////////////////////
 
 string cancelUploadFile(const string& fileName)
@@ -381,7 +408,7 @@ string cancelUploadFile(const string& fileName)
 	return result;
 }
 
-string asyncFolderControlMessages(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, const string_view& controlRequest, bool& isCancel, string&& data)
+string asyncFolderControlMessages(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, const string_view& controlRequest, vector<db::fileDataRepresentation>& fileNames, bool& isCancel, string&& data)
 {
 	string request;
 	string response;
@@ -408,7 +435,7 @@ string asyncFolderControlMessages(UI::MainWindow& ref, streams::IOSocketStream<c
 
 	if (isCancel)
 	{
-		ref.getCurrentPopupWindow()->setShowPopupWindow(false);
+		ref.getCurrentPopupWindow()->showPopupWindowVar() = false;
 		SendMessageW(ref.getMainWindow(), UI::events::deletePopupWindowE, NULL, NULL);
 		return string();
 	}
@@ -424,7 +451,7 @@ string asyncFolderControlMessages(UI::MainWindow& ref, streams::IOSocketStream<c
 
 	if (isCancel)
 	{
-		ref.getCurrentPopupWindow()->setShowPopupWindow(false);
+		ref.getCurrentPopupWindow()->showPopupWindowVar() = false;
 		SendMessageW(ref.getMainWindow(), UI::events::deletePopupWindowE, NULL, NULL);
 		return string();
 	}
@@ -438,10 +465,14 @@ string asyncFolderControlMessages(UI::MainWindow& ref, streams::IOSocketStream<c
 
 	}
 
+	SendMessageW(ref.getMainWindow(), UI::events::deletePopupWindowE, NULL, NULL);
+
+	getFiles(ref, clientStream, fileNames, true, isCancel, false);
+
 	return response;
 }
 
-void asyncUploadFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, const wstring& filePath, bool& isCancel)
+void asyncUploadFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, const wstring& filePath, vector<db::fileDataRepresentation>& fileNames, bool& isCancel)
 {
 	const filesystem::path file(filePath);
 	intmax_t fileSize = filesystem::file_size(file);
@@ -577,7 +608,7 @@ void asyncUploadFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientS
 
 		if (ok == IDOK)
 		{
-			SendMessageW(ref.getMainWindow(), UI::events::getFilesE, NULL, NULL);
+			getFiles(ref, clientStream, fileNames, true, isCancel, false);
 			SendMessageW(ref.getMainWindow(), UI::events::deletePopupWindowE, NULL, NULL);
 			SendMessageW(ref.getMainWindow(), UI::events::multipleUploadE, NULL, NULL);
 		}
@@ -696,7 +727,10 @@ void asyncDownloadFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clien
 
 void asyncGetFiles(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, vector<db::fileDataRepresentation>& fileNames, bool showError, bool& isCancel)
 {
-	static_cast<UI::WaitResponsePopupWindow*>(ref.getCurrentPopupWindow())->startAnimateProgressBar();
+	if (ref.getCurrentPopupWindow())
+	{
+		static_cast<UI::WaitResponsePopupWindow*>(ref.getCurrentPopupWindow())->startAnimateProgressBar();
+	}
 
 	utility::ClientTime& instance = utility::ClientTime::get();
 	string request = web::HTTPBuilder().postRequest().headers
@@ -714,7 +748,7 @@ void asyncGetFiles(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStr
 
 	if (isCancel)
 	{
-		ref.getCurrentPopupWindow()->setShowPopupWindow(false);
+		ref.getCurrentPopupWindow()->showPopupWindowVar() = false;
 		SendMessageW(ref.getMainWindow(), UI::events::deletePopupWindowE, NULL, NULL);
 		return;
 	}
@@ -749,7 +783,7 @@ void asyncGetFiles(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStr
 
 	if (isCancel)
 	{
-		ref.getCurrentPopupWindow()->setShowPopupWindow(false);
+		ref.getCurrentPopupWindow()->showPopupWindowVar() = false;
 		SendMessageW(ref.getMainWindow(), UI::events::deletePopupWindowE, NULL, NULL);
 		return;
 	}
@@ -758,7 +792,10 @@ void asyncGetFiles(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStr
 	const string& error = parser.getHeaders().at("Error");
 	const string& body = parser.getBody();
 
-	static_cast<UI::WaitResponsePopupWindow*>(ref.getCurrentPopupWindow())->stopAnimateProgressBar();
+	if (ref.getCurrentPopupWindow())
+	{
+		static_cast<UI::WaitResponsePopupWindow*>(ref.getCurrentPopupWindow())->stopAnimateProgressBar();
+	}
 
 	if (error == "0")
 	{
@@ -821,26 +858,34 @@ void asyncGetFiles(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStr
 	}
 }
 
-void asyncSetLogin(streams::IOSocketStream<char>& clientStream, const wstring& login, const wstring& password)
+void asyncReconnect(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, string&& currentPath, const wstring& login, const wstring& password, vector<db::fileDataRepresentation>& fileNames, bool& isCancel)
 {
-	string body = "login=" + utility::conversion::to_string(login) + "&" + "password=" + utility::conversion::to_string(password);
+	isCancel = false;
 
-	string request = web::HTTPBuilder().postRequest().headers
-	(
-		requestType::accountType, accountRequests::setLogin,
-		"Content-Length", body.size()
-	).build(&body);
+	exitFromApplication(ref, clientStream);
 
-	utility::web::insertSizeHeaderToHTTPMessage(request);
-
-	try
+	if (isCancel)
 	{
-		clientStream << request;
-	}
-	catch (const web::WebException&)
-	{
-
+		ref.getCurrentPopupWindow()->showPopupWindowVar() = false;
+		SendMessageW(ref.getMainWindow(), UI::events::deletePopupWindowE, NULL, NULL);
+		return;
 	}
 
-	//TODO: destroy popup window
+	clientStream = streams::IOSocketStream<char>(new buffers::IOSocketBuffer<char>(new web::HTTPNetwork()));
+
+	if (isCancel)
+	{
+		ref.getCurrentPopupWindow()->showPopupWindowVar() = false;
+		SendMessageW(ref.getMainWindow(), UI::events::deletePopupWindowE, NULL, NULL);
+		return;
+	}
+
+	setLogin(ref, clientStream, login, password);
+
+	setPath(ref, clientStream, move(currentPath), fileNames, isCancel);
+
+	if (ref.getCurrentPopupWindow())
+	{
+		getFiles(ref, clientStream, fileNames, true, isCancel, false);
+	}
 }

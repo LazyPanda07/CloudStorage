@@ -27,13 +27,15 @@ namespace UI
 		RegisterClassExW(&popup);
 
 		EnableWindow(disableWindow, FALSE);
+		
+		ShowWindow(popupWindow, SW_SHOW);
 
 		popupWindow = CreateWindowExW
 		(
 			NULL,
 			popup.lpszClassName,
 			popupWindowTitle.data(),
-			WS_OVERLAPPEDWINDOW ^ WS_THICKFRAME,
+			WS_OVERLAPPEDWINDOW ^ WS_THICKFRAME | WS_VISIBLE,
 			centerOfDesktop.x,
 			centerOfDesktop.y,
 			popupWindows::basePopupWindow::popupWindowWidth,
@@ -82,17 +84,6 @@ namespace UI
 			nullptr,
 			nullptr
 		);
-
-		thread([](bool& isShow, chrono::duration<double> revealDelay, HWND popupWindow)
-			{
-				this_thread::sleep_for(revealDelay);
-
-				if (isShow)
-				{
-					ShowWindow(popupWindow, SW_SHOW);
-				}
-
-			}, ref(showPopupWindow), revealDelay, popupWindow).detach();
 	}
 
 	HWND BasePopupWindow::getPopupWindow() const
@@ -110,12 +101,12 @@ namespace UI
 		return cancelButton;
 	}
 
-	void BasePopupWindow::setShowPopupWindow(bool isShow)
+	bool& BasePopupWindow::showPopupWindowVar()
 	{
-		showPopupWindow = isShow;
+		return showPopupWindow;
 	}
 
-	bool BasePopupWindow::getShowPopupWindow()
+	const bool& BasePopupWindow::showPopupWindowVar() const
 	{
 		return showPopupWindow;
 	}
