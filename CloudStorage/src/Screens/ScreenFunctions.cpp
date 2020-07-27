@@ -38,15 +38,30 @@ void initAuthorizationScreen(UI::MainWindow& ref)
 	ref.setCurrentScreen(new UI::AuthorizationScreen(ref.getMainWindow()));
 }
 
-bool removeFileDialog(UI::MainWindow& ref, const std::wstring& fileName)
+bool removeFileDialog(UI::MainWindow& ref, const wstring& fileName)
 {
-	int dialog = MessageBoxW
-	(
-		ref.getMainWindow(),
-		wstring(L"Вы действительно хотите удалить " + fileName).data(),
-		L"Удаление файла",
-		MB_YESNO | MB_ICONWARNING
-	);
+	int dialog = IDYES;
+
+	if (ref.getCurrentPopupWindow())
+	{
+		dialog = MessageBoxW
+		(
+			ref.getPopupWindow(),
+			wstring(L"Вы действительно хотите удалить " + fileName).data(),
+			L"Удаление файла",
+			MB_YESNO | MB_ICONWARNING
+		);
+	}
+	else
+	{
+		dialog = MessageBoxW
+		(
+			ref.getMainWindow(),
+			wstring(L"Вы действительно хотите удалить " + fileName).data(),
+			L"Удаление файла",
+			MB_YESNO | MB_ICONWARNING
+		);
+	}
 
 	return dialog == IDYES;
 }

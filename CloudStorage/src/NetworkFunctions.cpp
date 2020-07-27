@@ -33,9 +33,13 @@ void asyncGetFiles(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStr
 
 void asyncReconnect(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, string&& currentPath, const wstring& login, const wstring& password, vector<db::fileDataRepresentation>& fileNames, bool& isCancel);
 
+void asyncRemoveFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, vector<db::fileDataRepresentation>& fileNames, bool& isCancel);
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 void setPath(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, string&& path, vector<db::fileDataRepresentation>& fileNames, bool& isCancel);
+
+void removeFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, const wstring& fileName, bool& isCancel);
 
 void getFiles(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, vector<db::fileDataRepresentation>& fileNames, bool showError, bool& isCancel, bool isDetach)
 {
@@ -79,63 +83,11 @@ int downloadFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStrea
 	return id;
 }
 
-void removeFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, const vector<db::fileDataRepresentation>& fileNames)
+void removeFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, vector<db::fileDataRepresentation>& fileNames, bool& isCancel)
 {
-	int id = SendMessageW(ref.getList(), LVM_GETNEXTITEM, -1, LVNI_SELECTED);
+	initWaitResponsePopupWindow(ref);
 
-	while (id != -1)
-	{
-		if (removeFileDialog(ref, fileNames[id].fileName))
-		{
-			removeFile(ref, clientStream, fileNames[id].fileName);
-		}
-
-		id = SendMessageW(ref.getList(), LVM_GETNEXTITEM, id, LVNI_SELECTED);
-	}
-}
-
-void removeFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, const std::wstring& fileName)
-{
-	string request = web::HTTPBuilder().postRequest().headers
-	(
-		requestType::filesType, filesRequests::removeFile,
-		"File-Name", utility::conversion::to_string(fileName)
-	).build();
-	string response;
-
-	utility::web::insertSizeHeaderToHTTPMessage(request);
-
-	try
-	{
-		clientStream << request;
-	}
-	catch (const web::WebException&)
-	{
-		UI::serverRequestError(ref);
-		return;
-	}
-
-	try
-	{
-		clientStream >> response;
-	}
-	catch (const web::WebException&)
-	{
-		UI::serverResponseError(ref);
-		return;
-	}
-
-	web::HTTPParser parser(response);
-	const map<string, string>& headers = parser.getHeaders();
-
-	if (headers.at("Error") == "0")
-	{
-		//TODO: success message
-	}
-	else
-	{
-		MessageBoxW(ref.getMainWindow(), wstring(L"Не удалось удалить " + fileName).data(), L"Ошибка", MB_OK);
-	}
+	thread(asyncRemoveFile, std::ref(ref), std::ref(clientStream), std::ref(fileNames), std::ref(isCancel)).detach();
 }
 
 void reconnect(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, string&& currentPath, const wstring& login, const wstring& password, vector<db::fileDataRepresentation>& fileNames, bool& isCancel)
@@ -392,6 +344,59 @@ void setPath(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, s
 	asyncFolderControlMessages(ref, clientStream, controlRequests::setPath, fileNames, isCancel, move(path));
 }
 
+void removeFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, const wstring& fileName, bool& isCancel)
+{
+	string request = web::HTTPBuilder().postRequest().headers
+	(
+		requestType::filesType, filesRequests::removeFile,
+		"File-Name", utility::conversion::to_string(fileName)
+	).build();
+	string response;
+	isCancel = false;
+
+	utility::web::insertSizeHeaderToHTTPMessage(request);
+
+	if (isCancel)
+	{
+		return;
+	}
+
+	try
+	{
+		clientStream << request;
+	}
+	catch (const web::WebException&)
+	{
+		UI::serverRequestError(ref);
+		return;
+	}
+
+	try
+	{
+		clientStream >> response;
+	}
+	catch (const web::WebException&)
+	{
+		UI::serverResponseError(ref);
+		return;
+	}
+
+	web::HTTPParser parser(response);
+	const map<string, string>& headers = parser.getHeaders();
+
+	if (headers.at("Error") == "0")
+	{
+		//TODO: success message
+	}
+	else
+	{
+		if (ref.getCurrentPopupWindow())
+		{
+			MessageBoxW(ref.getPopupWindow(), wstring(L"Не удалось удалить " + fileName).data(), L"Ошибка", MB_OK);
+		}
+	}
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 string cancelUploadFile(const string& fileName)
@@ -495,6 +500,7 @@ void asyncUploadFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientS
 
 		if (isCancel)
 		{
+			ref.getCurrentPopupWindow()->showPopupWindowVar() = false;
 			string cancelRequest = cancelUploadFile(file.filename().string());
 
 			clientStream << cancelRequest;
@@ -640,6 +646,7 @@ void asyncDownloadFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clien
 
 		if (isCancel)
 		{
+			ref.getCurrentPopupWindow()->showPopupWindowVar() = false;
 			SendMessageW(ref.getMainWindow(), UI::events::deletePopupWindowE, NULL, NULL);
 			SendMessageW(ref.getMainWindow(), UI::events::multipleDownloadE, NULL, NULL);
 			out.close();
@@ -903,4 +910,23 @@ void asyncReconnect(UI::MainWindow& ref, streams::IOSocketStream<char>& clientSt
 	setLogin(ref, clientStream, login, password);
 
 	setPath(ref, clientStream, move(currentPath), fileNames, isCancel);
+}
+
+void asyncRemoveFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, vector<db::fileDataRepresentation>& fileNames, bool& isCancel)
+{
+	int id = SendMessageW(ref.getList(), LVM_GETNEXTITEM, -1, LVNI_SELECTED);
+
+	while (id != -1)
+	{
+		if (removeFileDialog(ref, fileNames[id].fileName))
+		{
+			removeFile(ref, clientStream, fileNames[id].fileName, isCancel);
+		}
+
+		id = SendMessageW(ref.getList(), LVM_GETNEXTITEM, id, LVNI_SELECTED);
+	}
+
+	getFiles(ref, clientStream, fileNames, false, isCancel, false);
+
+	SendMessageW(ref.getMainWindow(), UI::events::deletePopupWindowE, NULL, NULL);
 }

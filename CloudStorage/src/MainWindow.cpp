@@ -371,10 +371,7 @@ LRESULT __stdcall MainWindowProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM
 			break;
 
 		case UI::buttons::remove:
-			//TODO: make remove async
-			removeFile(*ptr, clientStream, fileNames);
-
-			SendMessageW(ptr->getMainWindow(), UI::events::getFilesE, NULL, NULL);
+			removeFile(*ptr, clientStream, fileNames, isCancel);
 
 			break;
 
