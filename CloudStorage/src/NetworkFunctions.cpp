@@ -33,7 +33,7 @@ void asyncGetFiles(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStr
 
 void asyncReconnect(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, string&& currentPath, const wstring& login, const wstring& password, vector<db::fileDataRepresentation>& fileNames, bool& isCancel);
 
-////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 void setPath(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, string&& path, vector<db::fileDataRepresentation>& fileNames, bool& isCancel);
 
@@ -198,7 +198,7 @@ void createFolder(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStre
 
 	SendMessageW(ref.getMainWindow(), UI::events::deletePopupWindowE, NULL, NULL);
 
-	getFiles(ref, clientStream, fileNames, true, isCancel, false);
+	getFiles(ref, clientStream, fileNames, true, isCancel);
 }
 
 void setLogin(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, const wstring& login, const wstring& password)
@@ -392,7 +392,7 @@ void setPath(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, s
 	asyncFolderControlMessages(ref, clientStream, controlRequests::setPath, fileNames, isCancel, move(path));
 }
 
-////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 string cancelUploadFile(const string& fileName)
 {
@@ -465,9 +465,7 @@ string asyncFolderControlMessages(UI::MainWindow& ref, streams::IOSocketStream<c
 
 	}
 
-	SendMessageW(ref.getMainWindow(), UI::events::deletePopupWindowE, NULL, NULL);
-
-	getFiles(ref, clientStream, fileNames, true, isCancel, false);
+	getFiles(ref, clientStream, fileNames, false, isCancel, false);
 
 	return response;
 }
@@ -883,9 +881,4 @@ void asyncReconnect(UI::MainWindow& ref, streams::IOSocketStream<char>& clientSt
 	setLogin(ref, clientStream, login, password);
 
 	setPath(ref, clientStream, move(currentPath), fileNames, isCancel);
-
-	if (ref.getCurrentPopupWindow())
-	{
-		getFiles(ref, clientStream, fileNames, true, isCancel, false);
-	}
 }
