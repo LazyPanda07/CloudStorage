@@ -196,6 +196,7 @@ namespace UI
 		{
 			initMainWindowPtrE = modifyEventsCount + 1,
 			initPopupWindowE,
+			initCloudStorageScreenE,
 			initEventsCount
 		};
 

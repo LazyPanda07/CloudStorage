@@ -35,6 +35,8 @@ void asyncReconnect(UI::MainWindow& ref, streams::IOSocketStream<char>& clientSt
 
 void asyncRemoveFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, vector<db::fileDataRepresentation>& fileNames, bool& isCancel);
 
+void asyncRegistration(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, wstring& login, wstring& password, bool& isCancel);
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 void setPath(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, string&& path, vector<db::fileDataRepresentation>& fileNames, bool& isCancel);
@@ -261,82 +263,11 @@ tuple<wstring, wstring> authorization(UI::MainWindow& ref, streams::IOSocketStre
 	}
 }
 
-tuple<wstring, wstring> registration(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream)
+void registration(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, wstring& login, wstring& password, bool& isCancel)
 {
-	wstring wLogin;
-	wstring wPassword;
-	wstring wRepeatPassword;
-	string response;
+	initWaitResponsePopupWindow(ref);
 
-	HWND registrationLoginEdit = ref.getRegistrationLoginEdit();
-	HWND registrationPasswordEdit = ref.getRegistrationPasswordEdit();
-	HWND registrationRepeatPasswordEdit = ref.getRegistrationRepeatPasswordEdit();
-
-	wLogin.resize(GetWindowTextLengthW(registrationLoginEdit));
-	wPassword.resize(GetWindowTextLengthW(registrationPasswordEdit));
-	wRepeatPassword.resize(GetWindowTextLengthW(registrationRepeatPasswordEdit));
-
-	GetWindowTextW(registrationLoginEdit, wLogin.data(), wLogin.size() + 1);
-	GetWindowTextW(registrationPasswordEdit, wPassword.data(), wPassword.size() + 1);
-	GetWindowTextW(registrationRepeatPasswordEdit, wRepeatPassword.data(), wRepeatPassword.size() + 1);
-
-	if (wPassword != wRepeatPassword)
-	{
-		SetWindowTextW(registrationLoginEdit, L"");
-		SetWindowTextW(registrationPasswordEdit, L"");
-		SetWindowTextW(registrationRepeatPasswordEdit, L"");
-
-		MessageBoxW(ref.getMainWindow(), L"Пароли не совпадают", L"Ошибка", MB_OK);
-
-		return { wstring(), wstring() };
-	}
-
-	string body = "login=" + utility::conversion::to_string(wLogin) + "&" + "password=" + utility::conversion::to_string(wPassword);
-
-	string request = web::HTTPBuilder().postRequest().headers
-	(
-		requestType::accountType, accountRequests::registration,
-		"Content-Length", body.size()
-	).build(&body);
-
-	utility::web::insertSizeHeaderToHTTPMessage(request);
-
-	try
-	{
-		clientStream << request;
-	}
-	catch (const web::WebException&)
-	{
-		UI::serverRequestError(ref);
-		return { wstring(), wstring() };
-	}
-
-	try
-	{
-		clientStream >> response;
-	}
-	catch (const web::WebException&)
-	{
-		UI::serverResponseError(ref);
-		return { wstring(), wstring() };
-	}
-
-	web::HTTPParser parser(response);
-
-	if (parser.getHeaders().at("Error") == "0")
-	{
-		return { wLogin, wPassword };
-	}
-	else
-	{
-		SetWindowTextW(registrationLoginEdit, L"");
-		SetWindowTextW(registrationPasswordEdit, L"");
-		SetWindowTextW(registrationRepeatPasswordEdit, L"");
-
-		MessageBoxW(ref.getMainWindow(), utility::conversion::to_wstring(parser.getBody()).data(), L"Ошибка", MB_OK);
-
-		return { wstring(), wstring() };
-	}
+	thread(asyncRegistration, std::ref(ref), std::ref(clientStream), std::ref(login), std::ref(password), std::ref(isCancel)).detach();
 }
 
 void setPath(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, string&& path, vector<db::fileDataRepresentation>& fileNames, bool& isCancel)
@@ -440,8 +371,10 @@ string asyncFolderControlMessages(UI::MainWindow& ref, streams::IOSocketStream<c
 
 	if (isCancel)
 	{
-		ref.getCurrentPopupWindow()->showPopupWindowVar() = false;
-		SendMessageW(ref.getMainWindow(), UI::events::deletePopupWindowE, NULL, NULL);
+		if (ref.getCurrentPopupWindow())
+		{
+			ref.getCurrentPopupWindow()->showPopupWindowVar() = false;
+		}
 		return string();
 	}
 
@@ -456,8 +389,10 @@ string asyncFolderControlMessages(UI::MainWindow& ref, streams::IOSocketStream<c
 
 	if (isCancel)
 	{
-		ref.getCurrentPopupWindow()->showPopupWindowVar() = false;
-		SendMessageW(ref.getMainWindow(), UI::events::deletePopupWindowE, NULL, NULL);
+		if (ref.getCurrentPopupWindow())
+		{
+			ref.getCurrentPopupWindow()->showPopupWindowVar() = false;
+		}
 		return string();
 	}
 
@@ -500,14 +435,16 @@ void asyncUploadFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientS
 
 		if (isCancel)
 		{
-			ref.getCurrentPopupWindow()->showPopupWindowVar() = false;
+			if (ref.getCurrentPopupWindow())
+			{
+				ref.getCurrentPopupWindow()->showPopupWindowVar() = false;
+			}
 			string cancelRequest = cancelUploadFile(file.filename().string());
 
 			clientStream << cancelRequest;
 
 			clientStream >> cancelRequest;
 
-			SendMessageW(ref.getMainWindow(), UI::events::deletePopupWindowE, NULL, NULL);
 			SendMessageW(ref.getMainWindow(), UI::events::multipleUploadE, NULL, NULL);
 			in.close();
 			return;
@@ -646,8 +583,10 @@ void asyncDownloadFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clien
 
 		if (isCancel)
 		{
-			ref.getCurrentPopupWindow()->showPopupWindowVar() = false;
-			SendMessageW(ref.getMainWindow(), UI::events::deletePopupWindowE, NULL, NULL);
+			if (ref.getCurrentPopupWindow())
+			{
+				ref.getCurrentPopupWindow()->showPopupWindowVar() = false;
+			}
 			SendMessageW(ref.getMainWindow(), UI::events::multipleDownloadE, NULL, NULL);
 			out.close();
 
@@ -758,8 +697,10 @@ void asyncGetFiles(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStr
 
 	if (isCancel)
 	{
-		ref.getCurrentPopupWindow()->showPopupWindowVar() = false;
-		SendMessageW(ref.getMainWindow(), UI::events::deletePopupWindowE, NULL, NULL);
+		if (ref.getCurrentPopupWindow())
+		{
+			ref.getCurrentPopupWindow()->showPopupWindowVar() = false;
+		}
 		return;
 	}
 
@@ -793,8 +734,10 @@ void asyncGetFiles(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStr
 
 	if (isCancel)
 	{
-		ref.getCurrentPopupWindow()->showPopupWindowVar() = false;
-		SendMessageW(ref.getMainWindow(), UI::events::deletePopupWindowE, NULL, NULL);
+		if (ref.getCurrentPopupWindow())
+		{
+			ref.getCurrentPopupWindow()->showPopupWindowVar() = false;
+		}
 		return;
 	}
 
@@ -876,13 +819,15 @@ void asyncReconnect(UI::MainWindow& ref, streams::IOSocketStream<char>& clientSt
 	{
 		static_cast<UI::WaitResponsePopupWindow*>(ref.getCurrentPopupWindow())->startAnimateProgressBar();
 	}
-	
+
 	exitFromApplication(ref, clientStream);
 
 	if (isCancel)
 	{
-		ref.getCurrentPopupWindow()->showPopupWindowVar() = false;
-		SendMessageW(ref.getMainWindow(), UI::events::deletePopupWindowE, NULL, NULL);
+		if (ref.getCurrentPopupWindow())
+		{
+			ref.getCurrentPopupWindow()->showPopupWindowVar() = false;
+		}
 		return;
 	}
 
@@ -894,7 +839,10 @@ void asyncReconnect(UI::MainWindow& ref, streams::IOSocketStream<char>& clientSt
 	{
 		if (UI::serverRequestError(ref) == IDOK)
 		{
-			ref.getCurrentPopupWindow()->showPopupWindowVar() = false;
+			if (ref.getCurrentPopupWindow())
+			{
+				ref.getCurrentPopupWindow()->showPopupWindowVar() = false;
+			}
 			SendMessageW(ref.getMainWindow(), UI::events::deletePopupWindowE, NULL, NULL);
 		}
 		return;
@@ -902,8 +850,10 @@ void asyncReconnect(UI::MainWindow& ref, streams::IOSocketStream<char>& clientSt
 
 	if (isCancel)
 	{
-		ref.getCurrentPopupWindow()->showPopupWindowVar() = false;
-		SendMessageW(ref.getMainWindow(), UI::events::deletePopupWindowE, NULL, NULL);
+		if (ref.getCurrentPopupWindow())
+		{
+			ref.getCurrentPopupWindow()->showPopupWindowVar() = false;
+		}
 		return;
 	}
 
@@ -929,4 +879,126 @@ void asyncRemoveFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientS
 	getFiles(ref, clientStream, fileNames, false, isCancel, false);
 
 	SendMessageW(ref.getMainWindow(), UI::events::deletePopupWindowE, NULL, NULL);
+}
+
+void asyncRegistration(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, wstring& login, wstring& password, bool& isCancel)
+{
+	wstring wLogin;
+	wstring wPassword;
+	wstring wRepeatPassword;
+	string response;
+	isCancel = false;
+
+	HWND registrationLoginEdit = ref.getRegistrationLoginEdit();
+	HWND registrationPasswordEdit = ref.getRegistrationPasswordEdit();
+	HWND registrationRepeatPasswordEdit = ref.getRegistrationRepeatPasswordEdit();
+
+	wLogin.resize(GetWindowTextLengthW(registrationLoginEdit));
+	wPassword.resize(GetWindowTextLengthW(registrationPasswordEdit));
+	wRepeatPassword.resize(GetWindowTextLengthW(registrationRepeatPasswordEdit));
+
+	GetWindowTextW(registrationLoginEdit, wLogin.data(), wLogin.size() + 1);
+	GetWindowTextW(registrationPasswordEdit, wPassword.data(), wPassword.size() + 1);
+	GetWindowTextW(registrationRepeatPasswordEdit, wRepeatPassword.data(), wRepeatPassword.size() + 1);
+
+	if (wPassword != wRepeatPassword)
+	{
+		int ok;
+
+		SetWindowTextW(registrationLoginEdit, L"");
+		SetWindowTextW(registrationPasswordEdit, L"");
+		SetWindowTextW(registrationRepeatPasswordEdit, L"");
+
+		if (ref.getPopupWindow())
+		{
+			ok = MessageBoxW(ref.getPopupWindow(), L"Пароли не совпадают", L"Ошибка", MB_OK);
+		}
+		else
+		{
+			ok = MessageBoxW(ref.getMainWindow(), L"Пароли не совпадают", L"Ошибка", MB_OK);
+		}
+
+		if (ok == IDOK)
+		{
+			if (ref.getCurrentPopupWindow())
+			{
+				ref.getCurrentPopupWindow()->showPopupWindowVar() = false;
+			}
+
+			SendMessageW(ref.getMainWindow(), UI::events::deletePopupWindowE, NULL, NULL);
+
+			return;
+		}
+	}
+
+	string body = "login=" + utility::conversion::to_string(wLogin) + "&" + "password=" + utility::conversion::to_string(wPassword);
+
+	string request = web::HTTPBuilder().postRequest().headers
+	(
+		requestType::accountType, accountRequests::registration,
+		"Content-Length", body.size()
+	).build(&body);
+
+	utility::web::insertSizeHeaderToHTTPMessage(request);
+
+	if (isCancel)
+	{
+		if (ref.getCurrentPopupWindow())
+		{
+			ref.getCurrentPopupWindow()->showPopupWindowVar() = false;
+		}
+		return;
+	}
+
+	try
+	{
+		clientStream << request;
+	}
+	catch (const web::WebException&)
+	{
+		UI::serverRequestError(ref);
+		return;
+	}
+
+	try
+	{
+		clientStream >> response;
+	}
+	catch (const web::WebException&)
+	{
+		UI::serverResponseError(ref);
+		return;
+	}
+
+	web::HTTPParser parser(response);
+
+	if (parser.getHeaders().at("Error") == "0")
+	{
+		login = wLogin;
+		password = wPassword;
+
+		SendMessageW(ref.getMainWindow(), UI::events::initCloudStorageScreenE, NULL, NULL);
+	}
+	else
+	{
+		int ok;
+
+		SetWindowTextW(registrationLoginEdit, L"");
+		SetWindowTextW(registrationPasswordEdit, L"");
+		SetWindowTextW(registrationRepeatPasswordEdit, L"");
+
+		if (ref.getCurrentPopupWindow())
+		{
+			ok = MessageBoxW(ref.getPopupWindow(), utility::conversion::to_wstring(parser.getBody()).data(), L"Ошибка", MB_OK);
+		}
+		else
+		{
+			ok = MessageBoxW(ref.getMainWindow(), utility::conversion::to_wstring(parser.getBody()).data(), L"Ошибка", MB_OK);
+		}
+
+		if (ok == IDOK)
+		{
+			SendMessageW(ref.getMainWindow(), UI::events::deletePopupWindowE, NULL, NULL);
+		}
+	}
 }

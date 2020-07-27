@@ -28,4 +28,4 @@ void exitFromApplication(UI::MainWindow& ref, streams::IOSocketStream<char>& cli
 
 std::tuple<std::wstring, std::wstring> authorization(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream);
 
-std::tuple<std::wstring, std::wstring> registration(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream);
+void registration(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, std::wstring& login, std::wstring& password, bool& isCancel);

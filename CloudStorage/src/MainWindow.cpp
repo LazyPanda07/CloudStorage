@@ -398,17 +398,7 @@ LRESULT __stdcall MainWindowProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM
 			break;
 
 		case UI::buttons::registration:
-			//TODO: make registration async
-			tie(login, password) = registration(*ptr, clientStream);
-
-			if (login.size())
-			{
-				initCloudStorageScreen(*ptr);
-
-				ptr->getCurrentScreen()->pubShow();
-
-				SendMessageW(ptr->getMainWindow(), UI::events::getFilesE, NULL, NULL);
-			}
+			registration(*ptr, clientStream, login, password, isCancel);
 
 			break;
 
@@ -511,6 +501,15 @@ LRESULT __stdcall MainWindowProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM
 		{
 			//TODO: openFile function
 		}
+
+		return 0;
+
+	case UI::events::initCloudStorageScreenE:
+		initCloudStorageScreen(*ptr);
+
+		ptr->getCurrentScreen()->pubShow();
+
+		SendMessageW(ptr->getMainWindow(), UI::events::getFilesE, NULL, NULL);
 
 		return 0;
 #pragma endregion
