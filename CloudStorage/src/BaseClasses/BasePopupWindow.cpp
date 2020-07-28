@@ -10,7 +10,8 @@ namespace UI
 {
 	BasePopupWindow::BasePopupWindow(HWND disableWindow, const wstring& popupWindowClassName, const wstring& popupWindowTitle, WNDPROC procedure, const wstring& message, const chrono::duration<double>& revealDelay) :
 		disableWindow(disableWindow),
-		showPopupWindow(true)
+		showPopupWindow(true),
+		popupWindowClassName(popupWindowClassName)
 	{
 		WNDCLASSEXW popup = {};
 		POINT centerOfDesktop = utility::UI::centerCoordinates(popupWindows::basePopupWindow::popupWindowWidth, popupWindows::basePopupWindow::popupWindowHeight);
@@ -117,5 +118,6 @@ namespace UI
 	{
 		EnableWindow(disableWindow, TRUE);
 		DestroyWindow(popupWindow);
+		UnregisterClassW(popupWindowClassName.data(), GetModuleHandleW(nullptr));
 	}
 }

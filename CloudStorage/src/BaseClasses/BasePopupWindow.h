@@ -10,6 +10,9 @@ namespace UI
 {
 	class BasePopupWindow
 	{
+	private:
+		const std::wstring popupWindowClassName;
+
 	public:
 		static inline constexpr int cancel = 0xFFFF;
 

@@ -11,6 +11,9 @@ namespace UI
 	class BaseScreen : public IResizable
 	{
 	private:
+		const std::wstring wrapperClassName;
+
+	private:
 		BaseScreen(const BaseScreen&) = delete;
 
 		BaseScreen& operator = (const BaseScreen&) = delete;
