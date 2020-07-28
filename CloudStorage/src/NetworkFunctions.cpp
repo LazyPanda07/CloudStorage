@@ -956,7 +956,14 @@ void asyncRegistration(UI::MainWindow& ref, streams::IOSocketStream<char>& clien
 	}
 	catch (const web::WebException&)
 	{
-		UI::serverRequestError(ref);
+		if (UI::serverRequestError(ref) == IDOK)
+		{
+			if (ref.getCurrentPopupWindow())
+			{
+				ref.getCurrentPopupWindow()->showPopupWindowVar() = false;
+			}
+			SendMessageW(ref.getMainWindow(), UI::events::deletePopupWindowE, NULL, NULL);
+		}
 		return;
 	}
 
@@ -966,7 +973,14 @@ void asyncRegistration(UI::MainWindow& ref, streams::IOSocketStream<char>& clien
 	}
 	catch (const web::WebException&)
 	{
-		UI::serverResponseError(ref);
+		if (UI::serverResponseError(ref) == IDOK)
+		{
+			if (ref.getCurrentPopupWindow())
+			{
+				ref.getCurrentPopupWindow()->showPopupWindowVar() = false;
+			}
+			SendMessageW(ref.getMainWindow(), UI::events::deletePopupWindowE, NULL, NULL);
+		}
 		return;
 	}
 

@@ -44,6 +44,7 @@ namespace UI
 
 		virtual HWND getWrapper() const final;
 
+		//TODO: unregister class
 		virtual ~BaseScreen();
 	};
 }
