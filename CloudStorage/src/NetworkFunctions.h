@@ -26,6 +26,6 @@ void createFolder(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStre
 
 void exitFromApplication(UI::MainWindow& ref, streams::IOSocketStream<char>& clientSream);
 
-std::tuple<std::wstring, std::wstring> authorization(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream);
+void authorization(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, std::wstring& login, std::wstring& password, bool& isCancel);
 
 void registration(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, std::wstring& login, std::wstring& password, bool& isCancel);

@@ -376,17 +376,7 @@ LRESULT __stdcall MainWindowProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM
 			break;
 
 		case UI::buttons::authorization:
-			//TODO: make authorization async
-			tie(login, password) = authorization(*ptr, clientStream);
-
-			if (login.size())
-			{
-				initCloudStorageScreen(*ptr);
-
-				ptr->getCurrentScreen()->pubShow();
-
-				SendMessageW(ptr->getMainWindow(), UI::events::getFilesE, NULL, NULL);
-			}
+			authorization(*ptr, clientStream, login, password, isCancel);
 
 			break;
 

@@ -37,6 +37,8 @@ void asyncRemoveFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientS
 
 void asyncRegistration(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, wstring& login, wstring& password, bool& isCancel);
 
+void asyncAuthorization(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, wstring& login, wstring& password, bool& isCancel);
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 void setPath(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, string&& path, vector<db::fileDataRepresentation>& fileNames, bool& isCancel);
@@ -196,71 +198,11 @@ void exitFromApplication(UI::MainWindow& ref, streams::IOSocketStream<char>& cli
 	}
 }
 
-tuple<wstring, wstring> authorization(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream)
+void authorization(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, wstring& login, wstring& password, bool& isCancel)
 {
-	wstring wLogin;
-	wstring wPassword;
-	string response;
-	HWND authorizationLoginEdit;
-	HWND authorizationPasswordEdit;
+	initWaitResponsePopupWindow(ref);
 
-	authorizationLoginEdit = ref.getAuthorizationLoginEdit();
-	authorizationPasswordEdit = ref.getAuthorizationPasswordEdit();
-
-	wLogin.resize(GetWindowTextLengthW(authorizationLoginEdit));
-	wPassword.resize(GetWindowTextLengthW(authorizationPasswordEdit));
-
-	GetWindowTextW(authorizationLoginEdit, wLogin.data(), wLogin.size() + 1);
-	GetWindowTextW(authorizationPasswordEdit, wPassword.data(), wPassword.size() + 1);
-
-	string body = "login=" + utility::conversion::to_string(wLogin) + "&" + "password=" + utility::conversion::to_string(wPassword);
-
-	string request = web::HTTPBuilder().postRequest().headers
-	(
-		requestType::accountType, accountRequests::authorization,
-		"Content-Length", body.size()
-	).build(&body);
-
-	utility::web::insertSizeHeaderToHTTPMessage(request);
-
-	try
-	{
-		clientStream << request;
-	}
-	catch (const web::WebException&)
-	{
-		UI::serverRequestError(ref);
-		return { wstring(), wstring() };
-	}
-
-	try
-	{
-		clientStream >> response;
-	}
-	catch (const web::WebException&)
-	{
-		UI::serverResponseError(ref);
-		return { wstring(), wstring() };
-	}
-
-	web::HTTPParser parser(response);
-
-	if (parser.getHeaders().at("Error") == "0")
-	{
-		return { wLogin, wPassword };
-	}
-	else
-	{
-		if (authorizationLoginEdit && authorizationPasswordEdit)
-		{
-			SetWindowTextW(authorizationLoginEdit, L"");
-			SetWindowTextW(authorizationPasswordEdit, L"");
-		}
-
-		MessageBoxW(ref.getMainWindow(), utility::conversion::to_wstring(parser.getBody()).data(), L"Ошибка", MB_OK);
-
-		return { wstring(), wstring() };
-	}
+	thread(asyncAuthorization, std::ref(ref), std::ref(clientStream), std::ref(login), std::ref(password), std::ref(isCancel)).detach();
 }
 
 void registration(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, wstring& login, wstring& password, bool& isCancel)
@@ -988,8 +930,8 @@ void asyncRegistration(UI::MainWindow& ref, streams::IOSocketStream<char>& clien
 
 	if (parser.getHeaders().at("Error") == "0")
 	{
-		login = wLogin;
-		password = wPassword;
+		login = move(wLogin);
+		password = move(wPassword);
 
 		SendMessageW(ref.getMainWindow(), UI::events::initCloudStorageScreenE, NULL, NULL);
 	}
@@ -1000,6 +942,104 @@ void asyncRegistration(UI::MainWindow& ref, streams::IOSocketStream<char>& clien
 		SetWindowTextW(registrationLoginEdit, L"");
 		SetWindowTextW(registrationPasswordEdit, L"");
 		SetWindowTextW(registrationRepeatPasswordEdit, L"");
+
+		if (ref.getCurrentPopupWindow())
+		{
+			ok = MessageBoxW(ref.getPopupWindow(), utility::conversion::to_wstring(parser.getBody()).data(), L"Ошибка", MB_OK);
+		}
+		else
+		{
+			ok = MessageBoxW(ref.getMainWindow(), utility::conversion::to_wstring(parser.getBody()).data(), L"Ошибка", MB_OK);
+		}
+
+		if (ok == IDOK)
+		{
+			SendMessageW(ref.getMainWindow(), UI::events::deletePopupWindowE, NULL, NULL);
+		}
+	}
+}
+
+void asyncAuthorization(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, wstring& login, wstring& password, bool& isCancel)
+{
+	wstring wLogin;
+	wstring wPassword;
+	string response;
+	HWND authorizationLoginEdit;
+	HWND authorizationPasswordEdit;
+	isCancel = false;
+
+	authorizationLoginEdit = ref.getAuthorizationLoginEdit();
+	authorizationPasswordEdit = ref.getAuthorizationPasswordEdit();
+
+	wLogin.resize(GetWindowTextLengthW(authorizationLoginEdit));
+	wPassword.resize(GetWindowTextLengthW(authorizationPasswordEdit));
+
+	GetWindowTextW(authorizationLoginEdit, wLogin.data(), wLogin.size() + 1);
+	GetWindowTextW(authorizationPasswordEdit, wPassword.data(), wPassword.size() + 1);
+
+	string body = "login=" + utility::conversion::to_string(wLogin) + "&" + "password=" + utility::conversion::to_string(wPassword);
+
+	string request = web::HTTPBuilder().postRequest().headers
+	(
+		requestType::accountType, accountRequests::authorization,
+		"Content-Length", body.size()
+	).build(&body);
+
+	utility::web::insertSizeHeaderToHTTPMessage(request);
+
+	if (isCancel)
+	{
+		if (ref.getCurrentPopupWindow())
+		{
+			ref.getCurrentPopupWindow()->showPopupWindowVar() = false;
+		}
+		return;
+	}
+
+	try
+	{
+		clientStream << request;
+	}
+	catch (const web::WebException&)
+	{
+		UI::serverRequestError(ref);
+		return;
+	}
+
+	try
+	{
+		clientStream >> response;
+	}
+	catch (const web::WebException&)
+	{
+		UI::serverResponseError(ref);
+		return;
+	}
+
+	if (isCancel)
+	{
+		if (ref.getCurrentPopupWindow())
+		{
+			ref.getCurrentPopupWindow()->showPopupWindowVar() = false;
+		}
+		return;
+	}
+
+	web::HTTPParser parser(response);
+
+	if (parser.getHeaders().at("Error") == "0")
+	{
+		login = move(wLogin);
+		password = move(wPassword);
+
+		SendMessageW(ref.getMainWindow(), UI::events::initCloudStorageScreenE, NULL, NULL);
+	}
+	else
+	{
+		int ok;
+
+		SetWindowTextW(authorizationLoginEdit, L"");
+		SetWindowTextW(authorizationPasswordEdit, L"");
 
 		if (ref.getCurrentPopupWindow())
 		{
