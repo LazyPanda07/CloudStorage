@@ -21,6 +21,8 @@ inline constexpr std::string_view customHTTPHeaderSize = "Total-HTTP-Message-Siz
 inline constexpr std::string_view dataDelimiter = "/";
 inline constexpr std::string_view dataPartDelimiter = "|";
 
+inline constexpr int maxFilesFromExplorer = 10;
+
 namespace requestType
 {
 	inline const std::string accountType = "Account request";

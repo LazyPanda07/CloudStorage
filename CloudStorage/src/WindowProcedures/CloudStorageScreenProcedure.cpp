@@ -2,8 +2,13 @@
 
 #include "CloudStorageScreenProcedure.h"
 #include "../UIConstants.h"
+#include "Constants.h"
 
 #include <CommCtrl.h>
+
+using namespace std;
+
+void getFilesFromExplorer(HWND mainWindow);
 
 LRESULT __stdcall CloudStorageScreenProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 {
@@ -46,7 +51,7 @@ LRESULT __stdcall CloudStorageScreenProcedure(HWND hwnd, UINT msg, WPARAM wparam
 			break;
 
 		case UI::buttons::uploadFiles:
-			SendMessageW(GetParent(hwnd), WM_COMMAND, UI::buttons::uploadFiles, NULL);
+			getFilesFromExplorer(GetParent(hwnd));
 
 			break;
 		}
@@ -107,4 +112,54 @@ LRESULT __stdcall CloudStorageScreenProcedure(HWND hwnd, UINT msg, WPARAM wparam
 	default:
 		return DefWindowProcW(hwnd, msg, wparam, lparam);
 	}
+}
+
+void getFilesFromExplorer(HWND mainWindow)
+{
+	wstring fileNames;
+	vector<wstring> paths;
+
+	fileNames.resize(FILENAME_MAX * maxFilesFromExplorer);
+
+	OPENFILENAMEW file = {};
+
+	file.lStructSize = sizeof(file);
+	file.hwndOwner = mainWindow;
+	file.lpstrFilter = L"Все файлы\0*.*\0\0";
+	file.nFilterIndex = 1;
+	file.lpstrFile = fileNames.data();
+	file.nMaxFile = fileNames.size();
+	file.Flags = OFN_ALLOWMULTISELECT | OFN_FILEMUSTEXIST | OFN_PATHMUSTEXIST | OFN_EXPLORER;
+
+	GetOpenFileNameW(&file);
+
+	wstring tem;
+	wstring pathToFolder;
+
+	for (size_t i = 0; i < fileNames.size(); i++)
+	{
+		if (fileNames[i] == L'\0')
+		{
+			if (i == fileNames.size() - 1 || fileNames[i + 1] == L'\0')
+			{
+				break;
+			}
+			else if (pathToFolder.empty())
+			{
+				pathToFolder = move(tem) + L'\\';
+			}
+			else
+			{
+				paths.push_back(pathToFolder + move(tem));
+			}
+		}
+		else
+		{
+			tem += fileNames[i];
+		}
+	}
+
+	paths.push_back(move(pathToFolder) + move(tem));
+
+	SendMessageW(mainWindow, UI::events::uploadFileE, reinterpret_cast<WPARAM>(&paths), NULL);
 }

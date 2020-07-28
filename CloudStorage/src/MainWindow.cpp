@@ -414,10 +414,6 @@ LRESULT __stdcall MainWindowProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM
 
 			break;
 
-		case UI::buttons::uploadFiles:
-
-			break;
-
 		case UI::buttons::back:
 			prevFolder(*ptr, clientStream, currentPath,fileNames, isCancel);
 

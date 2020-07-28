@@ -40,7 +40,6 @@ namespace UI
 		//showPopupWindow does nothing
 		virtual const bool& showPopupWindowVar() const final;
 
-		//TODO: unregister class
 		virtual ~BasePopupWindow();
 	};
 }
