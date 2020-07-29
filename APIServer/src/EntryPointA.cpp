@@ -92,7 +92,7 @@ int main(int argc, char** argv)
 
 void showAllCommands()
 {
-	const static string commandsList = "Список доступных команд\n";
+	const static string commandsList = "Список доступных команд APIServer\n";
 
 	HANDLE console = GetStdHandle(STD_OUTPUT_HANDLE);
 	CONSOLE_SCREEN_BUFFER_INFO consoleInfo;

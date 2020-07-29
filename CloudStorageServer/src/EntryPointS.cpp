@@ -9,18 +9,23 @@
 
 using namespace std;
 
+void showAllCommands();
+
 int main(int argc, char** argv)
 {
 	Log::init();
 	SetConsoleOutputCP(1251);
+	SetConsoleCP(1251);
 
 	utility::INIParser parser(settingsFile);
 
 	web::CloudStorageServer::setCloudStorageServerPort(parser.getKeyValue("CloudStorageServer", "ServerPort"));
 
+	showAllCommands();
+
 	try
 	{
-		web::CloudStorageServer server;	//TODO: add user interface
+		web::CloudStorageServer server;
 		string command;
 
 		server.start();
@@ -29,7 +34,35 @@ int main(int argc, char** argv)
 		{
 			cin >> command;
 
-
+			if (command == "cls")
+			{
+				system("cls");
+				showAllCommands();
+			}
+			else if (command == "cls_all")
+			{
+				system("cls");
+			}
+			else if (command == "start")
+			{
+				server.start();
+			}
+			else if (command == "stop")
+			{
+				server.stop();
+			}
+			else if (command == "state")
+			{
+				cout << (server.serverState() ? "Сервер работает" : "Сервер не работает") << endl;
+			}
+			else if (command == "help")
+			{
+				showAllCommands();
+			}
+			else
+			{
+				cout << "Неизвестная команда - " << command << endl;
+			}
 		}
 
 	}
@@ -38,7 +71,29 @@ int main(int argc, char** argv)
 		cout << e.what() << endl;
 	}
 
-
-
 	return 0;
+}
+
+void showAllCommands()
+{
+	const static string commandsList = "Список доступных команд CloudStorageServer\n";
+
+	HANDLE console = GetStdHandle(STD_OUTPUT_HANDLE);
+	CONSOLE_SCREEN_BUFFER_INFO consoleInfo;
+
+	GetConsoleScreenBufferInfo(console, &consoleInfo);
+	SHORT width = consoleInfo.srWindow.Right - consoleInfo.srWindow.Left + 1;
+
+	COORD pos = { (width - commandsList.size()) / 2 , consoleInfo.dwCursorPosition.Y };
+
+	SetConsoleCursorPosition(console, pos);
+
+	WriteConsoleA(console, commandsList.data(), commandsList.size(), nullptr, NULL);
+
+	cout << "cls - Очистить консоль" << endl
+		<< "cls_all - Полностью очистить консоль" << endl
+		<< "start - Запуск сервера" << endl
+		<< "stop - Сервер перестает принимать соединения, но текущие соединения остаются" << endl
+		<< "state - Текущее состояние сервера" << endl
+		<< "help - Список команд" << endl;
 }
