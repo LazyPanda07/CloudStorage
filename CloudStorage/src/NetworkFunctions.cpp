@@ -29,8 +29,6 @@ void asyncUploadFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientS
 
 void asyncDownloadFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, const wstring& fileName, intmax_t fileSize, bool& isCancel);
 
-void asyncGetFiles(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, vector<db::fileDataRepresentation>& fileNames, bool showError, bool& isCancel);
-
 void asyncReconnect(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, string&& currentPath, const wstring& login, const wstring& password, vector<db::fileDataRepresentation>& fileNames, bool& isCancel);
 
 void asyncRemoveFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, vector<db::fileDataRepresentation>& fileNames, bool& isCancel);
@@ -44,25 +42,6 @@ void asyncAuthorization(UI::MainWindow& ref, streams::IOSocketStream<char>& clie
 void setPath(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, string&& path, vector<db::fileDataRepresentation>& fileNames, bool& isCancel);
 
 void removeFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, const wstring& fileName, bool& isCancel);
-
-void getFiles(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, vector<db::fileDataRepresentation>& fileNames, bool showError, bool& isCancel, bool isDetach)
-{
-	if (isDetach)
-	{
-		initWaitResponsePopupWindow(ref);
-	}
-
-	thread otherThread(asyncGetFiles, std::ref(ref), std::ref(clientStream), std::ref(fileNames), showError, std::ref(isCancel));
-
-	if (isDetach)
-	{
-		otherThread.detach();
-	}
-	else
-	{
-		otherThread.join();
-	}
-}
 
 void uploadFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, const wstring& filePath, vector<db::fileDataRepresentation>& fileNames, bool& isCancel)
 {
@@ -613,143 +592,6 @@ void asyncDownloadFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clien
 			SendMessageW(ref.getMainWindow(), UI::events::deletePopupWindowE, NULL, NULL);
 			SendMessageW(ref.getMainWindow(), UI::events::multipleDownloadE, NULL, NULL);
 		}
-	}
-}
-
-void asyncGetFiles(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, vector<db::fileDataRepresentation>& fileNames, bool showError, bool& isCancel)
-{
-	if (ref.getCurrentPopupWindow())
-	{
-		static_cast<UI::WaitResponsePopupWindow*>(ref.getCurrentPopupWindow())->startAnimateProgressBar();
-	}
-
-	utility::ClientTime& instance = utility::ClientTime::get();
-	string request = web::HTTPBuilder().postRequest().headers
-	(
-		requestType::filesType, filesRequests::showAllFilesInFolder
-	).build();
-	string response;
-	int ok;
-
-	isCancel = false;
-
-	fileNames.clear();
-
-	utility::web::insertSizeHeaderToHTTPMessage(request);
-
-	if (isCancel)
-	{
-		if (ref.getCurrentPopupWindow())
-		{
-			ref.getCurrentPopupWindow()->showPopupWindowVar() = false;
-		}
-		return;
-	}
-
-	try
-	{
-		clientStream << request;
-	}
-	catch (const web::WebException&)
-	{
-		if (UI::serverRequestError(ref) == IDOK)
-		{
-			SendMessageW(ref.getMainWindow(), UI::events::deletePopupWindowE, NULL, NULL);
-		}
-
-		return;
-	}
-
-	try
-	{
-		clientStream >> response;
-	}
-	catch (const web::WebException&)
-	{
-		if (UI::serverResponseError(ref) == IDOK)
-		{
-			SendMessageW(ref.getMainWindow(), UI::events::deletePopupWindowE, NULL, NULL);
-		}
-
-		return;
-	}
-
-	if (isCancel)
-	{
-		if (ref.getCurrentPopupWindow())
-		{
-			ref.getCurrentPopupWindow()->showPopupWindowVar() = false;
-		}
-		return;
-	}
-
-	web::HTTPParser parser(response);
-	const string& error = parser.getHeaders().at("Error");
-	const string& body = parser.getBody();
-
-	if (ref.getCurrentPopupWindow())
-	{
-		static_cast<UI::WaitResponsePopupWindow*>(ref.getCurrentPopupWindow())->stopAnimateProgressBar();
-	}
-
-	if (error == "0")
-	{
-		array<string, 6> tem;	//each index equals member position in fileData struct
-		vector<db::fileData> data;
-		size_t curIndex = 0;
-
-		for (const auto& i : body)
-		{
-			if (i == dataDelimiter[0])
-			{
-				fileNames.emplace_back
-				(
-					utility::conversion::to_wstring(tem[0]),
-					utility::conversion::to_wstring(tem[1]),
-					utility::conversion::to_wstring(tem[2]),
-					instance.convertToLocal(tem[3]),
-					instance.convertToLocal(tem[4]),
-					stoul(tem[5])
-				);
-
-				curIndex = 0;
-
-				for (auto& i : tem)
-				{
-					i.clear();
-				}
-			}
-			else if (i == dataPartDelimiter[0])
-			{
-				curIndex++;
-			}
-			else
-			{
-				tem[curIndex] += i;
-			}
-		}
-	}
-
-	updateColumns(ref, fileNames);
-
-	if (error == "1" && showError)
-	{
-		ok = MessageBoxW
-		(
-			ref.getPopupWindow(),
-			utility::conversion::to_wstring(body).data(),
-			L"Œ¯Ë·Í‡",
-			MB_OK
-		);
-	}
-	else
-	{
-		ok = IDOK;
-	}
-
-	if (ok == IDOK)
-	{
-		SendMessageW(ref.getMainWindow(), UI::events::deletePopupWindowE, NULL, NULL);
 	}
 }
 

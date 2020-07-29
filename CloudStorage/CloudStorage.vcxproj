@@ -311,6 +311,7 @@ COPY /Y $(ProjectDir)settings.ini $(SolutionDir)$(Configuration)-$(Platform)\$(P
     <ClCompile Include="src\BaseClasses\BaseScreen.cpp" />
     <ClCompile Include="src\ClientTime.cpp" />
     <ClCompile Include="src\ErrorHandling.cpp" />
+    <ClCompile Include="src\getFiles.cpp" />
     <ClCompile Include="src\NetworkFunctions.cpp" />
     <ClCompile Include="src\PopupWindows\DownloadFilePopupWindow.cpp" />
     <ClCompile Include="src\PopupWindows\PopupWindowFunctions.cpp" />
@@ -339,6 +340,7 @@ COPY /Y $(ProjectDir)settings.ini $(SolutionDir)$(Configuration)-$(Platform)\$(P
     <ClInclude Include="src\BaseClasses\BaseScreen.h" />
     <ClInclude Include="src\ClientTime.h" />
     <ClInclude Include="src\ErrorHandling.h" />
+    <ClInclude Include="src\getFiles.h" />
     <ClInclude Include="src\HTTPNetwork.h" />
     <ClInclude Include="src\MainWindow.h" />
     <ClInclude Include="src\NetworkFunctions.h" />
