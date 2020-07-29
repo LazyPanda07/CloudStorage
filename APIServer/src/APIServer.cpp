@@ -27,7 +27,7 @@ namespace web
 		streams::IOSocketStream<char> dataBaseStream(new buffers::IOSocketBuffer<char>(new DataBaseNetwork()));
 		string HTTPRequest;
 
-		clients.insert(this_thread::get_id(), getIp(addr));
+		clients.insert(this_thread::get_id(), getIp(addr), clientSocket);
 
 		while (true)
 		{
@@ -163,7 +163,7 @@ namespace web
 		APIServerPort = move(port);
 	}
 
-	vector<pair<thread::id, string>> APIServer::getClients() noexcept
+	vector<pair<thread::id, clientData>> APIServer::getClients() noexcept
 	{
 		return clients.getClients();
 	}

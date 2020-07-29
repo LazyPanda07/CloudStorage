@@ -21,7 +21,7 @@ namespace web
 
 		static void setAPIServerPort(std::string&& port) noexcept;
 
-		std::vector<std::pair<std::thread::id, std::string>> getClients() noexcept;
+		std::vector<std::pair<std::thread::id, clientData>> getClients() noexcept;
 
 		~APIServer() = default;
 	};
