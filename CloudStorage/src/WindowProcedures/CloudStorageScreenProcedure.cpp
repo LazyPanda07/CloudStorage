@@ -82,8 +82,21 @@ LRESULT __stdcall CloudStorageScreenProcedure(HWND hwnd, UINT msg, WPARAM wparam
 
 			if (listViewHdr->iItem != -1)
 			{
-				//TODO: popup menu for listview element
+				if (popupMenu)
+				{
+					DestroyMenu(popupMenu);
+				}
 
+				POINT cursorPos;
+
+				popupMenu = CreatePopupMenu();
+
+				GetCursorPos(&cursorPos);
+
+				InsertMenuW(popupMenu, -1, MF_BYPOSITION | MF_STRING, UI::buttons::download, L"Скачать");
+				InsertMenuW(popupMenu, -1, MF_BYPOSITION | MF_STRING, UI::buttons::remove, L"Удалить");
+
+				TrackPopupMenu(popupMenu, TPM_TOPALIGN | TPM_LEFTALIGN, cursorPos.x, cursorPos.y, NULL, hwnd, nullptr);
 			}
 			else
 			{
