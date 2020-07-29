@@ -8,7 +8,7 @@ using namespace std;
 
 namespace web
 {
-	void FilesNetwork::log(string&& message) noexcept
+	void FilesNetwork::log(string&& message, any&& data) noexcept
 	{
 		Log::error(move(message));
 	}

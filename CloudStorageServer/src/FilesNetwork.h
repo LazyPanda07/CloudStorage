@@ -7,7 +7,7 @@ namespace web
 	class FilesNetwork : public Network<char>
 	{
 	private:
-		void log(std::string&& message) noexcept override;
+		void log(std::string&& message, std::any&& data = "") noexcept override;
 
 	public:
 		FilesNetwork(SOCKET clientSocket);

@@ -7,7 +7,7 @@ using namespace std;
 
 namespace web
 {
-	void DataBaseNetwork::log(string&& message) noexcept
+	void DataBaseNetwork::log(string&& message, any&& data) noexcept
 	{
 		Log::error(move(message));
 	}

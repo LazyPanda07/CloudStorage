@@ -9,7 +9,7 @@ using namespace std;
 
 namespace web
 {
-	void HTTPNetwork::log(string&& message) noexcept
+	void HTTPNetwork::log(string&& message, any&& data) noexcept
 	{
 		Log::error(move(message));
 	}

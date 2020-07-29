@@ -7,7 +7,7 @@ namespace web
 	class HTTPNetwork : public Network<char>
 	{
 	private:
-		void log(std::string&& message) noexcept override;
+		void log(std::string&& message, std::any&& data = "") noexcept override;
 
 		int sendData(const dataContainer& data) override;
 
