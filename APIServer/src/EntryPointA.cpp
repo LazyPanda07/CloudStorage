@@ -48,7 +48,7 @@ int main(int argc, char** argv)
 
 				for (const auto& i : clients)
 				{
-					cout << i.first << "	(" << i.second.ip << ", " << i.second.clientSocket << ')' << endl;
+					cout << i.first << "	- " << i.second << endl;
 				}
 			}
 			else if (command == "cls")
@@ -75,6 +75,15 @@ int main(int argc, char** argv)
 			else if (command == "help")
 			{
 				showAllCommands();
+			}
+			else if (command == "disconnect")
+			{
+				string ip;
+
+				cout << "Введите ip адрес клиента: ";
+				cin >> ip;
+
+				server.pubDisconnect(ip);
 			}
 			else
 			{
@@ -106,7 +115,8 @@ void showAllCommands()
 
 	WriteConsoleA(console, commandsList.data(), commandsList.size(), nullptr, NULL);
 
-	cout << "clients - Список подключений в формате ид потока - (ip адрес, сокет)" << endl
+	cout << "clients - Список подключений в формате ip адрес - сокет" << endl
+		<< "disconnect - Отключает выбранного пользователя по его ip адресу" << endl
 		<< "cls - Очистить консоль" << endl
 		<< "cls_all - Полностью очистить консоль" << endl
 		<< "start - Запуск сервера" << endl

@@ -316,7 +316,6 @@ COPY /Y $(ProjectDir)settings.ini $(SolutionDir)$(Configuration)-$(Platform)\$(P
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\APIServer.cpp" />
-    <ClCompile Include="src\Clients.cpp" />
     <ClCompile Include="src\DataBaseNetwork.cpp" />
     <ClCompile Include="src\EntryPointA.cpp" />
     <ClCompile Include="src\FilesNetwork.cpp" />
@@ -329,7 +328,6 @@ COPY /Y $(ProjectDir)settings.ini $(SolutionDir)$(Configuration)-$(Platform)\$(P
     <ClInclude Include="src\FilesNetwork.h" />
     <ClInclude Include="src\HTTPNetwork.h" />
     <ClInclude Include="src\NetworkFunctions.h" />
-    <ClInclude Include="src\Clients.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\BaseTCPServer\BaseTCPServer.vcxproj">

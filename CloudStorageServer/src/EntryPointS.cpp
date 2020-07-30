@@ -34,7 +34,16 @@ int main(int argc, char** argv)
 		{
 			cin >> command;
 
-			if (command == "cls")
+			if (command == "clients")
+			{
+				auto clients = server.getClients();
+
+				for (const auto& i : clients)
+				{
+					cout << i.first << "	- " << i.second << endl;
+				}
+			}
+			else if (command == "cls")
 			{
 				system("cls");
 				showAllCommands();
@@ -91,6 +100,7 @@ void showAllCommands()
 	WriteConsoleA(console, commandsList.data(), commandsList.size(), nullptr, NULL);
 
 	cout << "cls - Очистить консоль" << endl
+		<< "clients - Список подключений в формате ip адрес - сокет" << endl
 		<< "cls_all - Полностью очистить консоль" << endl
 		<< "start - Запуск сервера" << endl
 		<< "stop - Сервер перестает принимать соединения, но текущие соединения остаются" << endl
