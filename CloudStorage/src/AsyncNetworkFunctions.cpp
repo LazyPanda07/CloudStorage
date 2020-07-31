@@ -312,7 +312,7 @@ void asyncDownloadFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clien
 		}
 
 		web::HTTPParser parser(response);
-		const map<string, string>& headers = parser.getHeaders();
+		const unordered_map<string, string>& headers = parser.getHeaders();
 		auto it = headers.find("Total-File-Size");
 		lastPacket = it != end(headers);
 		const string& data = parser.getBody();

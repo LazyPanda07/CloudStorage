@@ -35,7 +35,7 @@ namespace web
 				if (checkHTTP(HTTPRequest))
 				{
 					HTTPParser parser(HTTPRequest);
-					const map<string, string>& headers = parser.getHeaders();
+					const unordered_map<string, string>& headers = parser.getHeaders();
 					auto it = headers.find(requestType::accountType);
 
 					if (it != end(headers))

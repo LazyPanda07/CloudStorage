@@ -52,7 +52,7 @@ void showAllFilesInFolder(streams::IOSocketStream<char>& clientStream, streams::
 	}
 }
 
-void uploadFile(streams::IOSocketStream<char>& clientStream, streams::IOSocketStream<char>& filesStream, streams::IOSocketStream<char>& dataBaseStream, const string& data, const map<string, string>& headers)
+void uploadFile(streams::IOSocketStream<char>& clientStream, streams::IOSocketStream<char>& filesStream, streams::IOSocketStream<char>& dataBaseStream, const string& data, const unordered_map<string, string>& headers)
 {
 	const string& fileName = headers.at("File-Name");
 	intmax_t offset = stoull(headers.at("Range"));
@@ -109,7 +109,7 @@ void uploadFile(streams::IOSocketStream<char>& clientStream, streams::IOSocketSt
 	}
 }
 
-void downloadFile(streams::IOSocketStream<char>& clientStream, streams::IOSocketStream<char>& filesStream, const map<string, string>& headers)
+void downloadFile(streams::IOSocketStream<char>& clientStream, streams::IOSocketStream<char>& filesStream, const unordered_map<string, string>& headers)
 {
 	const string& fileName = headers.at("File-Name");
 	bool isLast;
@@ -148,7 +148,7 @@ void downloadFile(streams::IOSocketStream<char>& clientStream, streams::IOSocket
 	}
 }
 
-void removeFile(streams::IOSocketStream<char>& clientStream, streams::IOSocketStream<char>& filesStream, streams::IOSocketStream<char>& dataBaseStream, const map<string, string>& headers)
+void removeFile(streams::IOSocketStream<char>& clientStream, streams::IOSocketStream<char>& filesStream, streams::IOSocketStream<char>& dataBaseStream, const unordered_map<string, string>& headers)
 {
 	const string& fileName = headers.at("File-Name");
 	bool error;
@@ -186,7 +186,7 @@ void removeFile(streams::IOSocketStream<char>& clientStream, streams::IOSocketSt
 	}
 }
 
-void cancelUploadFile(streams::IOSocketStream<char>& clientStream, streams::IOSocketStream<char>& filesStream, const map<string, string>& headers)
+void cancelUploadFile(streams::IOSocketStream<char>& clientStream, streams::IOSocketStream<char>& filesStream, const unordered_map<string, string>& headers)
 {
 	const string& fileName = headers.at("File-Name");
 	string response = web::HTTPBuilder().responseCode(web::ResponseCodes::ok).headers

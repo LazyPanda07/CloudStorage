@@ -81,7 +81,7 @@ void removeFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream
 	}
 
 	web::HTTPParser parser(response);
-	const map<string, string>& headers = parser.getHeaders();
+	const unordered_map<string, string>& headers = parser.getHeaders();
 
 	if (headers.at("Error") == "0")
 	{

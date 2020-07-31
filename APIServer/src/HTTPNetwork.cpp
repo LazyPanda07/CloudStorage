@@ -55,7 +55,7 @@ namespace web
 				if (totalReceive > 25 && !size)
 				{
 					HTTPParser parser(data);
-					const map<string, string>& headers = parser.getHeaders();
+					const unordered_map<string, string>& headers = parser.getHeaders();
 
 					size = stoi(headers.at("Total-HTTP-Message-Size"));
 
@@ -127,7 +127,7 @@ namespace web
 				if (totalReceive > 25 && !size)
 				{
 					HTTPParser parser(data);
-					const map<string, string>& headers = parser.getHeaders();
+					const unordered_map<string, string>& headers = parser.getHeaders();
 
 					size = stoi(headers.at("Total-HTTP-Message-Size"));
 
