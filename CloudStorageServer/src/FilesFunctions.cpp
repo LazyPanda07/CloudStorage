@@ -39,9 +39,9 @@ void uploadFile(streams::IOSocketStream<char>& clientStream, const filesystem::p
 			clientStream << filesResponses::successUploadFile;
 
 			SHFILEINFOW extensionInfo = {};
-			
+
 			SHGetFileInfoW(filesystem::path(currentPath).append(fileName).wstring().data(), NULL, &extensionInfo, sizeof(extensionInfo), SHGFI_TYPENAME);
-			
+
 			string extension
 			(
 				utility::conversion::to_string
@@ -122,7 +122,7 @@ void cancelOperation(streams::IOSocketStream<char>& clientStream, const filesyst
 {
 	string fileName;
 	string operationType;
-	
+
 	clientStream >> fileName;
 	clientStream >> operationType;
 
@@ -188,6 +188,8 @@ void setPath(streams::IOSocketStream<char>& clientStream, std::filesystem::path&
 				tem += newPath[i];
 			}
 		}
+
+		currentPath.append(move(tem));
 	}
 
 	clientStream << ok;
