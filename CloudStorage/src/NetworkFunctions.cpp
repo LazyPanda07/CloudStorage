@@ -67,37 +67,9 @@ void prevFolder(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream
 
 void createFolder(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, vector<db::fileDataRepresentation>& fileNames, bool& isCancel)
 {
-	wstring wFolderName;
-	HWND enterFolderNameEdit = ref.getEnterFolderNameEdit();
-	string request;
-	string body;
+	initWaitResponsePopupWindow(ref);
 
-	wFolderName.resize(GetWindowTextLengthW(enterFolderNameEdit));
-
-	GetWindowTextW(enterFolderNameEdit, wFolderName.data(), wFolderName.size() + 1);
-
-	body = "folder=" + utility::conversion::to_string(wFolderName);
-
-	request = web::HTTPBuilder().postRequest().headers
-	(
-		requestType::filesType, filesRequests::createFolder,
-		"Content-Length", body.size()
-	).build(&body);
-
-	utility::web::insertSizeHeaderToHTTPMessage(request);
-
-	try
-	{
-		clientStream << request;
-	}
-	catch (const web::WebException&)
-	{
-
-	}
-
-	SendMessageW(ref.getMainWindow(), UI::events::deletePopupWindowE, NULL, NULL);
-
-	getFiles(ref, clientStream, fileNames, true, isCancel);
+	thread(asyncCreateFolder, std::ref(ref), std::ref(clientStream), std::ref(fileNames), std::ref(isCancel)).detach();
 }
 
 void exitFromApplication(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream)
