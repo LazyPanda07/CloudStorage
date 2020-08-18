@@ -8,6 +8,7 @@
 #include "HTTPNetwork.h"
 #include "FilesNetwork.h"
 #include "DataBaseNetwork.h"
+#include "ConnectToOtherServers.h"
 
 #pragma comment (lib, "BaseTCPServer.lib")
 #pragma comment (lib, "SocketStreams.lib")
@@ -21,10 +22,14 @@ namespace web
 	void APIServer::clientConnection(SOCKET clientSocket, sockaddr addr)
 	{
 		streams::IOSocketStream<char> clientStream(new buffers::IOSocketBuffer<char>(new HTTPNetwork(clientSocket)));
-		streams::IOSocketStream<char> filesStream(new buffers::IOSocketBuffer<char>(new FilesNetwork()));
-		streams::IOSocketStream<char> dataBaseStream(new buffers::IOSocketBuffer<char>(new DataBaseNetwork()));
+		unique_ptr<streams::IOSocketStream<char>> filesStream = nullptr;
+		unique_ptr<streams::IOSocketStream<char>> dataBaseStream = nullptr;
 		string HTTPRequest;
 		const string ip = getIpV4(addr);
+
+		connectToFilesServer(filesStream);
+
+		connectToDataBaseServer(dataBaseStream);
 
 		while (true)
 		{
@@ -44,15 +49,15 @@ namespace web
 
 						if (request == accountRequests::authorization)
 						{
-							authorization(clientStream,filesStream, dataBaseStream, parser.getBody());
+							authorization(clientStream, *filesStream, *dataBaseStream, parser.getBody());
 						}
 						else if (request == accountRequests::registration)
 						{
-							registration(clientStream,filesStream, dataBaseStream, parser.getBody());
+							registration(clientStream, *filesStream, *dataBaseStream, parser.getBody());
 						}
 						else if (request == accountRequests::setLogin)
 						{
-							setLogin(filesStream, dataBaseStream, parser.getBody());
+							setLogin(*filesStream, *dataBaseStream, parser.getBody());
 						}
 					}
 					else
@@ -65,23 +70,23 @@ namespace web
 
 							if (request == filesRequests::showAllFilesInFolder)
 							{
-								showAllFilesInFolder(clientStream, dataBaseStream);
+								showAllFilesInFolder(clientStream, *dataBaseStream);
 							}
 							else if (request == filesRequests::uploadFile)
 							{
-								uploadFile(clientStream, filesStream, dataBaseStream, parser.getBody(), headers);
+								uploadFile(clientStream, *filesStream, *dataBaseStream, parser.getBody(), headers);
 							}
 							if (request == filesRequests::downloadFile)
 							{
-								downloadFile(clientStream, filesStream, headers);
+								downloadFile(clientStream, *filesStream, headers);
 							}
 							else if (request == filesRequests::removeFile)
 							{
-								removeFile(clientStream, filesStream, dataBaseStream, headers);
+								removeFile(clientStream, *filesStream, *dataBaseStream, headers);
 							}
 							else if (request == filesRequests::createFolder)
 							{
-								createFolder(filesStream, dataBaseStream, parser.getBody());
+								createFolder(*filesStream, *dataBaseStream, parser.getBody());
 							}
 						}
 						else
@@ -95,8 +100,8 @@ namespace web
 								if (request == networkRequests::exit)
 								{
 									data.erase(ip);
-									dataBaseStream << networkRequests::exit;
-									filesStream << networkRequests::exit;
+									*dataBaseStream << networkRequests::exit;
+									*filesStream << networkRequests::exit;
 									this_thread::sleep_for(0.6s);
 									return;
 								}
@@ -111,28 +116,28 @@ namespace web
 
 									if (operationType == filesRequests::uploadFile)
 									{
-										cancelUploadFile(clientStream,filesStream, headers);
+										cancelUploadFile(clientStream, *filesStream, headers);
 									}
 								}
 								else
 								{
 									it = headers.find(requestType::controlType);
-									
+
 									if (it != end(headers))
 									{
 										const string& request = it->second;
 
 										if (request == controlRequests::nextFolder)
 										{
-											nextFolder(clientStream, filesStream, dataBaseStream, parser.getBody());
+											nextFolder(clientStream, *filesStream, *dataBaseStream, parser.getBody());
 										}
 										else if (request == controlRequests::prevFolder)
 										{
-											prevFolder(clientStream, filesStream, dataBaseStream);
+											prevFolder(clientStream, *filesStream, *dataBaseStream);
 										}
 										else if (request == controlRequests::setPath)
 										{
-											setPath(clientStream, filesStream, dataBaseStream, parser.getBody());
+											setPath(clientStream, *filesStream, *dataBaseStream, parser.getBody());
 										}
 									}
 								}
