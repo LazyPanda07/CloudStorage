@@ -37,7 +37,7 @@ int downloadFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStrea
 	return id;
 }
 
-void reconnect(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, string&& currentPath, const wstring& login, const wstring& password, vector<db::fileDataRepresentation>& fileNames, bool& isCancel)
+void reconnect(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream<char>>& clientStream, string&& currentPath, const wstring& login, const wstring& password, vector<db::fileDataRepresentation>& fileNames, bool& isCancel)
 {
 	initWaitResponsePopupWindow(ref);
 
@@ -103,4 +103,11 @@ void registration(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStre
 	initWaitResponsePopupWindow(ref);
 
 	thread(asyncRegistration, std::ref(ref), std::ref(clientStream), std::ref(login), std::ref(password), std::ref(isCancel)).detach();
+}
+
+void firstConnect(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream<char>>& clientStream, bool& isCancel)
+{
+	initWaitResponsePopupWindow(ref);
+
+	thread(asyncFirstConnect, std::ref(ref), std::ref(clientStream), std::ref(isCancel)).detach();
 }

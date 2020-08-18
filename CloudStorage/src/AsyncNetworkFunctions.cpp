@@ -368,7 +368,7 @@ void asyncDownloadFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clien
 	}
 }
 
-void asyncReconnect(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, string&& currentPath, const wstring& login, const wstring& password, vector<db::fileDataRepresentation>& fileNames, bool& isCancel)
+void asyncReconnect(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream<char>>& clientStream, string&& currentPath, const wstring& login, const wstring& password, vector<db::fileDataRepresentation>& fileNames, bool& isCancel)
 {
 	isCancel = false;
 
@@ -386,25 +386,7 @@ void asyncReconnect(UI::MainWindow& ref, streams::IOSocketStream<char>& clientSt
 
 	try
 	{
-		clientStream << request;
-	}
-	catch (const web::WebException&)
-	{
-
-	}
-
-	if (isCancel)
-	{
-		if (ref.getCurrentPopupWindow())
-		{
-			ref.getCurrentPopupWindow()->showPopupWindowVar() = false;
-		}
-		return;
-	}
-
-	try
-	{
-		clientStream = streams::IOSocketStream<char>(new buffers::IOSocketBuffer<char>(new web::HTTPNetwork()));
+		clientStream = make_unique<streams::IOSocketStream<char>>(new buffers::IOSocketBuffer<char>(new web::HTTPNetwork()));
 	}
 	catch (const web::WebException&)
 	{
@@ -419,6 +401,15 @@ void asyncReconnect(UI::MainWindow& ref, streams::IOSocketStream<char>& clientSt
 		return;
 	}
 
+	try
+	{
+		(*clientStream) << request;
+	}
+	catch (const web::WebException&)
+	{
+
+	}
+
 	if (isCancel)
 	{
 		if (ref.getCurrentPopupWindow())
@@ -428,9 +419,18 @@ void asyncReconnect(UI::MainWindow& ref, streams::IOSocketStream<char>& clientSt
 		return;
 	}
 
-	setLogin(ref, clientStream, login, password);
+	if (isCancel)
+	{
+		if (ref.getCurrentPopupWindow())
+		{
+			ref.getCurrentPopupWindow()->showPopupWindowVar() = false;
+		}
+		return;
+	}
 
-	setPath(ref, clientStream, move(currentPath), fileNames, isCancel);
+	setLogin(ref, *clientStream, login, password);
+
+	setPath(ref, *clientStream, move(currentPath), fileNames, isCancel);
 }
 
 void asyncCreateFolder(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, vector<db::fileDataRepresentation>& fileNames, bool& isCancel)
@@ -727,4 +727,34 @@ void setLogin(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, 
 	{
 
 	}
+}
+
+void asyncFirstConnect(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream<char>>& clientStream, bool& isCancel)
+{
+	isCancel = false;
+
+	try
+	{
+		if (isCancel)
+		{
+			if (ref.getCurrentPopupWindow())
+			{
+				ref.getCurrentPopupWindow()->showPopupWindowVar() = false;
+			}
+			return;
+		}
+
+		clientStream = make_unique<streams::IOSocketStream<char>>(new buffers::IOSocketBuffer<char>(new web::HTTPNetwork()));
+	}
+	catch (const web::WebException&)
+	{
+		if (UI::serverRequestError(ref) == IDOK)
+		{
+			SendMessageW(ref.getMainWindow(), UI::events::deletePopupWindowE, NULL, NULL);
+		}
+
+		return;
+	}
+
+	SendMessageW(ref.getMainWindow(), UI::events::deletePopupWindowE, NULL, NULL);
 }

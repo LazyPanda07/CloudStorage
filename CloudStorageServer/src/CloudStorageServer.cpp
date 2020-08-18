@@ -34,6 +34,7 @@ namespace web
 					filesystem::create_directories(currentPath);
 				}
 
+				//TODO: if file already exists in database then delete it
 				if (request == filesRequests::uploadFile)
 				{
 					uploadFile(clientStream, currentPath);

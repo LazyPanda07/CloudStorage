@@ -328,7 +328,7 @@ namespace UI
 LRESULT __stdcall MainWindowProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 {
 #pragma region Variables
-	static streams::IOSocketStream<char> clientStream(new buffers::IOSocketBuffer<char>(new web::HTTPNetwork()));
+	static unique_ptr<streams::IOSocketStream<char>> clientStream;
 	static UI::MainWindow* ptr = nullptr;
 	static filesystem::path currentPath("Home");
 	static vector<db::fileDataRepresentation> fileNames;
@@ -361,7 +361,7 @@ LRESULT __stdcall MainWindowProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM
 		switch (wparam)
 		{
 		case UI::buttons::refresh:
-			getFiles(*ptr, clientStream, fileNames, true, isCancel);
+			getFiles(*ptr, *clientStream, fileNames, true, isCancel);
 
 			break;
 
@@ -371,12 +371,12 @@ LRESULT __stdcall MainWindowProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM
 			break;
 
 		case UI::buttons::remove:
-			removeFile(*ptr, clientStream, fileNames, isCancel);
+			removeFile(*ptr, *clientStream, fileNames, isCancel);
 
 			break;
 
 		case UI::buttons::authorization:
-			authorization(*ptr, clientStream, login, password, isCancel);
+			authorization(*ptr, *clientStream, login, password, isCancel);
 
 			break;
 
@@ -388,7 +388,7 @@ LRESULT __stdcall MainWindowProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM
 			break;
 
 		case UI::buttons::registration:
-			registration(*ptr, clientStream, login, password, isCancel);
+			registration(*ptr, *clientStream, login, password, isCancel);
 
 			break;
 
@@ -405,7 +405,7 @@ LRESULT __stdcall MainWindowProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM
 			break;
 
 		case UI::buttons::saveFolderName:
-			createFolder(*ptr, clientStream, fileNames, isCancel);
+			createFolder(*ptr, *clientStream, fileNames, isCancel);
 
 			break;
 
@@ -415,7 +415,7 @@ LRESULT __stdcall MainWindowProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM
 			break;
 
 		case UI::buttons::back:
-			prevFolder(*ptr, clientStream, currentPath,fileNames, isCancel);
+			prevFolder(*ptr, *clientStream, currentPath,fileNames, isCancel);
 
 			break;
 
@@ -429,14 +429,14 @@ LRESULT __stdcall MainWindowProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM
 
 #pragma region CustomEvents
 	case UI::events::getFilesE:
-		getFiles(*ptr, clientStream, fileNames, false, isCancel);
+		getFiles(*ptr, *clientStream, fileNames, false, isCancel);
 
 		return 0;
 
 	case UI::events::multipleUploadE:
 		if (uploadFileIndex != dragAndDropFiles.size())
 		{
-			uploadFile(*ptr, clientStream, dragAndDropFiles[uploadFileIndex++],fileNames, isCancel);
+			uploadFile(*ptr, *clientStream, dragAndDropFiles[uploadFileIndex++],fileNames, isCancel);
 		}
 
 		return 0;
@@ -444,7 +444,7 @@ LRESULT __stdcall MainWindowProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM
 	case UI::events::multipleDownloadE:
 		if (downloadFileIndex != -1)
 		{
-			downloadFileIndex = downloadFile(*ptr, clientStream, fileNames, isCancel, downloadFileIndex);
+			downloadFileIndex = downloadFile(*ptr, *clientStream, fileNames, isCancel, downloadFileIndex);
 		}
 
 		return 0;
@@ -453,19 +453,21 @@ LRESULT __stdcall MainWindowProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM
 		uploadFileIndex = 0;
 		dragAndDropFiles = move(*reinterpret_cast<vector<wstring>*>(wparam));
 
-		uploadFile(*ptr, clientStream, dragAndDropFiles[uploadFileIndex++],fileNames, isCancel);
+		uploadFile(*ptr, *clientStream, dragAndDropFiles[uploadFileIndex++],fileNames, isCancel);
 
 		return 0;
 
 	case UI::events::downloadFileE:
 		downloadFileIndex = -1;
 
-		downloadFileIndex = downloadFile(*ptr, clientStream, fileNames, isCancel, downloadFileIndex);
+		downloadFileIndex = downloadFile(*ptr, *clientStream, fileNames, isCancel, downloadFileIndex);
 
 		return 0;
 
 	case UI::events::initMainWindowPtrE:
 		ptr = reinterpret_cast<UI::MainWindow*>(wparam);
+
+		firstConnect(*ptr, clientStream, isCancel);
 
 		return 0;
 
@@ -481,7 +483,7 @@ LRESULT __stdcall MainWindowProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM
 		{
 			currentPath.append(fileNames[wparam].fileName);
 
-			nextFolder(*ptr, clientStream, fileNames[wparam].fileName, fileNames, isCancel);
+			nextFolder(*ptr, *clientStream, fileNames[wparam].fileName, fileNames, isCancel);
 		}
 		else	//file
 		{
@@ -509,7 +511,7 @@ LRESULT __stdcall MainWindowProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM
 		return 0;
 
 	case WM_DESTROY:
-		exitFromApplication(*ptr, clientStream);
+		exitFromApplication(*ptr, *clientStream);
 
 		this_thread::sleep_for(0.6s);
 

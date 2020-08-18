@@ -13,7 +13,7 @@ void uploadFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream
 
 int downloadFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, const std::vector<db::fileDataRepresentation>& fileNames, bool& isCancel, int searchId);
 
-void reconnect(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, std::string&& currentPath, const std::wstring& login, const std::wstring& password, std::vector<db::fileDataRepresentation>& fileNames, bool& isCancel);
+void reconnect(UI::MainWindow& ref, std::unique_ptr<streams::IOSocketStream<char>>& clientStream, std::string&& currentPath, const std::wstring& login, const std::wstring& password, std::vector<db::fileDataRepresentation>& fileNames, bool& isCancel);
 
 void nextFolder(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, const std::wstring& folderName, std::vector<db::fileDataRepresentation>& fileNames, bool& isCancel);
 
@@ -26,3 +26,5 @@ void exitFromApplication(UI::MainWindow& ref, streams::IOSocketStream<char>& cli
 void authorization(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, std::wstring& login, std::wstring& password, bool& isCancel);
 
 void registration(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, std::wstring& login, std::wstring& password, bool& isCancel);
+
+void firstConnect(UI::MainWindow& ref, std::unique_ptr<streams::IOSocketStream<char>>& clientStream, bool& isCancel);
