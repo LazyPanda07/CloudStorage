@@ -31,4 +31,9 @@ namespace UI
 	{
 		return customError(ref, L"Ошибка при отправке запроса на сервер", L"Ошибка соединения");
 	}
+
+	int noConnectionWithServer(MainWindow& ref)
+	{
+		return customError(ref, L"Нет соединения с сервером", L"Ошибка соединения");
+	}
 }

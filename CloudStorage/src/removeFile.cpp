@@ -15,16 +15,16 @@
 
 using namespace std;
 
-void removeFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, const wstring& fileName, bool& isCancel);
+void removeFile(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream<char>>& clientStream, const wstring& fileName, bool& isCancel);
 
-void removeFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, vector<db::fileDataRepresentation>& fileNames, bool& isCancel)
+void removeFile(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream<char>>& clientStream, vector<db::fileDataRepresentation>& fileNames, bool& isCancel)
 {
 	initWaitResponsePopupWindow(ref);
 
 	thread(asyncRemoveFile, std::ref(ref), std::ref(clientStream), std::ref(fileNames), std::ref(isCancel)).detach();
 }
 
-void asyncRemoveFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, vector<db::fileDataRepresentation>& fileNames, bool& isCancel)
+void asyncRemoveFile(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream<char>>& clientStream, vector<db::fileDataRepresentation>& fileNames, bool& isCancel)
 {
 	int id = SendMessageW(ref.getList(), LVM_GETNEXTITEM, -1, LVNI_SELECTED);
 
@@ -43,8 +43,20 @@ void asyncRemoveFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientS
 	SendMessageW(ref.getMainWindow(), UI::events::deletePopupWindowE, NULL, NULL);
 }
 
-void removeFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, const wstring& fileName, bool& isCancel)
+void removeFile(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream<char>>& clientStream, const wstring& fileName, bool& isCancel)
 {
+	if (!clientStream)
+	{
+		if (ref.getCurrentPopupWindow())
+		{
+			SendMessageW(ref.getMainWindow(), UI::events::deletePopupWindowE, NULL, NULL);
+		}
+
+		UI::noConnectionWithServer(ref);
+
+		return;
+	}
+
 	string request = web::HTTPBuilder().postRequest().headers
 	(
 		requestType::filesType, filesRequests::removeFile,
@@ -62,7 +74,7 @@ void removeFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream
 
 	try
 	{
-		clientStream << request;
+		*clientStream << request;
 	}
 	catch (const web::WebException&)
 	{
@@ -72,7 +84,7 @@ void removeFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream
 
 	try
 	{
-		clientStream >> response;
+		*clientStream >> response;
 	}
 	catch (const web::WebException&)
 	{

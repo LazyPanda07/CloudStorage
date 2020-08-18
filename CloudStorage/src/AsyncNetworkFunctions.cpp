@@ -20,9 +20,9 @@
 
 using namespace std;
 
-void setPath(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, string&& path, vector<db::fileDataRepresentation>& fileNames, bool& isCancel);
+void setPath(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream<char>>& clientStream, string&& path, vector<db::fileDataRepresentation>& fileNames, bool& isCancel);
 
-void setLogin(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, const wstring& login, const wstring& password);
+void setLogin(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream<char>>& clientStream, const wstring& login, const wstring& password);
 
 string cancelUploadFile(const string& fileName)
 {
@@ -38,8 +38,20 @@ string cancelUploadFile(const string& fileName)
 	return result;
 }
 
-string asyncFolderControlMessages(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, const string_view& controlRequest, vector<db::fileDataRepresentation>& fileNames, bool& isCancel, string&& data)
+string asyncFolderControlMessages(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream<char>>& clientStream, const string_view& controlRequest, vector<db::fileDataRepresentation>& fileNames, bool& isCancel, string&& data)
 {
+	if (!clientStream)
+	{
+		if (ref.getCurrentPopupWindow())
+		{
+			SendMessageW(ref.getMainWindow(), UI::events::deletePopupWindowE, NULL, NULL);
+		}
+
+		UI::noConnectionWithServer(ref);
+
+		return "";
+	}
+
 	string request;
 	string response;
 	string body = "folder=" + move(data);
@@ -74,7 +86,7 @@ string asyncFolderControlMessages(UI::MainWindow& ref, streams::IOSocketStream<c
 
 	try
 	{
-		clientStream << request;
+		*clientStream << request;
 	}
 	catch (const web::WebException&)
 	{
@@ -92,7 +104,7 @@ string asyncFolderControlMessages(UI::MainWindow& ref, streams::IOSocketStream<c
 
 	try
 	{
-		clientStream >> response;
+		*clientStream >> response;
 	}
 	catch (const web::WebException&)
 	{
@@ -104,8 +116,20 @@ string asyncFolderControlMessages(UI::MainWindow& ref, streams::IOSocketStream<c
 	return response;
 }
 
-void asyncUploadFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, const wstring& filePath, vector<db::fileDataRepresentation>& fileNames, bool& isCancel)
+void asyncUploadFile(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream<char>>& clientStream, const wstring& filePath, vector<db::fileDataRepresentation>& fileNames, bool& isCancel)
 {
+	if (!clientStream)
+	{
+		if (ref.getCurrentPopupWindow())
+		{
+			SendMessageW(ref.getMainWindow(), UI::events::deletePopupWindowE, NULL, NULL);
+		}
+
+		UI::noConnectionWithServer(ref);
+
+		return;
+	}
+
 	const filesystem::path file(filePath);
 	intmax_t fileSize = filesystem::file_size(file);
 
@@ -135,9 +159,9 @@ void asyncUploadFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientS
 			}
 			string cancelRequest = cancelUploadFile(file.filename().string());
 
-			clientStream << cancelRequest;
+			*clientStream << cancelRequest;
 
-			clientStream >> cancelRequest;
+			*clientStream >> cancelRequest;
 
 			SendMessageW(ref.getMainWindow(), UI::events::multipleUploadE, NULL, NULL);
 			in.close();
@@ -174,7 +198,7 @@ void asyncUploadFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientS
 
 		try
 		{
-			clientStream << message;
+			*clientStream << message;
 		}
 		catch (const web::WebException&)
 		{
@@ -195,7 +219,7 @@ void asyncUploadFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientS
 
 	try
 	{
-		clientStream >> response;
+		*clientStream >> response;
 	}
 	catch (const web::WebException&)
 	{
@@ -250,8 +274,20 @@ void asyncUploadFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientS
 	}
 }
 
-void asyncDownloadFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, const wstring& fileName, intmax_t fileSize, bool& isCancel)
+void asyncDownloadFile(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream<char>>& clientStream, const wstring& fileName, intmax_t fileSize, bool& isCancel)
 {
+	if (!clientStream)
+	{
+		if (ref.getCurrentPopupWindow())
+		{
+			SendMessageW(ref.getMainWindow(), UI::events::deletePopupWindowE, NULL, NULL);
+		}
+
+		UI::noConnectionWithServer(ref);
+
+		return;
+	}
+
 	intmax_t offset = 0;
 	intmax_t totalFileSize;
 	const string sFileName = utility::conversion::to_string(fileName);
@@ -291,7 +327,7 @@ void asyncDownloadFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clien
 
 		try
 		{
-			clientStream << request;
+			*clientStream << request;
 		}
 		catch (const web::WebException&)
 		{
@@ -302,7 +338,7 @@ void asyncDownloadFile(UI::MainWindow& ref, streams::IOSocketStream<char>& clien
 
 		try
 		{
-			clientStream >> response;
+			*clientStream >> response;
 		}
 		catch (const web::WebException&)
 		{
@@ -372,11 +408,6 @@ void asyncReconnect(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream<char
 {
 	isCancel = false;
 
-	if (ref.getCurrentPopupWindow())
-	{
-		static_cast<UI::WaitResponsePopupWindow*>(ref.getCurrentPopupWindow())->startAnimateProgressBar();
-	}
-
 	string request = web::HTTPBuilder().postRequest().headers
 	(
 		requestType::exitType, networkRequests::exit
@@ -403,7 +434,7 @@ void asyncReconnect(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream<char
 
 	try
 	{
-		(*clientStream) << request;
+		*clientStream << request;
 	}
 	catch (const web::WebException&)
 	{
@@ -428,13 +459,25 @@ void asyncReconnect(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream<char
 		return;
 	}
 
-	setLogin(ref, *clientStream, login, password);
+	setLogin(ref, clientStream, login, password);
 
-	setPath(ref, *clientStream, move(currentPath), fileNames, isCancel);
+	setPath(ref, clientStream, move(currentPath), fileNames, isCancel);
 }
 
-void asyncCreateFolder(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, vector<db::fileDataRepresentation>& fileNames, bool& isCancel)
+void asyncCreateFolder(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream<char>>& clientStream, vector<db::fileDataRepresentation>& fileNames, bool& isCancel)
 {
+	if (!clientStream)
+	{
+		if (ref.getCurrentPopupWindow())
+		{
+			SendMessageW(ref.getMainWindow(), UI::events::deletePopupWindowE, NULL, NULL);
+		}
+
+		UI::noConnectionWithServer(ref);
+
+		return;
+	}
+
 	wstring wFolderName;
 	HWND enterFolderNameEdit = ref.getEnterFolderNameEdit();
 	string request;
@@ -456,7 +499,7 @@ void asyncCreateFolder(UI::MainWindow& ref, streams::IOSocketStream<char>& clien
 
 	try
 	{
-		clientStream << request;
+		*clientStream << request;
 	}
 	catch (const web::WebException&)
 	{
@@ -468,8 +511,20 @@ void asyncCreateFolder(UI::MainWindow& ref, streams::IOSocketStream<char>& clien
 	getFiles(ref, clientStream, fileNames, true, isCancel, false);
 }
 
-void asyncRegistration(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, wstring& login, wstring& password, bool& isCancel)
+void asyncRegistration(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream<char>>& clientStream, wstring& login, wstring& password, bool& isCancel)
 {
+	if (!clientStream)
+	{
+		if (ref.getCurrentPopupWindow())
+		{
+			SendMessageW(ref.getMainWindow(), UI::events::deletePopupWindowE, NULL, NULL);
+		}
+
+		UI::noConnectionWithServer(ref);
+
+		return;
+	}
+
 	wstring wLogin;
 	wstring wPassword;
 	wstring wRepeatPassword;
@@ -539,7 +594,7 @@ void asyncRegistration(UI::MainWindow& ref, streams::IOSocketStream<char>& clien
 
 	try
 	{
-		clientStream << request;
+		*clientStream << request;
 	}
 	catch (const web::WebException&)
 	{
@@ -556,7 +611,7 @@ void asyncRegistration(UI::MainWindow& ref, streams::IOSocketStream<char>& clien
 
 	try
 	{
-		clientStream >> response;
+		*clientStream >> response;
 	}
 	catch (const web::WebException&)
 	{
@@ -604,8 +659,20 @@ void asyncRegistration(UI::MainWindow& ref, streams::IOSocketStream<char>& clien
 	}
 }
 
-void asyncAuthorization(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, wstring& login, wstring& password, bool& isCancel)
+void asyncAuthorization(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream<char>>& clientStream, wstring& login, wstring& password, bool& isCancel)
 {
+	if (!clientStream)
+	{
+		if (ref.getCurrentPopupWindow())
+		{
+			SendMessageW(ref.getMainWindow(), UI::events::deletePopupWindowE, NULL, NULL);
+		}
+
+		UI::noConnectionWithServer(ref);
+
+		return;
+	}
+
 	wstring wLogin;
 	wstring wPassword;
 	string response;
@@ -643,7 +710,7 @@ void asyncAuthorization(UI::MainWindow& ref, streams::IOSocketStream<char>& clie
 
 	try
 	{
-		clientStream << request;
+		*clientStream << request;
 	}
 	catch (const web::WebException&)
 	{
@@ -653,7 +720,7 @@ void asyncAuthorization(UI::MainWindow& ref, streams::IOSocketStream<char>& clie
 
 	try
 	{
-		clientStream >> response;
+		*clientStream >> response;
 	}
 	catch (const web::WebException&)
 	{
@@ -702,13 +769,25 @@ void asyncAuthorization(UI::MainWindow& ref, streams::IOSocketStream<char>& clie
 	}
 }
 
-void setPath(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, string&& path, vector<db::fileDataRepresentation>& fileNames, bool& isCancel)
+void setPath(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream<char>>& clientStream, string&& path, vector<db::fileDataRepresentation>& fileNames, bool& isCancel)
 {
 	asyncFolderControlMessages(ref, clientStream, controlRequests::setPath, fileNames, isCancel, move(path));
 }
 
-void setLogin(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, const wstring& login, const wstring& password)
+void setLogin(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream<char>>& clientStream, const wstring& login, const wstring& password)
 {
+	if (!clientStream)
+	{
+		if (ref.getCurrentPopupWindow())
+		{
+			SendMessageW(ref.getMainWindow(), UI::events::deletePopupWindowE, NULL, NULL);
+		}
+
+		UI::noConnectionWithServer(ref);
+
+		return;
+	}
+
 	string body = "login=" + utility::conversion::to_string(login) + "&" + "password=" + utility::conversion::to_string(password);
 
 	string request = web::HTTPBuilder().postRequest().headers
@@ -721,7 +800,7 @@ void setLogin(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, 
 
 	try
 	{
-		clientStream << request;
+		*clientStream << request;
 	}
 	catch (const web::WebException&)
 	{

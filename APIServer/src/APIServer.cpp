@@ -31,6 +31,9 @@ namespace web
 
 		connectToDataBaseServer(dataBaseStream);
 
+		this_thread::sleep_for(0.2s);
+
+		//TODO: add error handling for not connected servers
 		while (true)
 		{
 			try

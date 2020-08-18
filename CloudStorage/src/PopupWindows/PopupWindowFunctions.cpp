@@ -41,4 +41,6 @@ void initSetFolderNamePopupWidow(UI::MainWindow& ref)
 void initWaitResponsePopupWindow(UI::MainWindow& ref)
 {
 	ref.setCurrentPopupWindow(new UI::WaitResponsePopupWindow(ref.getMainWindow()));
+
+	static_cast<UI::WaitResponsePopupWindow*>(ref.getCurrentPopupWindow())->startAnimateProgressBar();
 }

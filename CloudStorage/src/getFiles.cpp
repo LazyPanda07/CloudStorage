@@ -14,9 +14,9 @@
 
 using namespace std;
 
-void asyncGetFiles(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, vector<db::fileDataRepresentation>& fileNames, bool showError, bool& isCancel);
+void asyncGetFiles(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream<char>>& clientStream, vector<db::fileDataRepresentation>& fileNames, bool showError, bool& isCancel);
 
-void getFiles(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, vector<db::fileDataRepresentation>& fileNames, bool showError, bool& isCancel, bool isDetach)
+void getFiles(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream<char>>& clientStream, vector<db::fileDataRepresentation>& fileNames, bool showError, bool& isCancel, bool isDetach)
 {
 	if (isDetach)
 	{
@@ -35,11 +35,18 @@ void getFiles(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, 
 	}
 }
 
-void asyncGetFiles(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStream, vector<db::fileDataRepresentation>& fileNames, bool showError, bool& isCancel)
+void asyncGetFiles(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream<char>>& clientStream, vector<db::fileDataRepresentation>& fileNames, bool showError, bool& isCancel)
 {
-	if (ref.getCurrentPopupWindow())
+	if (!clientStream)
 	{
-		static_cast<UI::WaitResponsePopupWindow*>(ref.getCurrentPopupWindow())->startAnimateProgressBar();
+		if (ref.getCurrentPopupWindow())
+		{
+			SendMessageW(ref.getMainWindow(), UI::events::deletePopupWindowE, NULL, NULL);
+		}
+
+		UI::noConnectionWithServer(ref);
+
+		return;
 	}
 
 	utility::ClientTime& instance = utility::ClientTime::get();
@@ -67,7 +74,7 @@ void asyncGetFiles(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStr
 
 	try
 	{
-		clientStream << request;
+		*clientStream << request;
 	}
 	catch (const web::WebException&)
 	{
@@ -81,7 +88,7 @@ void asyncGetFiles(UI::MainWindow& ref, streams::IOSocketStream<char>& clientStr
 
 	try
 	{
-		clientStream >> response;
+		*clientStream >> response;
 	}
 	catch (const web::WebException&)
 	{
