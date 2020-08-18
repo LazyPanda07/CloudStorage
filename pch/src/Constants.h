@@ -21,6 +21,7 @@ inline constexpr std::string_view customHTTPHeaderSize = "Total-HTTP-Message-Siz
 inline constexpr std::string_view dataDelimiter = "/";
 inline constexpr std::string_view dataPartDelimiter = "|";
 
+//TODO: delete max constant
 inline constexpr int maxFilesFromExplorer = 10;
 
 namespace requestType
@@ -63,6 +64,9 @@ namespace filesRequests
 
 namespace responses
 {
+	inline const std::string noConnectionWithFilesServer = "Ќе удалось установить соединение с файловым сервером";
+	inline const std::string noConnectionWithDataBaseServer = "Ќе удалось установить соединение с сервером базы данных";
+
 	inline constexpr std::string_view okResponse = "OK";
 	inline constexpr std::string_view failResponse = "FAIL";
 	inline constexpr std::string_view unknownRequest = "Unknown request";

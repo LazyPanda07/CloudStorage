@@ -466,6 +466,8 @@ void asyncReconnect(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream<char
 
 void asyncCreateFolder(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream<char>>& clientStream, vector<db::fileDataRepresentation>& fileNames, bool& isCancel)
 {
+	//TODO: receive response
+
 	if (!clientStream)
 	{
 		if (ref.getCurrentPopupWindow())
@@ -776,6 +778,7 @@ void setPath(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream<char>>& cli
 
 void setLogin(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream<char>>& clientStream, const wstring& login, const wstring& password)
 {
+	//TODO: receive response
 	if (!clientStream)
 	{
 		if (ref.getCurrentPopupWindow())
