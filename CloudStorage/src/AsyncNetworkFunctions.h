@@ -17,7 +17,7 @@ void asyncDownloadFile(UI::MainWindow& ref, std::unique_ptr<streams::IOSocketStr
 
 void asyncReconnect(UI::MainWindow& ref, std::unique_ptr<streams::IOSocketStream<char>>& clientStream, std::string&& currentPath, const std::wstring& login, const std::wstring& password, std::vector<db::fileDataRepresentation>& fileNames, bool& isCancel);
 
-void asyncCreateFolder(UI::MainWindow& ref, std::unique_ptr<streams::IOSocketStream<char>>& clientStream, std::vector<db::fileDataRepresentation>& fileNames, bool& isCancel);
+void asyncCreateFolder(UI::MainWindow& ref, std::unique_ptr<streams::IOSocketStream<char>>& clientStream, std::wstring&& wFolderName, std::vector<db::fileDataRepresentation>& fileNames, bool& isCancel);
 
 void asyncRegistration(UI::MainWindow& ref, std::unique_ptr<streams::IOSocketStream<char>>& clientStream, std::wstring& login, std::wstring& password, bool& isCancel);
 

@@ -27,7 +27,7 @@ void prevFolder(streams::IOSocketStream<char>& clientStream, std::unique_ptr<str
 
 void setPath(streams::IOSocketStream<char>& clientStream, std::unique_ptr<streams::IOSocketStream<char>>& filesStream, std::unique_ptr<streams::IOSocketStream<char>>& dataBaseStream, const std::string& data);
 
-void createFolder(std::unique_ptr<streams::IOSocketStream<char>>& filesStream, std::unique_ptr<streams::IOSocketStream<char>>& dataBaseStream, const std::string& data);
+void createFolder(streams::IOSocketStream<char>& clientStream, std::unique_ptr<streams::IOSocketStream<char>>& filesStream, std::unique_ptr<streams::IOSocketStream<char>>& dataBaseStream, const std::string& data);
 
 void authorization(streams::IOSocketStream<char>& clientStream, std::unique_ptr<streams::IOSocketStream<char>>& filesStream, std::unique_ptr<streams::IOSocketStream<char>>& dataBaseStream, const std::string& data);
 

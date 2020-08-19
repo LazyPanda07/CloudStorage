@@ -514,10 +514,8 @@ void asyncReconnect(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream<char
 	setPath(ref, clientStream, move(currentPath), fileNames, isCancel);
 }
 
-void asyncCreateFolder(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream<char>>& clientStream, vector<db::fileDataRepresentation>& fileNames, bool& isCancel)
+void asyncCreateFolder(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream<char>>& clientStream, wstring&& wFolderName, vector<db::fileDataRepresentation>& fileNames, bool& isCancel)
 {
-	//TODO: receive response
-
 	if (!clientStream)
 	{
 		if (ref.getCurrentPopupWindow())
@@ -530,14 +528,9 @@ void asyncCreateFolder(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream<c
 		return;
 	}
 
-	wstring wFolderName;
-	HWND enterFolderNameEdit = ref.getEnterFolderNameEdit();
 	string request;
 	string body;
-
-	wFolderName.resize(GetWindowTextLengthW(enterFolderNameEdit));
-
-	GetWindowTextW(enterFolderNameEdit, wFolderName.data(), wFolderName.size() + 1);
+	string response;
 
 	body = "folder=" + utility::conversion::to_string(wFolderName);
 
@@ -552,6 +545,8 @@ void asyncCreateFolder(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream<c
 	try
 	{
 		*clientStream << request;
+
+		*clientStream >> response;
 	}
 	catch (const web::WebException&)
 	{

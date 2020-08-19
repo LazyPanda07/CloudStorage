@@ -670,11 +670,11 @@ void setPath(streams::IOSocketStream<char>& clientStream, unique_ptr<streams::IO
 	}
 }
 
-void createFolder(unique_ptr<streams::IOSocketStream<char>>& filesStream, unique_ptr<streams::IOSocketStream<char>>& dataBaseStream, const string& data)
+void createFolder(streams::IOSocketStream<char>& clientStream, unique_ptr<streams::IOSocketStream<char>>& filesStream, unique_ptr<streams::IOSocketStream<char>>& dataBaseStream, const string& data)
 {
-	//TODO: send response
 	const string folderName(begin(data) + data.find('=') + 1, end(data));
 	string fileExtension;
+	string response;
 
 	try
 	{
@@ -686,6 +686,15 @@ void createFolder(unique_ptr<streams::IOSocketStream<char>>& filesStream, unique
 		*dataBaseStream << filesRequests::createFolder;
 		*dataBaseStream << folderName;
 		*dataBaseStream << fileExtension;
+
+		response = web::HTTPBuilder().responseCode(web::ResponseCodes::ok).headers
+		(
+			"Error", 0
+		).build();
+
+		utility::web::insertSizeHeaderToHTTPMessage(response);
+
+		clientStream << response;
 	}
 	catch (const web::WebException&)
 	{

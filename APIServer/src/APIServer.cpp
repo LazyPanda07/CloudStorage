@@ -88,7 +88,7 @@ namespace web
 							}
 							else if (request == filesRequests::createFolder)
 							{
-								createFolder(filesStream, dataBaseStream, parser.getBody());
+								createFolder(clientStream, filesStream, dataBaseStream, parser.getBody());
 							}
 						}
 						else

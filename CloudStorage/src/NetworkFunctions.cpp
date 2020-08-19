@@ -95,9 +95,16 @@ void prevFolder(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream<char>>& 
 
 void createFolder(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream<char>>& clientStream, vector<db::fileDataRepresentation>& fileNames, bool& isCancel)
 {
+	wstring wFolderName;
+	HWND enterFolderNameEdit = ref.getEnterFolderNameEdit();
+
+	wFolderName.resize(GetWindowTextLengthW(enterFolderNameEdit));
+
+	GetWindowTextW(enterFolderNameEdit, wFolderName.data(), wFolderName.size() + 1);
+
 	initWaitResponsePopupWindow(ref);
 
-	thread(asyncCreateFolder, std::ref(ref), std::ref(clientStream), std::ref(fileNames), std::ref(isCancel)).detach();
+	thread(asyncCreateFolder, std::ref(ref), std::ref(clientStream), move(wFolderName), std::ref(fileNames), std::ref(isCancel)).detach();
 }
 
 void exitFromApplication(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream<char>>& clientStream)
