@@ -145,37 +145,43 @@ void uploadFile(streams::IOSocketStream<char>& clientStream, unique_ptr<streams:
 		string responseMessage;
 		string isSuccess;
 
-		*filesStream << uploadSize;
-
-		*filesStream >> isSuccess;
-		*filesStream >> responseMessage;
-
-		if (isSuccess == responses::okResponse)
-		{
-			string extension;
-
-			*filesStream >> extension;
-
-			*dataBaseStream << filesRequests::uploadFile;
-			*dataBaseStream << fileName;
-			*dataBaseStream << extension;
-			*dataBaseStream << uploadSize;
-
-		}
-
-		string response = web::HTTPBuilder().responseCode(web::ResponseCodes::ok).headers
-		(
-			"Error", isSuccess == responses::okResponse ? false : true,
-			"Content-Length", responseMessage.size()
-		).build(&responseMessage);
-
-		utility::web::insertSizeHeaderToHTTPMessage(response);
-
 		try
 		{
-			clientStream << response;
+			*filesStream << uploadSize;
+
+			*filesStream >> isSuccess;
+			*filesStream >> responseMessage;
+
+			if (isSuccess == responses::okResponse)
+			{
+				string extension;
+
+				*filesStream >> extension;
+
+				*dataBaseStream << filesRequests::uploadFile;
+				*dataBaseStream << fileName;
+				*dataBaseStream << extension;
+				*dataBaseStream << uploadSize;
+			}
+
+			string response = web::HTTPBuilder().responseCode(web::ResponseCodes::ok).headers
+			(
+				"Error", isSuccess == responses::okResponse ? false : true,
+				"Content-Length", responseMessage.size()
+			).build(&responseMessage);
+
+			utility::web::insertSizeHeaderToHTTPMessage(response);
+
+			try
+			{
+				clientStream << response;
+			}
+			catch (const web::WebException& e)
+			{
+
+			}
 		}
-		catch (const web::WebException& e)
+		catch (const web::WebException&)
 		{
 
 		}
@@ -371,12 +377,19 @@ void cancelUploadFile(streams::IOSocketStream<char>& clientStream, unique_ptr<st
 
 	utility::web::insertSizeHeaderToHTTPMessage(response);
 
-	*filesStream << networkRequests::cancelOperation;
+	try
+	{
+		*filesStream << networkRequests::cancelOperation;
 
-	*filesStream << fileName;
-	*filesStream << filesRequests::uploadFile;
+		*filesStream << fileName;
+		*filesStream << filesRequests::uploadFile;
 
-	clientStream << response;
+		clientStream << response;
+	}
+	catch (const web::WebException&)
+	{
+
+	}
 }
 
 void setLogin(unique_ptr<streams::IOSocketStream<char>>& filesStream, unique_ptr<streams::IOSocketStream<char>>& dataBaseStream, const string& data)
@@ -466,28 +479,35 @@ void nextFolder(streams::IOSocketStream<char>& clientStream, unique_ptr<streams:
 	bool filesStreamResponse = false;
 	bool dataBaseStreamResponse = false;
 
-	*filesStream << controlRequests::nextFolder;
-	*filesStream << folder;
-	*filesStream >> filesStreamResponse;
-
-	*dataBaseStream << controlRequests::nextFolder;
-	*dataBaseStream << folder;
-	*dataBaseStream >> dataBaseStreamResponse;
-
-	if (filesStreamResponse && dataBaseStreamResponse)
+	try
 	{
-		string response = web::HTTPBuilder().responseCode(web::ResponseCodes::ok).headers
-		(
-			"Content-Length", ok.size()
-		).build(&ok);
+		*filesStream << controlRequests::nextFolder;
+		*filesStream << folder;
+		*filesStream >> filesStreamResponse;
 
-		utility::web::insertSizeHeaderToHTTPMessage(response);
+		*dataBaseStream << controlRequests::nextFolder;
+		*dataBaseStream << folder;
+		*dataBaseStream >> dataBaseStreamResponse;
 
-		clientStream << response;
+		if (filesStreamResponse && dataBaseStreamResponse)
+		{
+			string response = web::HTTPBuilder().responseCode(web::ResponseCodes::ok).headers
+			(
+				"Content-Length", ok.size()
+			).build(&ok);
+
+			utility::web::insertSizeHeaderToHTTPMessage(response);
+
+			clientStream << response;
+		}
+		else
+		{
+			//TODO:: error handling
+		}
 	}
-	else
+	catch (const web::WebException&)
 	{
-		//TODO:: error handling
+
 	}
 }
 
@@ -649,14 +669,21 @@ void createFolder(unique_ptr<streams::IOSocketStream<char>>& filesStream, unique
 	const string folderName(begin(data) + data.find('=') + 1, end(data));
 	string fileExtension;
 
-	*filesStream << filesRequests::createFolder;
-	*filesStream << folderName;
+	try
+	{
+		*filesStream << filesRequests::createFolder;
+		*filesStream << folderName;
 
-	*filesStream >> fileExtension;
+		*filesStream >> fileExtension;
 
-	*dataBaseStream << filesRequests::createFolder;
-	*dataBaseStream << folderName;
-	*dataBaseStream << fileExtension;
+		*dataBaseStream << filesRequests::createFolder;
+		*dataBaseStream << folderName;
+		*dataBaseStream << fileExtension;
+	}
+	catch (const web::WebException&)
+	{
+
+	}
 }
 
 void authorization(streams::IOSocketStream<char>& clientStream, unique_ptr<streams::IOSocketStream<char>>& filesStream, unique_ptr<streams::IOSocketStream<char>>& dataBaseStream, const string& data)
