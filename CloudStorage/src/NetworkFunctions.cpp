@@ -16,11 +16,39 @@ void setPath(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream<char>>& cli
 
 void uploadFile(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream<char>>& clientStream, const wstring& filePath, vector<db::fileDataRepresentation>& fileNames, bool& isCancel)
 {
-	wstring message = L"Загрузка файла " + wstring(begin(filePath) + filePath.rfind('\\') + 1, end(filePath));
+	const wstring fileName = wstring(begin(filePath) + filePath.rfind('\\') + 1, end(filePath));
+	bool sameFileName = false;
+	int choose = IDYES;
 
-	initUploadFilePopupWindow(ref, message);
+	for (const auto& i : fileNames)
+	{
+		if (fileName == i.fileName)
+		{
+			sameFileName = true;
 
-	thread(asyncUploadFile, std::ref(ref), std::ref(clientStream), std::ref(filePath), std::ref(fileNames), std::ref(isCancel)).detach();
+			break;
+		}
+	}
+
+	if (sameFileName)
+	{
+		choose = MessageBoxW(ref.getMainWindow(), wstring(L"Заменить файл " + fileName + L'?').data(), L"Замена файла", MB_YESNO);
+	}
+
+	if (choose == IDYES)
+	{
+		wstring message = L"Загрузка файла " + fileName;
+
+		initUploadFilePopupWindow(ref, message);
+
+		sameFileName ?
+			thread(asyncUploadFile, std::ref(ref), std::ref(clientStream), std::ref(filePath), std::ref(fileNames), std::ref(isCancel), true).detach() :
+			thread(asyncUploadFile, std::ref(ref), std::ref(clientStream), std::ref(filePath), std::ref(fileNames), std::ref(isCancel), false).detach();
+	}
+	else
+	{
+		SendMessageW(ref.getMainWindow(), UI::events::multipleUploadE, NULL, NULL);
+	}
 }
 
 int downloadFile(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream<char>>& clientStream, const vector<db::fileDataRepresentation>& fileNames, bool& isCancel, int searchId)

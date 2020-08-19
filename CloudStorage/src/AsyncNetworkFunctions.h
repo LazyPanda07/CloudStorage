@@ -11,7 +11,7 @@ std::string cancelUploadFile(const std::string& fileName);
 
 std::string asyncFolderControlMessages(UI::MainWindow& ref, std::unique_ptr<streams::IOSocketStream<char>>& clientStream, const std::string_view& controlRequest, std::vector<db::fileDataRepresentation>& fileNames, bool& isCancel, std::string&& data = "");
 
-void asyncUploadFile(UI::MainWindow& ref, std::unique_ptr<streams::IOSocketStream<char>>& clientStream, const std::wstring& filePath, std::vector<db::fileDataRepresentation>& fileNames, bool& isCancel);
+void asyncUploadFile(UI::MainWindow& ref, std::unique_ptr<streams::IOSocketStream<char>>& clientStream, const std::wstring& filePath, std::vector<db::fileDataRepresentation>& fileNames, bool& isCancel, bool removeBeforeUpload = false);
 
 void asyncDownloadFile(UI::MainWindow& ref, std::unique_ptr<streams::IOSocketStream<char>>& clientStream, const std::wstring& fileName, intmax_t fileSize, bool& isCancel);
 

@@ -15,8 +15,6 @@
 
 using namespace std;
 
-void removeFile(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream<char>>& clientStream, const wstring& fileName, bool& isCancel);
-
 void removeFile(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream<char>>& clientStream, vector<db::fileDataRepresentation>& fileNames, bool& isCancel)
 {
 	initWaitResponsePopupWindow(ref);
@@ -24,26 +22,7 @@ void removeFile(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream<char>>& 
 	thread(asyncRemoveFile, std::ref(ref), std::ref(clientStream), std::ref(fileNames), std::ref(isCancel)).detach();
 }
 
-void asyncRemoveFile(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream<char>>& clientStream, vector<db::fileDataRepresentation>& fileNames, bool& isCancel)
-{
-	int id = SendMessageW(ref.getList(), LVM_GETNEXTITEM, -1, LVNI_SELECTED);
-
-	while (id != -1)
-	{
-		if (removeFileDialog(ref, fileNames[id].fileName))
-		{
-			removeFile(ref, clientStream, fileNames[id].fileName, isCancel);
-		}
-
-		id = SendMessageW(ref.getList(), LVM_GETNEXTITEM, id, LVNI_SELECTED);
-	}
-
-	getFiles(ref, clientStream, fileNames, false, isCancel, false);
-
-	SendMessageW(ref.getMainWindow(), UI::events::deletePopupWindowE, NULL, NULL);
-}
-
-void removeFile(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream<char>>& clientStream, const wstring& fileName, bool& isCancel)
+void removeFile(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream<char>>& clientStream, const wstring& fileName, bool& isCancel, bool showError)
 {
 	if (!clientStream)
 	{
@@ -101,9 +80,28 @@ void removeFile(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream<char>>& 
 	}
 	else
 	{
-		if (ref.getCurrentPopupWindow())
+		if (ref.getCurrentPopupWindow() && showError)
 		{
 			MessageBoxW(ref.getPopupWindow(), wstring(L"Не удалось удалить " + fileName).data(), L"Ошибка", MB_OK);
 		}
 	}
+}
+
+void asyncRemoveFile(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream<char>>& clientStream, vector<db::fileDataRepresentation>& fileNames, bool& isCancel)
+{
+	int id = SendMessageW(ref.getList(), LVM_GETNEXTITEM, -1, LVNI_SELECTED);
+
+	while (id != -1)
+	{
+		if (removeFileDialog(ref, fileNames[id].fileName))
+		{
+			removeFile(ref, clientStream, fileNames[id].fileName, isCancel);
+		}
+
+		id = SendMessageW(ref.getList(), LVM_GETNEXTITEM, id, LVNI_SELECTED);
+	}
+
+	getFiles(ref, clientStream, fileNames, false, isCancel, false);
+
+	SendMessageW(ref.getMainWindow(), UI::events::deletePopupWindowE, NULL, NULL);
 }

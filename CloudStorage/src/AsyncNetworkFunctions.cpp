@@ -15,6 +15,7 @@
 #include "ClientTime.h"
 #include "ErrorHandling.h"
 #include "getFiles.h"
+#include "removeFile.h"
 
 #include <CommCtrl.h>
 
@@ -116,7 +117,7 @@ string asyncFolderControlMessages(UI::MainWindow& ref, unique_ptr<streams::IOSoc
 	return response;
 }
 
-void asyncUploadFile(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream<char>>& clientStream, const wstring& filePath, vector<db::fileDataRepresentation>& fileNames, bool& isCancel)
+void asyncUploadFile(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream<char>>& clientStream, const wstring& filePath, vector<db::fileDataRepresentation>& fileNames, bool& isCancel, bool removeBeforeUpload)
 {
 	if (!clientStream)
 	{
@@ -145,6 +146,8 @@ void asyncUploadFile(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream<cha
 	fileData.resize(filePacketSize);
 
 	isCancel = false;
+
+	removeFile(ref, clientStream, wstring(begin(filePath) + filePath.rfind('\\') + 1, end(filePath)), isCancel, false);
 
 	do
 	{
@@ -241,13 +244,28 @@ void asyncUploadFile(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream<cha
 
 	if (error == "1")
 	{
-		int ok = MessageBoxW
-		(
-			ref.getPopupWindow(),
-			utility::conversion::to_wstring(parser.getBody()).data(),
-			L"Ошибка",
-			MB_OK
-		);
+		int ok;
+
+		if (ref.getCurrentPopupWindow() && ref.getPopupWindow())
+		{
+			ok = MessageBoxW
+			(
+				ref.getPopupWindow(),
+				utility::conversion::to_wstring(parser.getBody()).data(),
+				L"Ошибка",
+				MB_OK
+			);
+		}
+		else
+		{
+			ok = MessageBoxW
+			(
+				ref.getMainWindow(),
+				utility::conversion::to_wstring(parser.getBody()).data(),
+				L"Ошибка",
+				MB_OK
+			);
+		}
 
 		if (ok == IDOK)
 		{
@@ -257,13 +275,28 @@ void asyncUploadFile(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream<cha
 	}
 	else
 	{
-		int ok = MessageBoxW
-		(
-			ref.getPopupWindow(),
-			L"Файл загружен",
-			L"Информация",
-			MB_OK
-		);
+		int ok;
+
+		if (ref.getCurrentPopupWindow() && ref.getPopupWindow())
+		{
+			ok = MessageBoxW
+			(
+				ref.getPopupWindow(),
+				L"Файл загружен",
+				L"Информация",
+				MB_OK
+			);
+		}
+		else
+		{
+			ok = MessageBoxW
+			(
+				ref.getMainWindow(),
+				L"Файл загружен",
+				L"Информация",
+				MB_OK
+			);
+		}
 
 		if (ok == IDOK)
 		{
@@ -381,8 +414,17 @@ void asyncDownloadFile(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream<c
 	if (filesystem::file_size(ref.getDownloadFolder().append(sFileName)) == totalFileSize)
 	{
 		wstring message = fileName + L"\r\n" + filesResponses::successDownloadFile.data();
-
-		int ok = MessageBoxW(ref.getPopupWindow(), message.data(), L"Успех", MB_OK);
+		int ok;
+		
+		if (ref.getCurrentPopupWindow() && ref.getPopupWindow())
+		{
+			ok = MessageBoxW(ref.getPopupWindow(), message.data(), L"Успех", MB_OK);
+		}
+		else
+		{
+			ok = MessageBoxW(ref.getMainWindow(), message.data(), L"Успех", MB_OK);
+		}
+		
 
 		if (ok == IDOK)
 		{
@@ -393,8 +435,16 @@ void asyncDownloadFile(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream<c
 	else
 	{
 		wstring message = fileName + L"\r\n" + filesResponses::failDownloadFile.data();
+		int ok;
 
-		int ok = MessageBoxW(ref.getPopupWindow(), message.data(), L"Ошибка", MB_OK);
+		if (ref.getCurrentPopupWindow() && ref.getPopupWindow())
+		{
+			ok = MessageBoxW(ref.getPopupWindow(), message.data(), L"Ошибка", MB_OK);
+		}
+		else
+		{
+			ok = MessageBoxW(ref.getMainWindow(), message.data(), L"Ошибка", MB_OK);
+		}
 
 		if (ok == IDOK)
 		{
@@ -553,7 +603,7 @@ void asyncRegistration(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream<c
 		SetWindowTextW(registrationPasswordEdit, L"");
 		SetWindowTextW(registrationRepeatPasswordEdit, L"");
 
-		if (ref.getPopupWindow())
+		if (ref.getCurrentPopupWindow() && ref.getPopupWindow())
 		{
 			ok = MessageBoxW(ref.getPopupWindow(), L"Пароли не совпадают", L"Ошибка", MB_OK);
 		}
