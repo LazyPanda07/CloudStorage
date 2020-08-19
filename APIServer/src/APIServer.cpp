@@ -33,7 +33,6 @@ namespace web
 
 		this_thread::sleep_for(0.2s);
 
-		//TODO: add error handling for not connected database server
 		while (true)
 		{
 			try
@@ -52,15 +51,15 @@ namespace web
 
 						if (request == accountRequests::authorization)
 						{
-							authorization(clientStream, filesStream, *dataBaseStream, parser.getBody());
+							authorization(clientStream, filesStream, dataBaseStream, parser.getBody());
 						}
 						else if (request == accountRequests::registration)
 						{
-							registration(clientStream, filesStream, *dataBaseStream, parser.getBody());
+							registration(clientStream, filesStream, dataBaseStream, parser.getBody());
 						}
 						else if (request == accountRequests::setLogin)
 						{
-							setLogin(filesStream, *dataBaseStream, parser.getBody());
+							setLogin(filesStream, dataBaseStream, parser.getBody());
 						}
 					}
 					else
@@ -73,11 +72,11 @@ namespace web
 
 							if (request == filesRequests::showAllFilesInFolder)
 							{
-								showAllFilesInFolder(clientStream, *dataBaseStream);
+								showAllFilesInFolder(clientStream, dataBaseStream);
 							}
 							else if (request == filesRequests::uploadFile)
 							{
-								uploadFile(clientStream, filesStream, *dataBaseStream, parser.getBody(), headers);
+								uploadFile(clientStream, filesStream, dataBaseStream, parser.getBody(), headers);
 							}
 							if (request == filesRequests::downloadFile)
 							{
@@ -85,11 +84,11 @@ namespace web
 							}
 							else if (request == filesRequests::removeFile)
 							{
-								removeFile(clientStream, filesStream, *dataBaseStream, headers);
+								removeFile(clientStream, filesStream, dataBaseStream, headers);
 							}
 							else if (request == filesRequests::createFolder)
 							{
-								createFolder(filesStream, *dataBaseStream, parser.getBody());
+								createFolder(filesStream, dataBaseStream, parser.getBody());
 							}
 						}
 						else
@@ -103,7 +102,10 @@ namespace web
 								if (request == networkRequests::exit)
 								{
 									data.erase(ip);
-									*dataBaseStream << networkRequests::exit;
+									if (dataBaseStream)
+									{
+										*dataBaseStream << networkRequests::exit;
+									}
 									if (filesStream)
 									{
 										*filesStream << networkRequests::exit;
@@ -135,15 +137,15 @@ namespace web
 
 										if (request == controlRequests::nextFolder)
 										{
-											nextFolder(clientStream, filesStream, *dataBaseStream, parser.getBody());
+											nextFolder(clientStream, filesStream, dataBaseStream, parser.getBody());
 										}
 										else if (request == controlRequests::prevFolder)
 										{
-											prevFolder(clientStream, filesStream, *dataBaseStream);
+											prevFolder(clientStream, filesStream, dataBaseStream);
 										}
 										else if (request == controlRequests::setPath)
 										{
-											setPath(clientStream, filesStream, *dataBaseStream, parser.getBody());
+											setPath(clientStream, filesStream, dataBaseStream, parser.getBody());
 										}
 									}
 								}

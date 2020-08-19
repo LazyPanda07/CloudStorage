@@ -13,26 +13,41 @@ bool checkHTTP(const string& request)
 	return request.find("HTTP") != string::npos ? true : false;
 }
 
-void showAllFilesInFolder(streams::IOSocketStream<char>& clientStream, streams::IOSocketStream<char>& dataBaseStream)
+void showAllFilesInFolder(streams::IOSocketStream<char>& clientStream, unique_ptr<streams::IOSocketStream<char>>& dataBaseStream)
 {
+	if (!dataBaseStream)
+	{
+		string response = web::HTTPBuilder().responseCode(web::ResponseCodes::ok).headers
+		(
+			"Error", 1,
+			"Content-Length", responses::noConnectionWithDataBaseServer.size()
+		).build(&responses::noConnectionWithDataBaseServer);
+
+		utility::web::insertSizeHeaderToHTTPMessage(response);
+
+		clientStream << response;
+
+		return;
+	}
+
 	string responseMessage;
 	bool error;
 	string response;
 
 	try
 	{
-		dataBaseStream << filesRequests::showAllFilesInFolder;
+		*dataBaseStream << filesRequests::showAllFilesInFolder;
 
-		dataBaseStream >> responseMessage;
+		*dataBaseStream >> responseMessage;
 
 		if (responseMessage == responses::okResponse)
 		{
-			dataBaseStream >> responseMessage;
+			*dataBaseStream >> responseMessage;
 			error = false;
 		}
 		else
 		{
-			dataBaseStream >> responseMessage;
+			*dataBaseStream >> responseMessage;
 			error = true;
 		}
 
@@ -52,7 +67,7 @@ void showAllFilesInFolder(streams::IOSocketStream<char>& clientStream, streams::
 	}
 }
 
-void uploadFile(streams::IOSocketStream<char>& clientStream, unique_ptr<streams::IOSocketStream<char>>& filesStream, streams::IOSocketStream<char>& dataBaseStream, const string& data, const unordered_map<string, string>& headers)
+void uploadFile(streams::IOSocketStream<char>& clientStream, unique_ptr<streams::IOSocketStream<char>>& filesStream, unique_ptr<streams::IOSocketStream<char>>& dataBaseStream, const string& data, const unordered_map<string, string>& headers)
 {
 	if (!filesStream)
 	{
@@ -61,6 +76,21 @@ void uploadFile(streams::IOSocketStream<char>& clientStream, unique_ptr<streams:
 			"Error", 1,
 			"Content-Length", responses::noConnectionWithFilesServer.size()
 		).build(&responses::noConnectionWithFilesServer);
+
+		utility::web::insertSizeHeaderToHTTPMessage(response);
+
+		clientStream << response;
+
+		return;
+	}
+
+	if (!dataBaseStream)
+	{
+		string response = web::HTTPBuilder().responseCode(web::ResponseCodes::ok).headers
+		(
+			"Error", 1,
+			"Content-Length", responses::noConnectionWithDataBaseServer.size()
+		).build(&responses::noConnectionWithDataBaseServer);
 
 		utility::web::insertSizeHeaderToHTTPMessage(response);
 
@@ -98,10 +128,10 @@ void uploadFile(streams::IOSocketStream<char>& clientStream, unique_ptr<streams:
 
 			*filesStream >> extension;
 
-			dataBaseStream << filesRequests::uploadFile;
-			dataBaseStream << fileName;
-			dataBaseStream << extension;
-			dataBaseStream << uploadSize;
+			*dataBaseStream << filesRequests::uploadFile;
+			*dataBaseStream << fileName;
+			*dataBaseStream << extension;
+			*dataBaseStream << uploadSize;
 
 		}
 
@@ -178,7 +208,7 @@ void downloadFile(streams::IOSocketStream<char>& clientStream, unique_ptr<stream
 	}
 }
 
-void removeFile(streams::IOSocketStream<char>& clientStream, unique_ptr<streams::IOSocketStream<char>>& filesStream, streams::IOSocketStream<char>& dataBaseStream, const unordered_map<string, string>& headers)
+void removeFile(streams::IOSocketStream<char>& clientStream, unique_ptr<streams::IOSocketStream<char>>& filesStream, unique_ptr<streams::IOSocketStream<char>>& dataBaseStream, const unordered_map<string, string>& headers)
 {
 	if (!filesStream)
 	{
@@ -187,6 +217,21 @@ void removeFile(streams::IOSocketStream<char>& clientStream, unique_ptr<streams:
 			"Error", 1,
 			"Content-Length", responses::noConnectionWithFilesServer.size()
 		).build(&responses::noConnectionWithFilesServer);
+
+		utility::web::insertSizeHeaderToHTTPMessage(response);
+
+		clientStream << response;
+
+		return;
+	}
+
+	if (!dataBaseStream)
+	{
+		string response = web::HTTPBuilder().responseCode(web::ResponseCodes::ok).headers
+		(
+			"Error", 1,
+			"Content-Length", responses::noConnectionWithDataBaseServer.size()
+		).build(&responses::noConnectionWithDataBaseServer);
 
 		utility::web::insertSizeHeaderToHTTPMessage(response);
 
@@ -211,9 +256,9 @@ void removeFile(streams::IOSocketStream<char>& clientStream, unique_ptr<streams:
 
 		if (!error)
 		{
-			dataBaseStream << filesRequests::removeFile;
+			*dataBaseStream << filesRequests::removeFile;
 
-			dataBaseStream << fileName;
+			*dataBaseStream << fileName;
 		}
 
 		string response = web::HTTPBuilder().responseCode(web::ResponseCodes::ok).headers
@@ -264,7 +309,7 @@ void cancelUploadFile(streams::IOSocketStream<char>& clientStream, unique_ptr<st
 	clientStream << response;
 }
 
-void setLogin(unique_ptr<streams::IOSocketStream<char>>& filesStream, streams::IOSocketStream<char>& dataBaseStream, const string& data)
+void setLogin(unique_ptr<streams::IOSocketStream<char>>& filesStream, unique_ptr<streams::IOSocketStream<char>>& dataBaseStream, const string& data)
 {
 	//TODO: send response
 
@@ -275,11 +320,11 @@ void setLogin(unique_ptr<streams::IOSocketStream<char>>& filesStream, streams::I
 
 	try
 	{
-		dataBaseStream << accountRequests::authorization;
-		dataBaseStream << login;
-		dataBaseStream << password;
+		*dataBaseStream << accountRequests::authorization;
+		*dataBaseStream << login;
+		*dataBaseStream << password;
 
-		dataBaseStream >> response;
+		*dataBaseStream >> response;
 
 		error = response != responses::okResponse;
 
@@ -299,7 +344,7 @@ void setLogin(unique_ptr<streams::IOSocketStream<char>>& filesStream, streams::I
 	}
 }
 
-void nextFolder(streams::IOSocketStream<char>& clientStream, unique_ptr<streams::IOSocketStream<char>>& filesStream, streams::IOSocketStream<char>& dataBaseStream, const string& data)
+void nextFolder(streams::IOSocketStream<char>& clientStream, unique_ptr<streams::IOSocketStream<char>>& filesStream, unique_ptr<streams::IOSocketStream<char>>& dataBaseStream, const string& data)
 {
 	if (!filesStream)
 	{
@@ -308,6 +353,21 @@ void nextFolder(streams::IOSocketStream<char>& clientStream, unique_ptr<streams:
 			"Error", 1,
 			"Content-Length", responses::noConnectionWithFilesServer.size()
 		).build(&responses::noConnectionWithFilesServer);
+
+		utility::web::insertSizeHeaderToHTTPMessage(response);
+
+		clientStream << response;
+
+		return;
+	}
+
+	if (!dataBaseStream)
+	{
+		string response = web::HTTPBuilder().responseCode(web::ResponseCodes::ok).headers
+		(
+			"Error", 1,
+			"Content-Length", responses::noConnectionWithDataBaseServer.size()
+		).build(&responses::noConnectionWithDataBaseServer);
 
 		utility::web::insertSizeHeaderToHTTPMessage(response);
 
@@ -326,9 +386,9 @@ void nextFolder(streams::IOSocketStream<char>& clientStream, unique_ptr<streams:
 	*filesStream << folder;
 	*filesStream >> filesStreamResponse;
 
-	dataBaseStream << controlRequests::nextFolder;
-	dataBaseStream << folder;
-	dataBaseStream >> dataBaseStreamResponse;
+	*dataBaseStream << controlRequests::nextFolder;
+	*dataBaseStream << folder;
+	*dataBaseStream >> dataBaseStreamResponse;
 
 	if (filesStreamResponse && dataBaseStreamResponse)
 	{
@@ -347,7 +407,7 @@ void nextFolder(streams::IOSocketStream<char>& clientStream, unique_ptr<streams:
 	}
 }
 
-void prevFolder(streams::IOSocketStream<char>& clientStream, unique_ptr<streams::IOSocketStream<char>>& filesStream, streams::IOSocketStream<char>& dataBaseStream)
+void prevFolder(streams::IOSocketStream<char>& clientStream, unique_ptr<streams::IOSocketStream<char>>& filesStream, unique_ptr<streams::IOSocketStream<char>>& dataBaseStream)
 {
 	if (!filesStream)
 	{
@@ -364,6 +424,21 @@ void prevFolder(streams::IOSocketStream<char>& clientStream, unique_ptr<streams:
 		return;
 	}
 
+	if (!dataBaseStream)
+	{
+		string response = web::HTTPBuilder().responseCode(web::ResponseCodes::ok).headers
+		(
+			"Error", 1,
+			"Content-Length", responses::noConnectionWithDataBaseServer.size()
+		).build(&responses::noConnectionWithDataBaseServer);
+
+		utility::web::insertSizeHeaderToHTTPMessage(response);
+
+		clientStream << response;
+
+		return;
+	}
+
 	string ok(responses::okResponse);
 	string fail(responses::failResponse);
 	bool filesStreamResponse = false;
@@ -372,8 +447,8 @@ void prevFolder(streams::IOSocketStream<char>& clientStream, unique_ptr<streams:
 	*filesStream << controlRequests::prevFolder;
 	*filesStream >> filesStreamResponse;
 
-	dataBaseStream << controlRequests::prevFolder;
-	dataBaseStream >> dataBaseStreamResponse;
+	*dataBaseStream << controlRequests::prevFolder;
+	*dataBaseStream >> dataBaseStreamResponse;
 
 	if (filesStreamResponse && dataBaseStreamResponse)
 	{
@@ -392,7 +467,7 @@ void prevFolder(streams::IOSocketStream<char>& clientStream, unique_ptr<streams:
 	}
 }
 
-void setPath(streams::IOSocketStream<char>& clientStream, unique_ptr<streams::IOSocketStream<char>>& filesStream, streams::IOSocketStream<char>& dataBaseStream, const string& data)
+void setPath(streams::IOSocketStream<char>& clientStream, unique_ptr<streams::IOSocketStream<char>>& filesStream, unique_ptr<streams::IOSocketStream<char>>& dataBaseStream, const string& data)
 {
 	if (!filesStream)
 	{
@@ -401,6 +476,21 @@ void setPath(streams::IOSocketStream<char>& clientStream, unique_ptr<streams::IO
 			"Error", 1,
 			"Content-Length", responses::noConnectionWithFilesServer.size()
 		).build(&responses::noConnectionWithFilesServer);
+
+		utility::web::insertSizeHeaderToHTTPMessage(response);
+
+		clientStream << response;
+
+		return;
+	}
+
+	if (!dataBaseStream)
+	{
+		string response = web::HTTPBuilder().responseCode(web::ResponseCodes::ok).headers
+		(
+			"Error", 1,
+			"Content-Length", responses::noConnectionWithDataBaseServer.size()
+		).build(&responses::noConnectionWithDataBaseServer);
 
 		utility::web::insertSizeHeaderToHTTPMessage(response);
 
@@ -420,9 +510,9 @@ void setPath(streams::IOSocketStream<char>& clientStream, unique_ptr<streams::IO
 	*filesStream << folder;
 	*filesStream >> filesStreamResponse;
 
-	dataBaseStream << controlRequests::setPath;
-	dataBaseStream << folder;
-	dataBaseStream >> dataBaseStreamResponse;
+	*dataBaseStream << controlRequests::setPath;
+	*dataBaseStream << folder;
+	*dataBaseStream >> dataBaseStreamResponse;
 
 	if (filesStreamResponse && dataBaseStreamResponse)
 	{
@@ -441,7 +531,7 @@ void setPath(streams::IOSocketStream<char>& clientStream, unique_ptr<streams::IO
 	}
 }
 
-void createFolder(unique_ptr<streams::IOSocketStream<char>>& filesStream, streams::IOSocketStream<char>& dataBaseStream, const string& data)
+void createFolder(unique_ptr<streams::IOSocketStream<char>>& filesStream, unique_ptr<streams::IOSocketStream<char>>& dataBaseStream, const string& data)
 {
 	//TODO: send response
 	const string folderName(begin(data) + data.find('=') + 1, end(data));
@@ -452,12 +542,12 @@ void createFolder(unique_ptr<streams::IOSocketStream<char>>& filesStream, stream
 
 	*filesStream >> fileExtension;
 
-	dataBaseStream << filesRequests::createFolder;
-	dataBaseStream << folderName;
-	dataBaseStream << fileExtension;
+	*dataBaseStream << filesRequests::createFolder;
+	*dataBaseStream << folderName;
+	*dataBaseStream << fileExtension;
 }
 
-void authorization(streams::IOSocketStream<char>& clientStream, unique_ptr<streams::IOSocketStream<char>>& filesStream, streams::IOSocketStream<char>& dataBaseStream, const string& data)
+void authorization(streams::IOSocketStream<char>& clientStream, unique_ptr<streams::IOSocketStream<char>>& filesStream, unique_ptr<streams::IOSocketStream<char>>& dataBaseStream, const string& data)
 {
 	if (!filesStream)
 	{
@@ -474,6 +564,21 @@ void authorization(streams::IOSocketStream<char>& clientStream, unique_ptr<strea
 		return;
 	}
 
+	if (!dataBaseStream)
+	{
+		string response = web::HTTPBuilder().responseCode(web::ResponseCodes::ok).headers
+		(
+			"Error", 1,
+			"Content-Length", responses::noConnectionWithDataBaseServer.size()
+		).build(&responses::noConnectionWithDataBaseServer);
+
+		utility::web::insertSizeHeaderToHTTPMessage(response);
+
+		clientStream << response;
+
+		return;
+	}
+
 	auto [login, password] = userDataParse(data);
 	string response;
 	string responseMessage;
@@ -481,11 +586,11 @@ void authorization(streams::IOSocketStream<char>& clientStream, unique_ptr<strea
 
 	try
 	{
-		dataBaseStream << accountRequests::authorization;
-		dataBaseStream << login;
-		dataBaseStream << password;
+		*dataBaseStream << accountRequests::authorization;
+		*dataBaseStream << login;
+		*dataBaseStream << password;
 
-		dataBaseStream >> response;
+		*dataBaseStream >> response;
 
 		error = response != responses::okResponse;
 
@@ -521,7 +626,7 @@ void authorization(streams::IOSocketStream<char>& clientStream, unique_ptr<strea
 	}
 }
 
-void registration(streams::IOSocketStream<char>& clientStream, unique_ptr<streams::IOSocketStream<char>>& filesStream, streams::IOSocketStream<char>& dataBaseStream, const string& data)
+void registration(streams::IOSocketStream<char>& clientStream, unique_ptr<streams::IOSocketStream<char>>& filesStream, unique_ptr<streams::IOSocketStream<char>>& dataBaseStream, const string& data)
 {
 	if (!filesStream)
 	{
@@ -538,6 +643,21 @@ void registration(streams::IOSocketStream<char>& clientStream, unique_ptr<stream
 		return;
 	}
 
+	if (!dataBaseStream)
+	{
+		string response = web::HTTPBuilder().responseCode(web::ResponseCodes::ok).headers
+		(
+			"Error", 1,
+			"Content-Length", responses::noConnectionWithDataBaseServer.size()
+		).build(&responses::noConnectionWithDataBaseServer);
+
+		utility::web::insertSizeHeaderToHTTPMessage(response);
+
+		clientStream << response;
+
+		return;
+	}
+
 	auto [login, password] = userDataParse(data);
 	string response;
 	string responseMessage;
@@ -545,11 +665,11 @@ void registration(streams::IOSocketStream<char>& clientStream, unique_ptr<stream
 
 	try
 	{
-		dataBaseStream << accountRequests::registration;
-		dataBaseStream << login;
-		dataBaseStream << password;
+		*dataBaseStream << accountRequests::registration;
+		*dataBaseStream << login;
+		*dataBaseStream << password;
 
-		dataBaseStream >> response;
+		*dataBaseStream >> response;
 
 		error = response == accountResponses::failRegistration;
 
