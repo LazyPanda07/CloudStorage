@@ -59,7 +59,7 @@ namespace web
 						}
 						else if (request == accountRequests::setLogin)
 						{
-							setLogin(filesStream, dataBaseStream, parser.getBody());
+							setLogin(clientStream, filesStream, dataBaseStream, parser.getBody());
 						}
 					}
 					else

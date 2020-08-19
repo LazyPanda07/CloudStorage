@@ -828,7 +828,6 @@ void setPath(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream<char>>& cli
 
 void setLogin(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream<char>>& clientStream, const wstring& login, const wstring& password)
 {
-	//TODO: receive response
 	if (!clientStream)
 	{
 		if (ref.getCurrentPopupWindow())
@@ -842,7 +841,7 @@ void setLogin(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream<char>>& cl
 	}
 
 	string body = "login=" + utility::conversion::to_string(login) + "&" + "password=" + utility::conversion::to_string(password);
-
+	string response;
 	string request = web::HTTPBuilder().postRequest().headers
 	(
 		requestType::accountType, accountRequests::setLogin,
@@ -854,6 +853,15 @@ void setLogin(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream<char>>& cl
 	try
 	{
 		*clientStream << request;
+	}
+	catch (const web::WebException&)
+	{
+
+	}
+
+	try
+	{
+		*clientStream >> response;
 	}
 	catch (const web::WebException&)
 	{

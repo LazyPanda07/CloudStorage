@@ -19,7 +19,7 @@ void removeFile(streams::IOSocketStream<char>& clientStream, std::unique_ptr<str
 
 void cancelUploadFile(streams::IOSocketStream<char>& clientStream, std::unique_ptr<streams::IOSocketStream<char>>& filesStream, const std::unordered_map<std::string, std::string>& headers);
 
-void setLogin(std::unique_ptr<streams::IOSocketStream<char>>& filesStream, std::unique_ptr<streams::IOSocketStream<char>>& dataBaseStream, const std::string& data);
+void setLogin(streams::IOSocketStream<char>& clientStream, std::unique_ptr<streams::IOSocketStream<char>>& filesStream, std::unique_ptr<streams::IOSocketStream<char>>& dataBaseStream, const std::string& data);
 
 void nextFolder(streams::IOSocketStream<char>& clientStream, std::unique_ptr<streams::IOSocketStream<char>>& filesStream, std::unique_ptr<streams::IOSocketStream<char>>& dataBaseStream, const std::string& data);
 

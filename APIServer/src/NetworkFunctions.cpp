@@ -392,10 +392,8 @@ void cancelUploadFile(streams::IOSocketStream<char>& clientStream, unique_ptr<st
 	}
 }
 
-void setLogin(unique_ptr<streams::IOSocketStream<char>>& filesStream, unique_ptr<streams::IOSocketStream<char>>& dataBaseStream, const string& data)
+void setLogin(streams::IOSocketStream<char>& clientStream, unique_ptr<streams::IOSocketStream<char>>& filesStream, unique_ptr<streams::IOSocketStream<char>>& dataBaseStream, const string& data)
 {
-	//TODO: send response
-
 	auto [login, password] = userDataParse(data);
 	string response;
 	string responseMessage;
@@ -411,6 +409,13 @@ void setLogin(unique_ptr<streams::IOSocketStream<char>>& filesStream, unique_ptr
 
 		error = response != responses::okResponse;
 
+		responseMessage = web::HTTPBuilder().responseCode(web::ResponseCodes::ok).headers
+		(
+			"Error", error
+		).build();
+
+		utility::web::insertSizeHeaderToHTTPMessage(responseMessage);
+
 		if (error)
 		{
 			//TODO: error message
@@ -420,6 +425,8 @@ void setLogin(unique_ptr<streams::IOSocketStream<char>>& filesStream, unique_ptr
 			*filesStream << accountRequests::setLogin;
 			*filesStream << login;
 		}
+
+		clientStream << responseMessage;
 	}
 	catch (const web::WebException& e)
 	{
