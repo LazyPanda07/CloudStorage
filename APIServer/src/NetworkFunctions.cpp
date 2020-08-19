@@ -25,7 +25,14 @@ void showAllFilesInFolder(streams::IOSocketStream<char>& clientStream, unique_pt
 
 		utility::web::insertSizeHeaderToHTTPMessage(response);
 
-		clientStream << response;
+		try
+		{
+			clientStream << response;
+		}
+		catch (const web::WebException&)
+		{
+
+		}
 
 		return;
 	}
@@ -59,7 +66,14 @@ void showAllFilesInFolder(streams::IOSocketStream<char>& clientStream, unique_pt
 
 		utility::web::insertSizeHeaderToHTTPMessage(response);
 
-		clientStream << response;
+		try
+		{
+			clientStream << response;
+		}
+		catch (const web::WebException&)
+		{
+
+		}
 	}
 	catch (const web::WebException& e)
 	{
@@ -79,7 +93,14 @@ void uploadFile(streams::IOSocketStream<char>& clientStream, unique_ptr<streams:
 
 		utility::web::insertSizeHeaderToHTTPMessage(response);
 
-		clientStream << response;
+		try
+		{
+			clientStream << response;
+		}
+		catch (const web::WebException&)
+		{
+
+		}
 
 		return;
 	}
@@ -94,7 +115,14 @@ void uploadFile(streams::IOSocketStream<char>& clientStream, unique_ptr<streams:
 
 		utility::web::insertSizeHeaderToHTTPMessage(response);
 
-		clientStream << response;
+		try
+		{
+			clientStream << response;
+		}
+		catch (const web::WebException&)
+		{
+
+		}
 
 		return;
 	}
@@ -166,7 +194,14 @@ void downloadFile(streams::IOSocketStream<char>& clientStream, unique_ptr<stream
 
 		utility::web::insertSizeHeaderToHTTPMessage(response);
 
-		clientStream << response;
+		try
+		{
+			clientStream << response;
+		}
+		catch (const web::WebException&)
+		{
+
+		}
 
 		return;
 	}
@@ -200,7 +235,14 @@ void downloadFile(streams::IOSocketStream<char>& clientStream, unique_ptr<stream
 
 		utility::web::insertSizeHeaderToHTTPMessage(response);
 
-		clientStream << response;
+		try
+		{
+			clientStream << response;
+		}
+		catch (const web::WebException&)
+		{
+
+		}
 	}
 	catch (const web::WebException& e)
 	{
@@ -220,7 +262,14 @@ void removeFile(streams::IOSocketStream<char>& clientStream, unique_ptr<streams:
 
 		utility::web::insertSizeHeaderToHTTPMessage(response);
 
-		clientStream << response;
+		try
+		{
+			clientStream << response;
+		}
+		catch (const web::WebException&)
+		{
+
+		}
 
 		return;
 	}
@@ -235,7 +284,14 @@ void removeFile(streams::IOSocketStream<char>& clientStream, unique_ptr<streams:
 
 		utility::web::insertSizeHeaderToHTTPMessage(response);
 
-		clientStream << response;
+		try
+		{
+			clientStream << response;
+		}
+		catch (const web::WebException&)
+		{
+
+		}
 
 		return;
 	}
@@ -268,7 +324,14 @@ void removeFile(streams::IOSocketStream<char>& clientStream, unique_ptr<streams:
 
 		utility::web::insertSizeHeaderToHTTPMessage(response);
 
-		clientStream << response;
+		try
+		{
+			clientStream << response;
+		}
+		catch (const web::WebException&)
+		{
+
+		}
 	}
 	catch (const web::WebException& e)
 	{
@@ -288,7 +351,14 @@ void cancelUploadFile(streams::IOSocketStream<char>& clientStream, unique_ptr<st
 
 		utility::web::insertSizeHeaderToHTTPMessage(response);
 
-		clientStream << response;
+		try
+		{
+			clientStream << response;
+		}
+		catch (const web::WebException&)
+		{
+
+		}
 
 		return;
 	}
@@ -356,7 +426,14 @@ void nextFolder(streams::IOSocketStream<char>& clientStream, unique_ptr<streams:
 
 		utility::web::insertSizeHeaderToHTTPMessage(response);
 
-		clientStream << response;
+		try
+		{
+			clientStream << response;
+		}
+		catch (const web::WebException&)
+		{
+
+		}
 
 		return;
 	}
@@ -371,7 +448,14 @@ void nextFolder(streams::IOSocketStream<char>& clientStream, unique_ptr<streams:
 
 		utility::web::insertSizeHeaderToHTTPMessage(response);
 
-		clientStream << response;
+		try
+		{
+			clientStream << response;
+		}
+		catch (const web::WebException&)
+		{
+
+		}
 
 		return;
 	}
@@ -419,7 +503,14 @@ void prevFolder(streams::IOSocketStream<char>& clientStream, unique_ptr<streams:
 
 		utility::web::insertSizeHeaderToHTTPMessage(response);
 
-		clientStream << response;
+		try
+		{
+			clientStream << response;
+		}
+		catch (const web::WebException&)
+		{
+
+		}
 
 		return;
 	}
@@ -434,7 +525,14 @@ void prevFolder(streams::IOSocketStream<char>& clientStream, unique_ptr<streams:
 
 		utility::web::insertSizeHeaderToHTTPMessage(response);
 
-		clientStream << response;
+		try
+		{
+			clientStream << response;
+		}
+		catch (const web::WebException&)
+		{
+
+		}
 
 		return;
 	}
@@ -479,7 +577,14 @@ void setPath(streams::IOSocketStream<char>& clientStream, unique_ptr<streams::IO
 
 		utility::web::insertSizeHeaderToHTTPMessage(response);
 
-		clientStream << response;
+		try
+		{
+			clientStream << response;
+		}
+		catch (const web::WebException&)
+		{
+
+		}
 
 		return;
 	}
@@ -494,7 +599,14 @@ void setPath(streams::IOSocketStream<char>& clientStream, unique_ptr<streams::IO
 
 		utility::web::insertSizeHeaderToHTTPMessage(response);
 
-		clientStream << response;
+		try
+		{
+			clientStream << response;
+		}
+		catch (const web::WebException&)
+		{
+
+		}
 
 		return;
 	}
@@ -549,21 +661,6 @@ void createFolder(unique_ptr<streams::IOSocketStream<char>>& filesStream, unique
 
 void authorization(streams::IOSocketStream<char>& clientStream, unique_ptr<streams::IOSocketStream<char>>& filesStream, unique_ptr<streams::IOSocketStream<char>>& dataBaseStream, const string& data)
 {
-	if (!filesStream)
-	{
-		string response = web::HTTPBuilder().responseCode(web::ResponseCodes::ok).headers
-		(
-			"Error", 1,
-			"Content-Length", responses::noConnectionWithFilesServer.size()
-		).build(&responses::noConnectionWithFilesServer);
-
-		utility::web::insertSizeHeaderToHTTPMessage(response);
-
-		clientStream << response;
-
-		return;
-	}
-
 	if (!dataBaseStream)
 	{
 		string response = web::HTTPBuilder().responseCode(web::ResponseCodes::ok).headers
@@ -574,7 +671,36 @@ void authorization(streams::IOSocketStream<char>& clientStream, unique_ptr<strea
 
 		utility::web::insertSizeHeaderToHTTPMessage(response);
 
-		clientStream << response;
+		try
+		{
+			clientStream << response;
+		}
+		catch (const web::WebException&)
+		{
+
+		}
+
+		return;
+	}
+
+	if (!filesStream)
+	{
+		string response = web::HTTPBuilder().responseCode(web::ResponseCodes::ok).headers
+		(
+			"Error", 1,
+			"Content-Length", responses::noConnectionWithFilesServer.size()
+		).build(&responses::noConnectionWithFilesServer);
+
+		utility::web::insertSizeHeaderToHTTPMessage(response);
+
+		try
+		{
+			clientStream << response;
+		}
+		catch (const web::WebException&)
+		{
+
+		}
 
 		return;
 	}
@@ -628,21 +754,6 @@ void authorization(streams::IOSocketStream<char>& clientStream, unique_ptr<strea
 
 void registration(streams::IOSocketStream<char>& clientStream, unique_ptr<streams::IOSocketStream<char>>& filesStream, unique_ptr<streams::IOSocketStream<char>>& dataBaseStream, const string& data)
 {
-	if (!filesStream)
-	{
-		string response = web::HTTPBuilder().responseCode(web::ResponseCodes::ok).headers
-		(
-			"Error", 1,
-			"Content-Length", responses::noConnectionWithFilesServer.size()
-		).build(&responses::noConnectionWithFilesServer);
-
-		utility::web::insertSizeHeaderToHTTPMessage(response);
-
-		clientStream << response;
-
-		return;
-	}
-
 	if (!dataBaseStream)
 	{
 		string response = web::HTTPBuilder().responseCode(web::ResponseCodes::ok).headers
@@ -653,7 +764,36 @@ void registration(streams::IOSocketStream<char>& clientStream, unique_ptr<stream
 
 		utility::web::insertSizeHeaderToHTTPMessage(response);
 
-		clientStream << response;
+		try
+		{
+			clientStream << response;
+		}
+		catch (const web::WebException&)
+		{
+
+		}
+
+		return;
+	}
+
+	if (!filesStream)
+	{
+		string response = web::HTTPBuilder().responseCode(web::ResponseCodes::ok).headers
+		(
+			"Error", 1,
+			"Content-Length", responses::noConnectionWithFilesServer.size()
+		).build(&responses::noConnectionWithFilesServer);
+
+		utility::web::insertSizeHeaderToHTTPMessage(response);
+
+		try
+		{
+			clientStream << response;
+		}
+		catch (const web::WebException&)
+		{
+
+		}
 
 		return;
 	}
