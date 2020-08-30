@@ -575,6 +575,8 @@ void asyncRegistration(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream<c
 	wstring wLogin;
 	wstring wPassword;
 	wstring wRepeatPassword;
+	string sendLogin;
+	string sendPassword;
 	string response;
 	isCancel = false;
 
@@ -620,7 +622,21 @@ void asyncRegistration(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream<c
 		}
 	}
 
-	string body = "login=" + utility::conversion::to_string(wLogin) + "&" + "password=" + utility::conversion::to_string(wPassword);
+	sendLogin = utility::conversion::to_string(wLogin);
+	sendPassword = utility::conversion::to_string(wPassword);
+
+	if (!utility::validation::validationUserData(sendLogin) || !utility::validation::validationUserData(sendPassword))
+	{
+		SetWindowTextW(registrationLoginEdit, L"");
+		SetWindowTextW(registrationPasswordEdit, L"");
+		SetWindowTextW(registrationRepeatPasswordEdit, L"");
+
+		SendMessageW(ref.getMainWindow(), UI::events::deletePopupWindowE, NULL, NULL);
+
+		UI::validationDataError(ref);
+	}
+
+	string body = "login=" + move(sendLogin) + "&" + "password=" + move(sendPassword);
 
 	string request = web::HTTPBuilder().postRequest().headers
 	(
