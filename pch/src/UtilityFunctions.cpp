@@ -9,7 +9,7 @@ using namespace std;
 
 constexpr array<char, allowableCharactersAlphabetSize> initAlphabet()
 {
-#pragma push(warning)
+#pragma warning(push)
 #pragma warning(disable : 28020)
 
 	array<char, allowableCharactersAlphabetSize> result{ 0 };
@@ -34,7 +34,7 @@ constexpr array<char, allowableCharactersAlphabetSize> initAlphabet()
 	result[currentIndex] = '_';
 
 	return result;
-#pragma pop(warning)
+#pragma warning(pop)
 }
 
 constexpr array<char, allowableCharactersAlphabetSize> alphabet = initAlphabet();
