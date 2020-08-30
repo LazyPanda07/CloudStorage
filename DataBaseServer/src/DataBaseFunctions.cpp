@@ -1,6 +1,7 @@
 #include "pch.h"
 
 #include "DataBaseFunctions.h"
+#include "UtilityFunctions.h"
 #include "Constants.h"
 
 using namespace std;
@@ -12,13 +13,21 @@ void authorization(streams::IOSocketStream<char>& clientStream, const db::CloudD
 	clientStream >> login;
 	clientStream >> password;
 
-	if (db.authorization(login, password))
+	if (utility::validation::validationUserData(login) && utility::validation::validationUserData(password))
 	{
-		clientStream << responses::okResponse;
+		if (db.authorization(login, password))
+		{
+			clientStream << responses::okResponse;
+		}
+		else
+		{
+			clientStream << accountResponses::failAuthorization;
+		}
 	}
 	else
 	{
-		clientStream << accountResponses::failAuthorization;
+		login = "";
+		clientStream << accountResponses::incorrectCharacters;
 	}
 }
 
@@ -29,13 +38,21 @@ void registration(streams::IOSocketStream<char>& clientStream, const db::CloudDa
 	clientStream >> login;
 	clientStream >> password;
 
-	if (db.registration(login, password).size())
+	if (utility::validation::validationUserData(login) && utility::validation::validationUserData(password))
 	{
-		clientStream << accountResponses::failRegistration;
+		if (db.registration(login, password).size())
+		{
+			clientStream << accountResponses::failRegistration;
+		}
+		else
+		{
+			clientStream << accountResponses::successRegistration;
+		}
 	}
 	else
 	{
-		clientStream << accountResponses::successRegistration;
+		login = "";
+		clientStream << accountResponses::incorrectCharacters;
 	}
 }
 
