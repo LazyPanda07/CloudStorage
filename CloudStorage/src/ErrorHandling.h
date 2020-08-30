@@ -11,4 +11,6 @@ namespace UI
 	int serverRequestError(MainWindow& ref);
 
 	int noConnectionWithServer(MainWindow& ref);
+
+	int validationDataError(MainWindow& ref);
 }

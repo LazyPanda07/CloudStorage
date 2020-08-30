@@ -722,6 +722,8 @@ void asyncAuthorization(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream<
 
 	wstring wLogin;
 	wstring wPassword;
+	string sendLogin;
+	string sendPassword;
 	string response;
 	HWND authorizationLoginEdit;
 	HWND authorizationPasswordEdit;
@@ -736,7 +738,23 @@ void asyncAuthorization(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream<
 	GetWindowTextW(authorizationLoginEdit, wLogin.data(), wLogin.size() + 1);
 	GetWindowTextW(authorizationPasswordEdit, wPassword.data(), wPassword.size() + 1);
 
-	string body = "login=" + utility::conversion::to_string(wLogin) + "&" + "password=" + utility::conversion::to_string(wPassword);
+	sendLogin = utility::conversion::to_string(wLogin);
+	sendPassword = utility::conversion::to_string(wPassword);
+
+	if (!utility::validation::validationUserData(sendLogin) || !utility::validation::validationUserData(sendPassword))
+	{
+		SetWindowTextW(authorizationLoginEdit, L"");
+		SetWindowTextW(authorizationPasswordEdit, L"");
+
+		if (UI::validationDataError(ref) == IDOK)
+		{
+			SendMessageW(ref.getMainWindow(), UI::events::deletePopupWindowE, NULL, NULL);
+		}
+
+		return;
+	}
+
+	string body = "login=" + move(sendLogin) + "&" + "password=" + move(sendPassword);
 
 	string request = web::HTTPBuilder().postRequest().headers
 	(

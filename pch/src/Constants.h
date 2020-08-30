@@ -21,6 +21,8 @@ inline constexpr std::string_view customHTTPHeaderSize = "Total-HTTP-Message-Siz
 inline constexpr std::string_view dataDelimiter = "/";
 inline constexpr std::string_view dataPartDelimiter = "|";
 
+inline constexpr int allowableCharactersAlphabetSize = 26 + 26 + 10 + 1; //a-z, A-Z, 0-9, _
+
 //TODO: delete max constant
 inline constexpr int maxFilesFromExplorer = 10;
 
@@ -77,6 +79,7 @@ namespace accountResponses
 	inline constexpr std::string_view failAuthorization = "Неправильный логин или пароль";
 	inline constexpr std::string_view successRegistration = "Регистрация прошла успешно";
 	inline constexpr std::string_view failRegistration = "Такой пользователь уже существует";
+	inline constexpr std::string_view incorrectCharacters = "Разрешено использовать только следующие символы : a-z, A-Z, 0-9, _";
 }
 
 namespace filesResponses

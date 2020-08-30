@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+
 #include <Windows.h>
 
 namespace utility
@@ -19,6 +20,11 @@ namespace utility
 		POINT centerCoordinates(LONG width, LONG height, HWND window = GetDesktopWindow());
 
 		RECT getWindowPosition(HWND window);
+	}
+
+	namespace validation
+	{
+		bool validationUserData(const std::string& data);
 	}
 
 	namespace web

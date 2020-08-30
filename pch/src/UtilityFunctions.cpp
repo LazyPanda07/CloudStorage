@@ -7,6 +7,40 @@
 
 using namespace std;
 
+constexpr array<char, allowableCharactersAlphabetSize> initAlphabet()
+{
+#pragma push(warning)
+#pragma warning(disable : 28020)
+
+	array<char, allowableCharactersAlphabetSize> result{ 0 };
+
+	size_t currentIndex = 0;
+
+	for (size_t i = 'A'; i <= 'Z'; i++)
+	{
+		result[currentIndex++] = i;
+	}
+
+	for (size_t i = 'a'; i <= 'z'; i++)
+	{
+		result[currentIndex++] = i;
+	}
+
+	for (size_t i = '0'; i <= '9'; i++)
+	{
+		result[currentIndex++] = i;
+	}
+
+	result[currentIndex] = '_';
+
+	return result;
+#pragma pop(warning)
+}
+
+constexpr array<char, allowableCharactersAlphabetSize> alphabet = initAlphabet();
+
+unordered_set<char> allowableCharacters(begin(alphabet), end(alphabet));
+
 //returns size of customHTTPHeaderSize.size() + HTTPMessage.size() + sizeof(\r\n) + digits of size itself
 string calculateHTTPMessageSize(const string& HTTPMessage);
 
@@ -102,6 +136,14 @@ namespace utility
 			GetWindowRect(window, &result);
 			MapWindowPoints(GetDesktopWindow(), GetParent(window), reinterpret_cast<LPPOINT>(&result), 2);
 			return result;
+		}
+	}
+
+	namespace validation
+	{
+		bool validationUserData(const string& data)
+		{
+			return all_of(begin(data), end(data), [](char character) { return allowableCharacters.find(character) != end(allowableCharacters); });
 		}
 	}
 

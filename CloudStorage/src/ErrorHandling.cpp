@@ -2,6 +2,9 @@
 
 #include "ErrorHandling.h"
 
+#include "Constants.h"
+#include "UtilityFunctions.h"
+
 using namespace std;
 
 namespace UI
@@ -35,5 +38,10 @@ namespace UI
 	int noConnectionWithServer(MainWindow& ref)
 	{
 		return customError(ref, L"Нет соединения с сервером", L"Ошибка соединения");
+	}
+
+	int validationDataError(MainWindow& ref)
+	{
+		return customError(ref, utility::conversion::to_wstring(string(accountResponses::incorrectCharacters)), L"Некорректные данные");
 	}
 }
