@@ -588,6 +588,26 @@ void asyncRegistration(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream<c
 	wPassword.resize(GetWindowTextLengthW(registrationPasswordEdit));
 	wRepeatPassword.resize(GetWindowTextLengthW(registrationRepeatPasswordEdit));
 
+	if (wLogin.empty())
+	{
+		if (UI::customError(ref, L"Логин не может быть пустым", L"Ошибка"))
+		{
+			SendMessageW(ref.getMainWindow(), UI::events::deletePopupWindowE, NULL, NULL);
+		}
+
+		return;
+	}
+
+	if (wPassword.empty())
+	{
+		if (UI::customError(ref, L"Пароль не может быть пустым", L"Ошибка"))
+		{
+			SendMessageW(ref.getMainWindow(), UI::events::deletePopupWindowE, NULL, NULL);
+		}
+
+		return;
+	}
+
 	GetWindowTextW(registrationLoginEdit, wLogin.data(), wLogin.size() + 1);
 	GetWindowTextW(registrationPasswordEdit, wPassword.data(), wPassword.size() + 1);
 	GetWindowTextW(registrationRepeatPasswordEdit, wRepeatPassword.data(), wRepeatPassword.size() + 1);
@@ -750,6 +770,26 @@ void asyncAuthorization(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream<
 
 	wLogin.resize(GetWindowTextLengthW(authorizationLoginEdit));
 	wPassword.resize(GetWindowTextLengthW(authorizationPasswordEdit));
+
+	if (wLogin.empty())
+	{
+		if (UI::customError(ref, L"Логин не может быть пустым", L"Ошибка"))
+		{
+			SendMessageW(ref.getMainWindow(), UI::events::deletePopupWindowE, NULL, NULL);
+		}
+
+		return;
+	}
+
+	if (wPassword.empty())
+	{
+		if (UI::customError(ref, L"Пароль не может быть пустым", L"Ошибка"))
+		{
+			SendMessageW(ref.getMainWindow(), UI::events::deletePopupWindowE, NULL, NULL);
+		}
+
+		return;
+	}
 
 	GetWindowTextW(authorizationLoginEdit, wLogin.data(), wLogin.size() + 1);
 	GetWindowTextW(authorizationPasswordEdit, wPassword.data(), wPassword.size() + 1);
