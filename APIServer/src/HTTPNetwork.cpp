@@ -57,7 +57,14 @@ namespace web
 					HTTPParser parser(data);
 					const unordered_map<string, string>& headers = parser.getHeaders();
 
-					size = stoi(headers.at("Total-HTTP-Message-Size"));
+					auto it = headers.find("Total-HTTP-Message-Size");
+
+					if (it == end(headers))
+					{
+						return -1;
+					}
+
+					size = stoi(it->second);
 
 					if (data.size() < size)
 					{
@@ -129,7 +136,14 @@ namespace web
 					HTTPParser parser(data);
 					const unordered_map<string, string>& headers = parser.getHeaders();
 
-					size = stoi(headers.at("Total-HTTP-Message-Size"));
+					auto it = headers.find("Total-HTTP-Message-Size");
+
+					if (it == end(headers))
+					{
+						return -1;
+					}
+
+					size = stoi(it->second);
 
 					if (data.size() < size)
 					{
