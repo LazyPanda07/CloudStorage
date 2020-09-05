@@ -143,7 +143,7 @@ namespace utility
 	{
 		bool validationUserData(const string& data)
 		{
-			return all_of(begin(data), end(data), [](char character) { return allowableCharacters.find(character) != end(allowableCharacters); });
+			return data.size() < 33 ? all_of(begin(data), end(data), [](char character) { return allowableCharacters.find(character) != end(allowableCharacters); }) : false;
 		}
 	}
 

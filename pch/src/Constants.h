@@ -23,7 +23,6 @@ inline constexpr std::string_view dataPartDelimiter = "|";
 
 inline constexpr int allowableCharactersAlphabetSize = 26 + 26 + 10 + 1; //a-z, A-Z, 0-9, _
 
-//TODO: delete max constant
 inline constexpr int maxFilesFromExplorer = 10;
 
 namespace requestType
