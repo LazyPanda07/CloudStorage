@@ -27,40 +27,40 @@ inline constexpr int maxFilesFromExplorer = 10;
 
 namespace requestType
 {
-	inline const std::string accountType = "Account request";
-	inline const std::string filesType = "Files request";
-	inline const std::string exitType = "Exit request";
-	inline const std::string cancelType = "Cancel request";
-	inline const std::string controlType = "Control request";
+	inline const std::string accountType = "Account-Request";
+	inline const std::string filesType = "Files-Request";
+	inline const std::string exitType = "Exit-Request";
+	inline const std::string cancelType = "Cancel-Request";
+	inline const std::string controlType = "Control-Request";
 }
 
 namespace networkRequests
 {
 	inline constexpr std::string_view exit = "EOSS";
-	inline constexpr std::string_view cancelOperation = "Cancel operation";
+	inline constexpr std::string_view cancelOperation = "Cancel-Operation";
 }
 
 namespace controlRequests
 {
-	inline constexpr std::string_view nextFolder = "Next folder";
-	inline constexpr std::string_view prevFolder = "Previous folder";
-	inline constexpr std::string_view setPath = "Set path";
+	inline constexpr std::string_view nextFolder = "Next-Folder";
+	inline constexpr std::string_view prevFolder = "Previous-Folder";
+	inline constexpr std::string_view setPath = "Set-Path";
 }
 
 namespace accountRequests
 {
 	inline constexpr std::string_view authorization = "Authorization";
 	inline constexpr std::string_view registration = "Registration";
-	inline constexpr std::string_view setLogin = "Set login";
+	inline constexpr std::string_view setLogin = "Set-Login";
 }
 
 namespace filesRequests
 {
-	inline constexpr std::string_view uploadFile = "Upload file";
-	inline constexpr std::string_view downloadFile = "Download file";
-	inline constexpr std::string_view showAllFilesInFolder = "Show all files in directory";
-	inline constexpr std::string_view removeFile = "Remove file";
-	inline constexpr std::string_view createFolder = "Create folder";
+	inline constexpr std::string_view uploadFile = "Upload-File";
+	inline constexpr std::string_view downloadFile = "Download-File";
+	inline constexpr std::string_view showAllFilesInFolder = "Show-All-Files-In-Folder";
+	inline constexpr std::string_view removeFile = "Remove-File";
+	inline constexpr std::string_view createFolder = "Create-Folder";
 }
 
 namespace responses
