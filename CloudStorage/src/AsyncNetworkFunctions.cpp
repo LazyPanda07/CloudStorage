@@ -112,9 +112,25 @@ string asyncFolderControlMessages(UI::MainWindow& ref, unique_ptr<streams::IOSoc
 
 	}
 
-	getFiles(ref, clientStream, fileNames, false, isCancel, false);
+	string responseBody = web::HTTPParser(response).getBody();
 
-	return response;
+	if (responseBody == responses::okResponse)
+	{
+		getFiles(ref, clientStream, fileNames, false, isCancel, false);
+	}
+	else
+	{
+		if (ref.getCurrentPopupWindow())
+		{
+			ref.getCurrentPopupWindow()->showPopupWindowVar() = false;
+
+			SendMessageW(ref.getMainWindow(), UI::events::deletePopupWindowE, NULL, NULL);
+
+			UI::serverResponseError(ref);
+		}
+	}
+
+	return responseBody;
 }
 
 void asyncUploadFile(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream<char>>& clientStream, const wstring& filePath, vector<db::fileDataRepresentation>& fileNames, bool& isCancel, bool removeBeforeUpload)

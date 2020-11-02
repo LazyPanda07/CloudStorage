@@ -509,7 +509,14 @@ void nextFolder(streams::IOSocketStream<char>& clientStream, unique_ptr<streams:
 		}
 		else
 		{
-			//TODO:: error handling
+			string response = web::HTTPBuilder().responseCode(web::ResponseCodes::ok).headers
+			(
+				"Content-Length", fail.size()
+			).build(&fail);
+
+			utility::web::insertSizeHeaderToHTTPMessage(response);
+
+			clientStream << response;
 		}
 	}
 	catch (const web::WebException&)
@@ -588,7 +595,14 @@ void prevFolder(streams::IOSocketStream<char>& clientStream, unique_ptr<streams:
 	}
 	else
 	{
-		//TODO:: error handling
+		string response = web::HTTPBuilder().responseCode(web::ResponseCodes::ok).headers
+		(
+			"Content-Length", fail.size()
+		).build(&fail);
+
+		utility::web::insertSizeHeaderToHTTPMessage(response);
+
+		clientStream << response;
 	}
 }
 
@@ -666,7 +680,14 @@ void setPath(streams::IOSocketStream<char>& clientStream, unique_ptr<streams::IO
 	}
 	else
 	{
-		//TODO:: error handling
+		string response = web::HTTPBuilder().responseCode(web::ResponseCodes::ok).headers
+		(
+			"Content-Length", fail.size()
+		).build(&fail);
+
+		utility::web::insertSizeHeaderToHTTPMessage(response);
+
+		clientStream << response;
 	}
 }
 
