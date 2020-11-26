@@ -21,9 +21,9 @@
 
 using namespace std;
 
-void setPath(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream<char>>& clientStream, string&& path, vector<db::fileDataRepresentation>& fileNames, bool& isCancel);
+void setPath(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream>& clientStream, string&& path, vector<db::fileDataRepresentation>& fileNames, bool& isCancel);
 
-void setLogin(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream<char>>& clientStream, const wstring& login, const wstring& password);
+void setLogin(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream>& clientStream, const wstring& login, const wstring& password);
 
 string cancelUploadFile(const string& fileName)
 {
@@ -39,7 +39,7 @@ string cancelUploadFile(const string& fileName)
 	return result;
 }
 
-string asyncFolderControlMessages(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream<char>>& clientStream, const string_view& controlRequest, vector<db::fileDataRepresentation>& fileNames, bool& isCancel, string&& data)
+string asyncFolderControlMessages(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream>& clientStream, const string_view& controlRequest, vector<db::fileDataRepresentation>& fileNames, bool& isCancel, string&& data)
 {
 	if (!clientStream)
 	{
@@ -133,7 +133,7 @@ string asyncFolderControlMessages(UI::MainWindow& ref, unique_ptr<streams::IOSoc
 	return responseBody;
 }
 
-void asyncUploadFile(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream<char>>& clientStream, const wstring& filePath, vector<db::fileDataRepresentation>& fileNames, bool& isCancel, bool removeBeforeUpload)
+void asyncUploadFile(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream>& clientStream, const wstring& filePath, vector<db::fileDataRepresentation>& fileNames, bool& isCancel, bool removeBeforeUpload)
 {
 	if (!clientStream)
 	{
@@ -323,7 +323,7 @@ void asyncUploadFile(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream<cha
 	}
 }
 
-void asyncDownloadFile(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream<char>>& clientStream, const wstring& fileName, intmax_t fileSize, bool& isCancel)
+void asyncDownloadFile(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream>& clientStream, const wstring& fileName, intmax_t fileSize, bool& isCancel)
 {
 	if (!clientStream)
 	{
@@ -470,7 +470,7 @@ void asyncDownloadFile(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream<c
 	}
 }
 
-void asyncReconnect(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream<char>>& clientStream, string&& currentPath, const wstring& login, const wstring& password, vector<db::fileDataRepresentation>& fileNames, bool& isCancel)
+void asyncReconnect(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream>& clientStream, string&& currentPath, const wstring& login, const wstring& password, vector<db::fileDataRepresentation>& fileNames, bool& isCancel)
 {
 	isCancel = false;
 
@@ -483,7 +483,7 @@ void asyncReconnect(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream<char
 
 	try
 	{
-		clientStream = make_unique<streams::IOSocketStream<char>>(new buffers::IOSocketBuffer<char>(new web::HTTPNetwork()));
+		clientStream = make_unique<streams::IOSocketStream>(new buffers::IOSocketBuffer(new web::HTTPNetwork()));
 	}
 	catch (const web::WebException&)
 	{
@@ -530,7 +530,7 @@ void asyncReconnect(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream<char
 	setPath(ref, clientStream, move(currentPath), fileNames, isCancel);
 }
 
-void asyncCreateFolder(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream<char>>& clientStream, wstring&& wFolderName, vector<db::fileDataRepresentation>& fileNames, bool& isCancel)
+void asyncCreateFolder(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream>& clientStream, wstring&& wFolderName, vector<db::fileDataRepresentation>& fileNames, bool& isCancel)
 {
 	if (!clientStream)
 	{
@@ -574,7 +574,7 @@ void asyncCreateFolder(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream<c
 	getFiles(ref, clientStream, fileNames, true, isCancel, false);
 }
 
-void asyncRegistration(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream<char>>& clientStream, wstring& login, wstring& password, bool& isCancel)
+void asyncRegistration(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream>& clientStream, wstring& login, wstring& password, bool& isCancel)
 {
 	if (!clientStream)
 	{
@@ -758,7 +758,7 @@ void asyncRegistration(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream<c
 	}
 }
 
-void asyncAuthorization(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream<char>>& clientStream, wstring& login, wstring& password, bool& isCancel)
+void asyncAuthorization(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream>& clientStream, wstring& login, wstring& password, bool& isCancel)
 {
 	if (!clientStream)
 	{
@@ -906,12 +906,12 @@ void asyncAuthorization(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream<
 	}
 }
 
-void setPath(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream<char>>& clientStream, string&& path, vector<db::fileDataRepresentation>& fileNames, bool& isCancel)
+void setPath(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream>& clientStream, string&& path, vector<db::fileDataRepresentation>& fileNames, bool& isCancel)
 {
 	asyncFolderControlMessages(ref, clientStream, controlRequests::setPath, fileNames, isCancel, move(path));
 }
 
-void setLogin(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream<char>>& clientStream, const wstring& login, const wstring& password)
+void setLogin(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream>& clientStream, const wstring& login, const wstring& password)
 {
 	if (!clientStream)
 	{
@@ -954,7 +954,7 @@ void setLogin(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream<char>>& cl
 	}
 }
 
-void asyncFirstConnect(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream<char>>& clientStream, bool& isCancel)
+void asyncFirstConnect(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream>& clientStream, bool& isCancel)
 {
 	isCancel = false;
 
@@ -969,7 +969,7 @@ void asyncFirstConnect(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream<c
 			return;
 		}
 
-		clientStream = make_unique<streams::IOSocketStream<char>>(new buffers::IOSocketBuffer<char>(new web::HTTPNetwork()));
+		clientStream = make_unique<streams::IOSocketStream>(new buffers::IOSocketBuffer(new web::HTTPNetwork()));
 	}
 	catch (const web::WebException&)
 	{

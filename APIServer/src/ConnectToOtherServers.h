@@ -2,11 +2,11 @@
 
 #include <memory>
 
-#include "IOSocketStream.h"
+#include "BaseIOSocketStream.h"
 
 namespace web
 {
-	void connectToFilesServer(std::unique_ptr<streams::IOSocketStream<char>>& filesStream);
+	void connectToFilesServer(std::unique_ptr<streams::IOSocketStream>& filesStream);
 
-	void connectToDataBaseServer(std::unique_ptr<streams::IOSocketStream<char>>& dataBaseStream);
+	void connectToDataBaseServer(std::unique_ptr<streams::IOSocketStream>& dataBaseStream);
 }

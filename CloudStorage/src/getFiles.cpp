@@ -14,9 +14,9 @@
 
 using namespace std;
 
-void asyncGetFiles(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream<char>>& clientStream, vector<db::fileDataRepresentation>& fileNames, bool showError, bool& isCancel);
+void asyncGetFiles(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream>& clientStream, vector<db::fileDataRepresentation>& fileNames, bool showError, bool& isCancel);
 
-void getFiles(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream<char>>& clientStream, vector<db::fileDataRepresentation>& fileNames, bool showError, bool& isCancel, bool isDetach)
+void getFiles(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream>& clientStream, vector<db::fileDataRepresentation>& fileNames, bool showError, bool& isCancel, bool isDetach)
 {
 	if (isDetach)
 	{
@@ -35,7 +35,7 @@ void getFiles(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream<char>>& cl
 	}
 }
 
-void asyncGetFiles(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream<char>>& clientStream, vector<db::fileDataRepresentation>& fileNames, bool showError, bool& isCancel)
+void asyncGetFiles(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream>& clientStream, vector<db::fileDataRepresentation>& fileNames, bool showError, bool& isCancel)
 {
 	if (!clientStream)
 	{

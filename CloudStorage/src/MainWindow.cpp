@@ -1,6 +1,6 @@
 #include "pch.h"
 
-#include "IOSocketStream.h"
+#include "BaseIOSocketStream.h"
 #include "HTTPNetwork.h"
 #include "UtilityFunctions.h"
 #include "NetworkFunctions.h"
@@ -328,7 +328,7 @@ namespace UI
 LRESULT __stdcall MainWindowProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 {
 #pragma region Variables
-	static unique_ptr<streams::IOSocketStream<char>> clientStream;
+	static unique_ptr<streams::IOSocketStream> clientStream;
 	static UI::MainWindow* ptr = nullptr;
 	static filesystem::path currentPath("Home");
 	static vector<db::fileDataRepresentation> fileNames;

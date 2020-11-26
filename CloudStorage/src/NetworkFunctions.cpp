@@ -12,9 +12,9 @@
 
 using namespace std;
 
-void setPath(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream<char>>& clientStream, string&& path, vector<db::fileDataRepresentation>& fileNames, bool& isCancel);
+void setPath(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream>& clientStream, string&& path, vector<db::fileDataRepresentation>& fileNames, bool& isCancel);
 
-void uploadFile(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream<char>>& clientStream, const wstring& filePath, vector<db::fileDataRepresentation>& fileNames, bool& isCancel)
+void uploadFile(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream>& clientStream, const wstring& filePath, vector<db::fileDataRepresentation>& fileNames, bool& isCancel)
 {
 	const wstring fileName = wstring(begin(filePath) + filePath.rfind('\\') + 1, end(filePath));
 	bool sameFileName = false;
@@ -51,7 +51,7 @@ void uploadFile(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream<char>>& 
 	}
 }
 
-int downloadFile(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream<char>>& clientStream, const vector<db::fileDataRepresentation>& fileNames, bool& isCancel, int searchId)
+int downloadFile(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream>& clientStream, const vector<db::fileDataRepresentation>& fileNames, bool& isCancel, int searchId)
 {
 	int id = SendMessageW(ref.getList(), LVM_GETNEXTITEM, searchId, LVNI_SELECTED);
 
@@ -65,21 +65,21 @@ int downloadFile(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream<char>>&
 	return id;
 }
 
-void reconnect(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream<char>>& clientStream, string&& currentPath, const wstring& login, const wstring& password, vector<db::fileDataRepresentation>& fileNames, bool& isCancel)
+void reconnect(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream>& clientStream, string&& currentPath, const wstring& login, const wstring& password, vector<db::fileDataRepresentation>& fileNames, bool& isCancel)
 {
 	initWaitResponsePopupWindow(ref);
 
 	thread(asyncReconnect, std::ref(ref), std::ref(clientStream), move(currentPath), std::ref(login), std::ref(password), std::ref(fileNames), std::ref(isCancel)).detach();
 }
 
-void nextFolder(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream<char>>& clientStream, const wstring& folderName, vector<db::fileDataRepresentation>& fileNames, bool& isCancel)
+void nextFolder(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream>& clientStream, const wstring& folderName, vector<db::fileDataRepresentation>& fileNames, bool& isCancel)
 {
 	initWaitResponsePopupWindow(ref);
 
 	thread(asyncFolderControlMessages, std::ref(ref), std::ref(clientStream), std::ref(controlRequests::nextFolder), std::ref(fileNames), std::ref(isCancel), utility::conversion::to_string(folderName)).detach();
 }
 
-void prevFolder(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream<char>>& clientStream, filesystem::path& currentPath, vector<db::fileDataRepresentation>& fileNames, bool& isCancel)
+void prevFolder(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream>& clientStream, filesystem::path& currentPath, vector<db::fileDataRepresentation>& fileNames, bool& isCancel)
 {
 	if (currentPath != "Home")
 	{
@@ -93,7 +93,7 @@ void prevFolder(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream<char>>& 
 	thread(asyncFolderControlMessages, std::ref(ref), std::ref(clientStream), std::ref(controlRequests::prevFolder), std::ref(fileNames), std::ref(isCancel), "").detach();
 }
 
-void createFolder(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream<char>>& clientStream, vector<db::fileDataRepresentation>& fileNames, bool& isCancel)
+void createFolder(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream>& clientStream, vector<db::fileDataRepresentation>& fileNames, bool& isCancel)
 {
 	wstring wFolderName;
 	HWND enterFolderNameEdit = ref.getEnterFolderNameEdit();
@@ -107,7 +107,7 @@ void createFolder(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream<char>>
 	thread(asyncCreateFolder, std::ref(ref), std::ref(clientStream), move(wFolderName), std::ref(fileNames), std::ref(isCancel)).detach();
 }
 
-void exitFromApplication(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream<char>>& clientStream)
+void exitFromApplication(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream>& clientStream)
 {
 	if (!clientStream)
 	{
@@ -131,21 +131,21 @@ void exitFromApplication(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream
 	}
 }
 
-void authorization(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream<char>>& clientStream, wstring& login, wstring& password, bool& isCancel)
+void authorization(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream>& clientStream, wstring& login, wstring& password, bool& isCancel)
 {
 	initWaitResponsePopupWindow(ref);
 
 	thread(asyncAuthorization, std::ref(ref), std::ref(clientStream), std::ref(login), std::ref(password), std::ref(isCancel)).detach();
 }
 
-void registration(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream<char>>& clientStream, wstring& login, wstring& password, bool& isCancel)
+void registration(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream>& clientStream, wstring& login, wstring& password, bool& isCancel)
 {
 	initWaitResponsePopupWindow(ref);
 
 	thread(asyncRegistration, std::ref(ref), std::ref(clientStream), std::ref(login), std::ref(password), std::ref(isCancel)).detach();
 }
 
-void firstConnect(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream<char>>& clientStream, bool& isCancel)
+void firstConnect(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream>& clientStream, bool& isCancel)
 {
 	initWaitResponsePopupWindow(ref);
 

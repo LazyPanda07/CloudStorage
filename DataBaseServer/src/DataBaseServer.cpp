@@ -3,7 +3,7 @@
 #include "DataBaseServer.h"
 #include "Constants.h"
 #include "DataBaseNetwork.h"
-#include "IOSocketStream.h"
+#include "BaseIOSocketStream.h"
 #include "DataBaseFunctions.h"
 
 #pragma comment (lib, "BaseTCPServer.lib")
@@ -16,7 +16,7 @@ namespace web
 {
 	void DataBaseServer::clientConnection(SOCKET clientSocket, sockaddr addr)
 	{
-		streams::IOSocketStream<char> clientStream(new buffers::IOSocketBuffer<char>(new DataBaseNetwork(clientSocket)));
+		streams::IOSocketStream clientStream(new buffers::IOSocketBuffer(new DataBaseNetwork(clientSocket)));
 		string login;
 		filesystem::path currentPath("Home");
 

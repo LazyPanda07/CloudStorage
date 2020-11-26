@@ -15,14 +15,14 @@
 
 using namespace std;
 
-void removeFile(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream<char>>& clientStream, vector<db::fileDataRepresentation>& fileNames, bool& isCancel)
+void removeFile(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream>& clientStream, vector<db::fileDataRepresentation>& fileNames, bool& isCancel)
 {
 	initWaitResponsePopupWindow(ref);
 
 	thread(asyncRemoveFile, std::ref(ref), std::ref(clientStream), std::ref(fileNames), std::ref(isCancel)).detach();
 }
 
-void removeFile(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream<char>>& clientStream, const wstring& fileName, bool& isCancel, bool showError)
+void removeFile(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream>& clientStream, const wstring& fileName, bool& isCancel, bool showError)
 {
 	if (!clientStream)
 	{
@@ -87,7 +87,7 @@ void removeFile(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream<char>>& 
 	}
 }
 
-void asyncRemoveFile(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream<char>>& clientStream, vector<db::fileDataRepresentation>& fileNames, bool& isCancel)
+void asyncRemoveFile(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream>& clientStream, vector<db::fileDataRepresentation>& fileNames, bool& isCancel)
 {
 	int id = SendMessageW(ref.getList(), LVM_GETNEXTITEM, -1, LVNI_SELECTED);
 

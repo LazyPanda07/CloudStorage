@@ -8,7 +8,7 @@ using namespace std;
 
 namespace web
 {
-	void connectToFilesServer(unique_ptr<streams::IOSocketStream<char>>& filesStream)
+	void connectToFilesServer(unique_ptr<streams::IOSocketStream>& filesStream)
 	{
 		thread
 		(
@@ -16,7 +16,7 @@ namespace web
 			{
 				try
 				{
-					filesStream = make_unique<streams::IOSocketStream<char>>(new buffers::IOSocketBuffer<char>(new FilesNetwork()));
+					filesStream = make_unique<streams::IOSocketStream>(new buffers::IOSocketBuffer(new FilesNetwork()));
 				}
 				catch (const web::WebException&)
 				{
@@ -26,7 +26,7 @@ namespace web
 		).detach();
 	}
 
-	void connectToDataBaseServer(unique_ptr<streams::IOSocketStream<char>>& dataBaseStream)
+	void connectToDataBaseServer(unique_ptr<streams::IOSocketStream>& dataBaseStream)
 	{
 		thread
 		(
@@ -34,7 +34,7 @@ namespace web
 			{
 				try
 				{
-					dataBaseStream = make_unique<streams::IOSocketStream<char>>(new buffers::IOSocketBuffer<char>(new DataBaseNetwork()));
+					dataBaseStream = make_unique<streams::IOSocketStream>(new buffers::IOSocketBuffer(new DataBaseNetwork()));
 				}
 				catch (const web::WebException&)
 				{

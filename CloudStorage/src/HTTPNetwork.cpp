@@ -9,16 +9,16 @@ using namespace std;
 
 namespace web
 {
-	void HTTPNetwork::log(string&& message, any&& data) noexcept
+	void HTTPNetwork::log(const string& message, any&& data)
 	{
-		Log::error(move(message));
+		Log::error(string(message));
 	}
 
-	int HTTPNetwork::sendData(const dataContainer& data)
+	int HTTPNetwork::sendData(const vector<char>& data)
 	{
 		try
 		{
-			return parent::sendBytes(data.data(), data.size());
+			return Network::sendBytes(data.data(), data.size());
 		}
 		catch (const WebException& e)
 		{
@@ -27,7 +27,7 @@ namespace web
 		}
 	}
 
-	int HTTPNetwork::receiveData(dataContainer& data)
+	int HTTPNetwork::receiveData(vector<char>& data)
 	{
 		try
 		{
@@ -39,7 +39,7 @@ namespace web
 
 			do
 			{
-				lastPacket = recv(parent::clientSocket, data.data() + totalReceive, data.size() - totalReceive, NULL);
+				lastPacket = recv(Network::clientSocket, data.data() + totalReceive, data.size() - totalReceive, NULL);
 
 				if (lastPacket < 0)
 				{
@@ -81,16 +81,16 @@ namespace web
 	}
 
 	HTTPNetwork::HTTPNetwork() : 
-		parent(APIServerIp, APIServerPort)
+		Network(APIServerIp, APIServerPort)
 	{
-		setsockopt(parent::clientSocket, SOL_SOCKET, SO_RCVTIMEO, reinterpret_cast<const char*>(&clientTimeoutRecv), sizeof(clientTimeoutRecv));
+		setsockopt(Network::clientSocket, SOL_SOCKET, SO_RCVTIMEO, reinterpret_cast<const char*>(&clientTimeoutRecv), sizeof(clientTimeoutRecv));
 	}
 
 	int HTTPNetwork::sendData(const string_view& data)
 	{
 		try
 		{
-			return parent::sendBytes(data.data(), data.size());
+			return Network::sendBytes(data.data(), data.size());
 		}
 		catch (const WebException& e)
 		{
@@ -111,7 +111,7 @@ namespace web
 
 			do
 			{
-				lastPacket = recv(parent::clientSocket, data.data() + totalReceive, data.size() - totalReceive, NULL);
+				lastPacket = recv(Network::clientSocket, data.data() + totalReceive, data.size() - totalReceive, NULL);
 
 				if (lastPacket < 0)
 				{

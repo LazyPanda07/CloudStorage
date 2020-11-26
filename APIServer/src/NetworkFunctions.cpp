@@ -13,7 +13,7 @@ bool checkHTTP(const string& request)
 	return request.find("HTTP") != string::npos ? true : false;
 }
 
-void showAllFilesInFolder(streams::IOSocketStream<char>& clientStream, unique_ptr<streams::IOSocketStream<char>>& dataBaseStream)
+void showAllFilesInFolder(streams::IOSocketStream& clientStream, unique_ptr<streams::IOSocketStream>& dataBaseStream)
 {
 	if (!dataBaseStream)
 	{
@@ -81,7 +81,7 @@ void showAllFilesInFolder(streams::IOSocketStream<char>& clientStream, unique_pt
 	}
 }
 
-void uploadFile(streams::IOSocketStream<char>& clientStream, unique_ptr<streams::IOSocketStream<char>>& filesStream, unique_ptr<streams::IOSocketStream<char>>& dataBaseStream, const string& data, const unordered_map<string, string>& headers)
+void uploadFile(streams::IOSocketStream& clientStream, unique_ptr<streams::IOSocketStream>& filesStream, unique_ptr<streams::IOSocketStream>& dataBaseStream, const string& data, const unordered_map<string, string>& headers)
 {
 	if (!filesStream)
 	{
@@ -188,7 +188,7 @@ void uploadFile(streams::IOSocketStream<char>& clientStream, unique_ptr<streams:
 	}
 }
 
-void downloadFile(streams::IOSocketStream<char>& clientStream, unique_ptr<streams::IOSocketStream<char>>& filesStream, const unordered_map<string, string>& headers)
+void downloadFile(streams::IOSocketStream& clientStream, unique_ptr<streams::IOSocketStream>& filesStream, const unordered_map<string, string>& headers)
 {
 	if (!filesStream)
 	{
@@ -256,7 +256,7 @@ void downloadFile(streams::IOSocketStream<char>& clientStream, unique_ptr<stream
 	}
 }
 
-void removeFile(streams::IOSocketStream<char>& clientStream, unique_ptr<streams::IOSocketStream<char>>& filesStream, unique_ptr<streams::IOSocketStream<char>>& dataBaseStream, const unordered_map<string, string>& headers)
+void removeFile(streams::IOSocketStream& clientStream, unique_ptr<streams::IOSocketStream>& filesStream, unique_ptr<streams::IOSocketStream>& dataBaseStream, const unordered_map<string, string>& headers)
 {
 	if (!filesStream)
 	{
@@ -345,7 +345,7 @@ void removeFile(streams::IOSocketStream<char>& clientStream, unique_ptr<streams:
 	}
 }
 
-void cancelUploadFile(streams::IOSocketStream<char>& clientStream, unique_ptr<streams::IOSocketStream<char>>& filesStream, const unordered_map<string, string>& headers)
+void cancelUploadFile(streams::IOSocketStream& clientStream, unique_ptr<streams::IOSocketStream>& filesStream, const unordered_map<string, string>& headers)
 {
 	if (!filesStream)
 	{
@@ -392,7 +392,7 @@ void cancelUploadFile(streams::IOSocketStream<char>& clientStream, unique_ptr<st
 	}
 }
 
-void setLogin(streams::IOSocketStream<char>& clientStream, unique_ptr<streams::IOSocketStream<char>>& filesStream, unique_ptr<streams::IOSocketStream<char>>& dataBaseStream, const string& data)
+void setLogin(streams::IOSocketStream& clientStream, unique_ptr<streams::IOSocketStream>& filesStream, unique_ptr<streams::IOSocketStream>& dataBaseStream, const string& data)
 {
 	auto [login, password] = userDataParse(data);
 	string response;
@@ -434,7 +434,7 @@ void setLogin(streams::IOSocketStream<char>& clientStream, unique_ptr<streams::I
 	}
 }
 
-void nextFolder(streams::IOSocketStream<char>& clientStream, unique_ptr<streams::IOSocketStream<char>>& filesStream, unique_ptr<streams::IOSocketStream<char>>& dataBaseStream, const string& data)
+void nextFolder(streams::IOSocketStream& clientStream, unique_ptr<streams::IOSocketStream>& filesStream, unique_ptr<streams::IOSocketStream>& dataBaseStream, const string& data)
 {
 	if (!filesStream)
 	{
@@ -525,7 +525,7 @@ void nextFolder(streams::IOSocketStream<char>& clientStream, unique_ptr<streams:
 	}
 }
 
-void prevFolder(streams::IOSocketStream<char>& clientStream, unique_ptr<streams::IOSocketStream<char>>& filesStream, unique_ptr<streams::IOSocketStream<char>>& dataBaseStream)
+void prevFolder(streams::IOSocketStream& clientStream, unique_ptr<streams::IOSocketStream>& filesStream, unique_ptr<streams::IOSocketStream>& dataBaseStream)
 {
 	if (!filesStream)
 	{
@@ -606,7 +606,7 @@ void prevFolder(streams::IOSocketStream<char>& clientStream, unique_ptr<streams:
 	}
 }
 
-void setPath(streams::IOSocketStream<char>& clientStream, unique_ptr<streams::IOSocketStream<char>>& filesStream, unique_ptr<streams::IOSocketStream<char>>& dataBaseStream, const string& data)
+void setPath(streams::IOSocketStream& clientStream, unique_ptr<streams::IOSocketStream>& filesStream, unique_ptr<streams::IOSocketStream>& dataBaseStream, const string& data)
 {
 	if (!filesStream)
 	{
@@ -691,7 +691,7 @@ void setPath(streams::IOSocketStream<char>& clientStream, unique_ptr<streams::IO
 	}
 }
 
-void createFolder(streams::IOSocketStream<char>& clientStream, unique_ptr<streams::IOSocketStream<char>>& filesStream, unique_ptr<streams::IOSocketStream<char>>& dataBaseStream, const string& data)
+void createFolder(streams::IOSocketStream& clientStream, unique_ptr<streams::IOSocketStream>& filesStream, unique_ptr<streams::IOSocketStream>& dataBaseStream, const string& data)
 {
 	const string folderName(begin(data) + data.find('=') + 1, end(data));
 	string fileExtension;
@@ -723,7 +723,7 @@ void createFolder(streams::IOSocketStream<char>& clientStream, unique_ptr<stream
 	}
 }
 
-void authorization(streams::IOSocketStream<char>& clientStream, unique_ptr<streams::IOSocketStream<char>>& filesStream, unique_ptr<streams::IOSocketStream<char>>& dataBaseStream, const string& data)
+void authorization(streams::IOSocketStream& clientStream, unique_ptr<streams::IOSocketStream>& filesStream, unique_ptr<streams::IOSocketStream>& dataBaseStream, const string& data)
 {
 	if (!dataBaseStream)
 	{
@@ -816,7 +816,7 @@ void authorization(streams::IOSocketStream<char>& clientStream, unique_ptr<strea
 	}
 }
 
-void registration(streams::IOSocketStream<char>& clientStream, unique_ptr<streams::IOSocketStream<char>>& filesStream, unique_ptr<streams::IOSocketStream<char>>& dataBaseStream, const string& data)
+void registration(streams::IOSocketStream& clientStream, unique_ptr<streams::IOSocketStream>& filesStream, unique_ptr<streams::IOSocketStream>& dataBaseStream, const string& data)
 {
 	if (!dataBaseStream)
 	{

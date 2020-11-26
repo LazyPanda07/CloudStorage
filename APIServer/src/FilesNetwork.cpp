@@ -8,13 +8,13 @@ using namespace std;
 
 namespace web
 {
-	void FilesNetwork::log(string&& message, any&& data) noexcept
+	void FilesNetwork::log(const string& message, any&& data)
 	{
-		Log::error(move(message));
+		Log::error(string(message));
 	}
 
 	FilesNetwork::FilesNetwork() :
-		parent(cloudStorageServerIp, cloudStorageServerPort)
+		Network(cloudStorageServerIp, cloudStorageServerPort)
 	{
 
 	}

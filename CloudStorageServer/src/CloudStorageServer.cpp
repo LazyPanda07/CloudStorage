@@ -1,7 +1,7 @@
 #include "pch.h"
 
 #include "CloudStorageServer.h"
-#include "IOSocketStream.h"
+#include "BaseIOSocketStream.h"
 #include "Log.h"
 #include "Constants.h"
 #include "FilesNetwork.h"
@@ -17,7 +17,7 @@ namespace web
 {
 	void CloudStorageServer::clientConnection(SOCKET clientSocket, sockaddr addr)
 	{
-		streams::IOSocketStream<char> clientStream(new buffers::IOSocketBuffer<char>(new FilesNetwork(clientSocket)));
+		streams::IOSocketStream clientStream(new buffers::BaseIOSocketBuffer(new FilesNetwork(clientSocket)));
 		string login;
 		filesystem::path currentPath(filesystem::current_path());
 

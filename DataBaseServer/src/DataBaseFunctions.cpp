@@ -6,7 +6,7 @@
 
 using namespace std;
 
-void authorization(streams::IOSocketStream<char>& clientStream, const db::CloudDataBase& db, string& login)
+void authorization(streams::IOSocketStream& clientStream, const db::CloudDataBase& db, string& login)
 {
 	string password;
 
@@ -31,7 +31,7 @@ void authorization(streams::IOSocketStream<char>& clientStream, const db::CloudD
 	}
 }
 
-void registration(streams::IOSocketStream<char>& clientStream, const db::CloudDataBase& db, string& login)
+void registration(streams::IOSocketStream& clientStream, const db::CloudDataBase& db, string& login)
 {
 	string password;
 
@@ -56,7 +56,7 @@ void registration(streams::IOSocketStream<char>& clientStream, const db::CloudDa
 	}
 }
 
-void showAllFilesInFolder(streams::IOSocketStream<char>& clientStream, const db::CloudDataBase& db, const string& login, const filesystem::path& currentPath)
+void showAllFilesInFolder(streams::IOSocketStream& clientStream, const db::CloudDataBase& db, const string& login, const filesystem::path& currentPath)
 {
 	string result;
 
@@ -81,7 +81,7 @@ void showAllFilesInFolder(streams::IOSocketStream<char>& clientStream, const db:
 	}
 }
 
-void uploadFileData(streams::IOSocketStream<char>& clientStream, const db::CloudDataBase& db, const string& login, const filesystem::path& currentPath)
+void uploadFileData(streams::IOSocketStream& clientStream, const db::CloudDataBase& db, const string& login, const filesystem::path& currentPath)
 {
 	string fileName;
 	string fileExtension;
@@ -94,7 +94,7 @@ void uploadFileData(streams::IOSocketStream<char>& clientStream, const db::Cloud
 	db.uploadFileData(login, move(fileName), currentPath.string(), move(fileExtension), fileSize);
 }
 
-void removeFileData(streams::IOSocketStream<char>& clientStream, const db::CloudDataBase& db, const std::string& login, const filesystem::path& currentPath)
+void removeFileData(streams::IOSocketStream& clientStream, const db::CloudDataBase& db, const std::string& login, const filesystem::path& currentPath)
 {
 	string fileName;
 
@@ -103,7 +103,7 @@ void removeFileData(streams::IOSocketStream<char>& clientStream, const db::Cloud
 	db.removeFileData(login, move(fileName), currentPath.string());
 }
 
-void nextFolder(streams::IOSocketStream<char>& clientStream, std::filesystem::path& currentPath)
+void nextFolder(streams::IOSocketStream& clientStream, std::filesystem::path& currentPath)
 {
 	string folder;
 	bool ok = true;
@@ -115,7 +115,7 @@ void nextFolder(streams::IOSocketStream<char>& clientStream, std::filesystem::pa
 	clientStream << ok;
 }
 
-void prevFolder(streams::IOSocketStream<char>& clientStream, std::filesystem::path& currentPath)
+void prevFolder(streams::IOSocketStream& clientStream, std::filesystem::path& currentPath)
 {
 	bool ok = true;
 
@@ -129,7 +129,7 @@ void prevFolder(streams::IOSocketStream<char>& clientStream, std::filesystem::pa
 	clientStream << ok;
 }
 
-void setPath(streams::IOSocketStream<char>& clientStream, std::filesystem::path& currentPath)
+void setPath(streams::IOSocketStream& clientStream, std::filesystem::path& currentPath)
 {
 	string newPath;
 	bool ok = true;
@@ -141,7 +141,7 @@ void setPath(streams::IOSocketStream<char>& clientStream, std::filesystem::path&
 	clientStream << ok;
 }
 
-void createFolder(streams::IOSocketStream<char>& clientStream, const db::CloudDataBase& db, const string& login, const std::filesystem::path& currentPath)
+void createFolder(streams::IOSocketStream& clientStream, const db::CloudDataBase& db, const string& login, const std::filesystem::path& currentPath)
 {
 	string folderName;
 	string fileExtension;

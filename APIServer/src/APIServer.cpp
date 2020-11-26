@@ -2,7 +2,7 @@
 
 #include "APIServer.h"
 #include "Constants.h"
-#include "IOSocketStream.h"
+#include "BaseIOSocketStream.h"
 #include "HTTPParser.h"
 #include "NetworkFunctions.h"
 #include "HTTPNetwork.h"
@@ -21,9 +21,9 @@ namespace web
 {
 	void APIServer::clientConnection(SOCKET clientSocket, sockaddr addr)
 	{
-		streams::IOSocketStream<char> clientStream(new buffers::IOSocketBuffer<char>(new HTTPNetwork(clientSocket)));
-		unique_ptr<streams::IOSocketStream<char>> filesStream = nullptr;
-		unique_ptr<streams::IOSocketStream<char>> dataBaseStream = nullptr;
+		streams::IOSocketStream clientStream(new buffers::IOSocketBuffer(new HTTPNetwork(clientSocket)));
+		unique_ptr<streams::IOSocketStream> filesStream = nullptr;
+		unique_ptr<streams::IOSocketStream> dataBaseStream = nullptr;
 		string HTTPRequest;
 		const string ip = getIpV4(addr);
 

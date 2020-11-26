@@ -1,17 +1,17 @@
 #pragma once
 
-#include "Network.h"
+#include "BaseNetwork.h"
 
 namespace web
 {
-	class HTTPNetwork : public Network<char>
+	class HTTPNetwork : public Network
 	{
 	private:
-		void log(std::string&& message, std::any&& data = "") noexcept override;
+		void log(const std::string& message, std::any&& data = "") override;
 
-		int sendData(const dataContainer& data) override;
+		int sendData(const std::vector<char>& data) override;
 
-		int receiveData(dataContainer& data) override;
+		int receiveData(std::vector<char>& data) override;
 
 	private:
 		static inline std::string APIServerIp;

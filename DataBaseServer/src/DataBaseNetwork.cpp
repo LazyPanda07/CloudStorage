@@ -7,13 +7,13 @@ using namespace std;
 
 namespace web
 {
-	void DataBaseNetwork::log(string&& message, any&& data) noexcept
+	void DataBaseNetwork::log(const string& message, any&& data)
 	{
-		Log::error(move(message));
+		Log::error(string(message));
 	}
 
 	DataBaseNetwork::DataBaseNetwork(SOCKET clientSocket) :
-		parent(clientSocket)
+		Network(clientSocket)
 	{
 
 	}

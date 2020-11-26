@@ -6,7 +6,7 @@
 
 using namespace std;
 
-void uploadFile(streams::IOSocketStream<char>& clientStream, const filesystem::path& currentPath)
+void uploadFile(streams::IOSocketStream& clientStream, const filesystem::path& currentPath)
 {
 	string fileName;
 	intmax_t offset;
@@ -60,7 +60,7 @@ void uploadFile(streams::IOSocketStream<char>& clientStream, const filesystem::p
 	}
 }
 
-void downloadFile(streams::IOSocketStream<char>& clientStream, const filesystem::path& currentPath)
+void downloadFile(streams::IOSocketStream& clientStream, const filesystem::path& currentPath)
 {
 	string fileName;
 	intmax_t offset;
@@ -102,7 +102,7 @@ void downloadFile(streams::IOSocketStream<char>& clientStream, const filesystem:
 	}
 }
 
-void removeFile(streams::IOSocketStream<char>& clientStream, const filesystem::path& currentPath)
+void removeFile(streams::IOSocketStream& clientStream, const filesystem::path& currentPath)
 {
 	string fileName;
 
@@ -118,7 +118,7 @@ void removeFile(streams::IOSocketStream<char>& clientStream, const filesystem::p
 	}
 }
 
-void cancelOperation(streams::IOSocketStream<char>& clientStream, const filesystem::path& currentPath)
+void cancelOperation(streams::IOSocketStream& clientStream, const filesystem::path& currentPath)
 {
 	string fileName;
 	string operationType;
@@ -132,7 +132,7 @@ void cancelOperation(streams::IOSocketStream<char>& clientStream, const filesyst
 	}
 }
 
-void nextFolder(streams::IOSocketStream<char>& clientStream, std::filesystem::path& currentPath)
+void nextFolder(streams::IOSocketStream& clientStream, std::filesystem::path& currentPath)
 {
 	string folder;
 	bool ok = true;
@@ -144,7 +144,7 @@ void nextFolder(streams::IOSocketStream<char>& clientStream, std::filesystem::pa
 	clientStream << ok;
 }
 
-void prevFolder(streams::IOSocketStream<char>& clientStream, std::filesystem::path& currentPath)
+void prevFolder(streams::IOSocketStream& clientStream, std::filesystem::path& currentPath)
 {
 	bool ok = true;
 
@@ -158,7 +158,7 @@ void prevFolder(streams::IOSocketStream<char>& clientStream, std::filesystem::pa
 	clientStream << ok;
 }
 
-void setPath(streams::IOSocketStream<char>& clientStream, std::filesystem::path& currentPath, const string& login)
+void setPath(streams::IOSocketStream& clientStream, std::filesystem::path& currentPath, const string& login)
 {
 	string newPath;
 	bool ok = true;
@@ -195,7 +195,7 @@ void setPath(streams::IOSocketStream<char>& clientStream, std::filesystem::path&
 	clientStream << ok;
 }
 
-void createFolder(streams::IOSocketStream<char>& clientStream, const filesystem::path& currentPath)
+void createFolder(streams::IOSocketStream& clientStream, const filesystem::path& currentPath)
 {
 	string folderName;
 
