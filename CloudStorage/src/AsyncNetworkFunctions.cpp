@@ -483,6 +483,15 @@ void asyncReconnect(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream>& cl
 
 	try
 	{
+		*clientStream << request;
+	}
+	catch (const web::WebException&)
+	{
+
+	}
+
+	try
+	{
 		clientStream = make_unique<streams::IOSocketStream>(new buffers::IOSocketBuffer(new web::HTTPNetwork()));
 	}
 	catch (const web::WebException&)
@@ -496,15 +505,6 @@ void asyncReconnect(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream>& cl
 			SendMessageW(ref.getMainWindow(), UI::events::deletePopupWindowE, NULL, NULL);
 		}
 		return;
-	}
-
-	try
-	{
-		*clientStream << request;
-	}
-	catch (const web::WebException&)
-	{
-
 	}
 
 	if (isCancel)
