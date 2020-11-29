@@ -80,7 +80,6 @@ int main(int argc, char** argv)
 			{
 				string ip;
 
-				cout << "¬ведите ip адрес клиента: ";
 				cin >> ip;
 
 				server.pubDisconnect(ip);
