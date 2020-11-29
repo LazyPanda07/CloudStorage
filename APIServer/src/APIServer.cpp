@@ -111,6 +111,7 @@ namespace web
 										*filesStream << networkRequests::exit;
 									}
 									this_thread::sleep_for(0.6s);
+
 									return;
 								}
 							}

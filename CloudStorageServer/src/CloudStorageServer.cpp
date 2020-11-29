@@ -20,6 +20,7 @@ namespace web
 		streams::IOSocketStream clientStream(new buffers::BaseIOSocketBuffer(new FilesNetwork(clientSocket)));
 		string login;
 		filesystem::path currentPath(filesystem::current_path());
+		const string ip = getIpV4(addr);
 
 		while (true)
 		{
@@ -74,6 +75,8 @@ namespace web
 				}
 				else if (request == networkRequests::exit)
 				{
+					data.erase(ip);
+
 					return;
 				}
 			}
