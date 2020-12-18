@@ -69,8 +69,7 @@ string asyncFolderControlMessages(UI::MainWindow& ref, unique_ptr<streams::IOSoc
 	{
 		request = web::HTTPBuilder().postRequest().headers
 		(
-			requestType::controlType, controlRequest,
-			"Content-Length", body.size()
+			requestType::controlType, controlRequest
 		).build(&body);
 	}
 
@@ -209,7 +208,6 @@ void asyncUploadFile(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream>& c
 			requestType::filesType, filesRequests::uploadFile,
 			"File-Name", file.filename().string(),
 			"Range", offset,
-			"Content-Length", data->size(),
 			isLast ? "Total-File-Size" : "Reserved", isLast ? fileSize : 0
 		).build(data);
 
@@ -552,8 +550,7 @@ void asyncCreateFolder(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream>&
 
 	request = web::HTTPBuilder().postRequest().headers
 	(
-		requestType::filesType, filesRequests::createFolder,
-		"Content-Length", body.size()
+		requestType::filesType, filesRequests::createFolder
 	).build(&body);
 
 	utility::web::insertSizeHeaderToHTTPMessage(request);
@@ -676,8 +673,7 @@ void asyncRegistration(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream>&
 
 	string request = web::HTTPBuilder().postRequest().headers
 	(
-		requestType::accountType, accountRequests::registration,
-		"Content-Length", body.size()
+		requestType::accountType, accountRequests::registration
 	).build(&body);
 
 	utility::web::insertSizeHeaderToHTTPMessage(request);
@@ -830,8 +826,7 @@ void asyncAuthorization(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream>
 
 	string request = web::HTTPBuilder().postRequest().headers
 	(
-		requestType::accountType, accountRequests::authorization,
-		"Content-Length", body.size()
+		requestType::accountType, accountRequests::authorization
 	).build(&body);
 
 	utility::web::insertSizeHeaderToHTTPMessage(request);
@@ -929,8 +924,7 @@ void setLogin(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream>& clientSt
 	string response;
 	string request = web::HTTPBuilder().postRequest().headers
 	(
-		requestType::accountType, accountRequests::setLogin,
-		"Content-Length", body.size()
+		requestType::accountType, accountRequests::setLogin
 	).build(&body);
 
 	utility::web::insertSizeHeaderToHTTPMessage(request);
