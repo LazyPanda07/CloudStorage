@@ -26,9 +26,4 @@ namespace utility
 	{
 		bool validationUserData(const std::string& data);
 	}
-
-	namespace web
-	{
-		void insertSizeHeaderToHTTPMessage(std::string& HTTPMessage);
-	}
 }

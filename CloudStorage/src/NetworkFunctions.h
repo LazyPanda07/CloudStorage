@@ -11,7 +11,7 @@
 
 void uploadFile(UI::MainWindow& ref, std::unique_ptr<streams::IOSocketStream>& clientStream, const std::wstring& filePath, std::vector<db::fileDataRepresentation>& fileNames, bool& isCancel);
 
-int downloadFile(UI::MainWindow& ref, std::unique_ptr<streams::IOSocketStream>& clientStream, const std::vector<db::fileDataRepresentation>& fileNames, bool& isCancel, int searchId);
+LRESULT downloadFile(UI::MainWindow& ref, std::unique_ptr<streams::IOSocketStream>& clientStream, const std::vector<db::fileDataRepresentation>& fileNames, bool& isCancel, LRESULT searchId);
 
 void reconnect(UI::MainWindow& ref, std::unique_ptr<streams::IOSocketStream>& clientStream, std::string&& currentPath, const std::wstring& login, const std::wstring& password, std::vector<db::fileDataRepresentation>& fileNames, bool& isCancel);
 

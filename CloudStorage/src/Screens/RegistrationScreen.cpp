@@ -244,6 +244,8 @@ namespace UI
 		{
 			return login;
 		}
+
+		return login;
 	}
 
 	HWND RegistrationScreen::getRegistrationLoginEdit() const

@@ -14,7 +14,7 @@ namespace UI
 		const std::wstring popupWindowClassName;
 
 	public:
-		static inline constexpr int cancel = 0xFFFF;
+		static inline constexpr short cancel = 0xFF0;
 
 	protected:
 		HWND popupWindow;

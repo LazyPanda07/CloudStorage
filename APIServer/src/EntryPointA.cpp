@@ -108,11 +108,11 @@ void showAllCommands()
 	GetConsoleScreenBufferInfo(console, &consoleInfo);
 	SHORT width = consoleInfo.srWindow.Right - consoleInfo.srWindow.Left + 1;
 
-	COORD pos = { (width - commandsList.size()) / 2 , consoleInfo.dwCursorPosition.Y };
+	COORD pos = { static_cast<SHORT>((width - commandsList.size()) / 2) , consoleInfo.dwCursorPosition.Y };
 
 	SetConsoleCursorPosition(console, pos);
 
-	WriteConsoleA(console, commandsList.data(), commandsList.size(), nullptr, NULL);
+	WriteConsoleA(console, commandsList.data(), static_cast<DWORD>(commandsList.size()), nullptr, NULL);
 
 	cout << "clients - Список подключений в формате ip адрес - сокет" << endl
 		<< "disconnect - Отключает выбранного пользователя по его ip адресу" << endl

@@ -208,6 +208,8 @@ namespace UI
 		{
 			return login;
 		}
+
+		return login;
 	}
 
 	HWND AuthorizationScreen::getAuthorizationLoginEdit() const

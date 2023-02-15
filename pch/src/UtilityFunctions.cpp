@@ -18,17 +18,17 @@ constexpr array<char, allowableCharactersAlphabetSize> initAlphabet()
 
 	for (size_t i = 'A'; i <= 'Z'; i++)
 	{
-		result[currentIndex++] = i;
+		result[currentIndex++] = static_cast<char>(i);
 	}
 
 	for (size_t i = 'a'; i <= 'z'; i++)
 	{
-		result[currentIndex++] = i;
+		result[currentIndex++] = static_cast<char>(i);
 	}
 
 	for (size_t i = '0'; i <= '9'; i++)
 	{
-		result[currentIndex++] = i;
+		result[currentIndex++] = static_cast<char>(i);
 	}
 
 	result[currentIndex] = '_';
@@ -40,9 +40,6 @@ constexpr array<char, allowableCharactersAlphabetSize> initAlphabet()
 constexpr array<char, allowableCharactersAlphabetSize> alphabet = initAlphabet();
 
 unordered_set<char> allowableCharacters(begin(alphabet), end(alphabet));
-
-//returns size of customHTTPHeaderSize.size() + HTTPMessage.size() + sizeof(\r\n) + digits of size itself
-string calculateHTTPMessageSize(const string& HTTPMessage);
 
 namespace utility
 {
@@ -57,7 +54,7 @@ namespace utility
 				CP_ACP,
 				NULL,
 				source.data(),
-				source.size(),
+				static_cast<int>(source.size()),
 				res.data(),
 				NULL
 			));
@@ -67,9 +64,9 @@ namespace utility
 				CP_ACP,
 				NULL,
 				source.data(),
-				source.size(),
+				static_cast<int>(source.size()),
 				res.data(),
-				res.size()
+				static_cast<int>(res.size())
 			);
 
 			return res;
@@ -84,7 +81,7 @@ namespace utility
 				CP_ACP,
 				NULL,
 				source.data(),
-				source.size(),
+				static_cast<int>(source.size()),
 				result.data(),
 				NULL,
 				NULL,
@@ -96,9 +93,9 @@ namespace utility
 				CP_ACP,
 				NULL,
 				source.data(),
-				source.size(),
+				static_cast<int>(source.size()),
 				result.data(),
-				result.size(),
+				static_cast<int>(result.size()),
 				NULL,
 				NULL
 			);
@@ -124,8 +121,8 @@ namespace utility
 
 			GetClientRect(window, &sizes);
 
-			LONG x = (sizes.right - sizes.left) * 0.5;
-			LONG y = (sizes.bottom - sizes.top) * 0.5;
+			LONG x = static_cast<LONG>((sizes.right - sizes.left) * 0.5);
+			LONG y = static_cast<LONG>((sizes.bottom - sizes.top) * 0.5);
 
 			return { static_cast<LONG>(x - width * 0.5), static_cast<LONG>(y - height * 0.5) };
 		}
@@ -149,20 +146,5 @@ namespace utility
 
 	namespace web
 	{
-		void insertSizeHeaderToHTTPMessage(string& HTTPMessage)
-		{
-			string totalHTTPMessageSize = customHTTPHeaderSize.data() + calculateHTTPMessageSize(HTTPMessage) + "\r\n";
-			HTTPMessage.insert(begin(HTTPMessage) + HTTPMessage.find("\r\n") + 2, begin(totalHTTPMessageSize), end(totalHTTPMessageSize));
-		}
 	}
-}
-
-string calculateHTTPMessageSize(const string& HTTPMessage)
-{
-	int iSize = HTTPMessage.size() + customHTTPHeaderSize.size() + 2;
-	string sSize = ::to_string(iSize);
-	iSize += sSize.size();
-	sSize = ::to_string(iSize);
-
-	return sSize;
 }

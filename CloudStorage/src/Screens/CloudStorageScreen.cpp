@@ -226,11 +226,11 @@ LRESULT __stdcall DragAndDrop(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam,
 
 		data.resize(count);
 
-		for (size_t i = 0; i < count; i++)
+		for (UINT i = 0; i < count; i++)
 		{
-			data[i].resize(DragQueryFileW(drop, i, nullptr, data[i].size()) + 1);
+			data[i].resize(DragQueryFileW(drop, i, nullptr, static_cast<UINT>(data[i].size())) + 1);
 
-			DragQueryFileW(drop, i, data[i].data(), data[i].size());
+			DragQueryFileW(drop, i, data[i].data(), static_cast<UINT>(data[i].size()));
 
 			data[i].pop_back();
 		}
@@ -258,10 +258,10 @@ void createColumns(UI::CloudStorageScreen& ref)
 
 	const array<LONG, UI::mainWindowUI::columnsInList> columnsSizes =
 	{
-		width * UI::mainWindowUI::nameColumnCoefficientWidth,
-		width * UI::mainWindowUI::dateColumnCoefficientWidth,
-		width * UI::mainWindowUI::typeColumnCoefficientWidth,
-		width * UI::mainWindowUI::sizeColumnCoefficientWidth
+		static_cast<LONG>(width * UI::mainWindowUI::nameColumnCoefficientWidth),
+		static_cast<LONG>(width * UI::mainWindowUI::dateColumnCoefficientWidth),
+		static_cast<LONG>(width * UI::mainWindowUI::typeColumnCoefficientWidth),
+		static_cast<LONG>(width * UI::mainWindowUI::sizeColumnCoefficientWidth)
 	};
 
 	columns[0].pszText = const_cast<wchar_t*>(L"Èìÿ");
@@ -272,7 +272,7 @@ void createColumns(UI::CloudStorageScreen& ref)
 	for (size_t i = 0; i < columns.size(); i++)
 	{
 		columns[i].mask = LVCF_FMT | LVCF_WIDTH | LVCF_TEXT | LVCF_SUBITEM;
-		columns[i].iSubItem = i;
+		columns[i].iSubItem = static_cast<int>(i);
 		columns[i].fmt = LVCFMT_LEFT;
 		columns[i].cx = columnsSizes[i];
 

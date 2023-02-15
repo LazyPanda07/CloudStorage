@@ -141,7 +141,7 @@ void getFilesFromExplorer(HWND mainWindow)
 	file.lpstrFilter = L"Все файлы\0*.*\0\0";
 	file.nFilterIndex = 1;
 	file.lpstrFile = fileNames.data();
-	file.nMaxFile = fileNames.size();
+	file.nMaxFile = static_cast<DWORD>(fileNames.size());
 	file.Flags = OFN_ALLOWMULTISELECT | OFN_FILEMUSTEXIST | OFN_PATHMUSTEXIST | OFN_EXPLORER;
 
 	GetOpenFileNameW(&file);

@@ -61,8 +61,6 @@ void asyncGetFiles(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream>& cli
 
 	fileNames.clear();
 
-	utility::web::insertSizeHeaderToHTTPMessage(request);
-
 	if (isCancel)
 	{
 		if (ref.getCurrentPopupWindow())

@@ -11,8 +11,8 @@
 #include "PopupWindows/UploadFilePopupWindow.h"
 #include "PopupWindows/DownloadFilePopupWindow.h"
 #include "PopupWindows/WaitResponsePopupWindow.h"
-#include "HTTPNetwork.h"
 #include "ClientTime.h"
+#include "HTTPNetwork.h"
 #include "ErrorHandling.h"
 #include "getFiles.h"
 #include "removeFile.h"
@@ -33,8 +33,6 @@ string cancelUploadFile(const string& fileName)
 		"Operation-Type", filesRequests::uploadFile,
 		"File-Name", fileName
 	).build();
-
-	utility::web::insertSizeHeaderToHTTPMessage(result);
 
 	return result;
 }
@@ -72,8 +70,6 @@ string asyncFolderControlMessages(UI::MainWindow& ref, unique_ptr<streams::IOSoc
 			requestType::controlType, controlRequest
 		).build(body);
 	}
-
-	utility::web::insertSizeHeaderToHTTPMessage(request);
 
 	if (isCancel)
 	{
@@ -210,8 +206,6 @@ void asyncUploadFile(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream>& c
 			"Range", offset,
 			isLast ? "Total-File-Size" : "Reserved", isLast ? fileSize : 0
 		).build(*data);
-
-		utility::web::insertSizeHeaderToHTTPMessage(message);
 
 		try
 		{
@@ -356,8 +350,6 @@ void asyncDownloadFile(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream>&
 			"Range", offset
 		).build();
 
-		utility::web::insertSizeHeaderToHTTPMessage(request);
-
 		if (isCancel)
 		{
 			if (ref.getCurrentPopupWindow())
@@ -429,7 +421,7 @@ void asyncDownloadFile(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream>&
 	{
 		wstring message = fileName + L"\r\n" + filesResponses::successDownloadFile.data();
 		int ok;
-		
+
 		if (ref.getCurrentPopupWindow() && ref.getPopupWindow())
 		{
 			ok = MessageBoxW(ref.getPopupWindow(), message.data(), L"Успех", MB_OK);
@@ -438,8 +430,6 @@ void asyncDownloadFile(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream>&
 		{
 			ok = MessageBoxW(ref.getMainWindow(), message.data(), L"Успех", MB_OK);
 		}
-		
-
 		if (ok == IDOK)
 		{
 			SendMessageW(ref.getMainWindow(), UI::events::deletePopupWindowE, NULL, NULL);
@@ -476,8 +466,6 @@ void asyncReconnect(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream>& cl
 	(
 		requestType::exitType, networkRequests::exit
 	).build();
-
-	utility::web::insertSizeHeaderToHTTPMessage(request);
 
 	try
 	{
@@ -553,8 +541,6 @@ void asyncCreateFolder(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream>&
 		requestType::filesType, filesRequests::createFolder
 	).build(body);
 
-	utility::web::insertSizeHeaderToHTTPMessage(request);
-
 	try
 	{
 		*clientStream << request;
@@ -621,9 +607,9 @@ void asyncRegistration(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream>&
 		return;
 	}
 
-	GetWindowTextW(registrationLoginEdit, wLogin.data(), wLogin.size() + 1);
-	GetWindowTextW(registrationPasswordEdit, wPassword.data(), wPassword.size() + 1);
-	GetWindowTextW(registrationRepeatPasswordEdit, wRepeatPassword.data(), wRepeatPassword.size() + 1);
+	GetWindowTextW(registrationLoginEdit, wLogin.data(), static_cast<int>(wLogin.size() + 1));
+	GetWindowTextW(registrationPasswordEdit, wPassword.data(), static_cast<int>(wPassword.size() + 1));
+	GetWindowTextW(registrationRepeatPasswordEdit, wRepeatPassword.data(), static_cast<int>(wRepeatPassword.size() + 1));
 
 	if (wPassword != wRepeatPassword)
 	{
@@ -675,8 +661,6 @@ void asyncRegistration(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream>&
 	(
 		requestType::accountType, accountRequests::registration
 	).build(body);
-
-	utility::web::insertSizeHeaderToHTTPMessage(request);
 
 	if (isCancel)
 	{
@@ -803,8 +787,8 @@ void asyncAuthorization(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream>
 		return;
 	}
 
-	GetWindowTextW(authorizationLoginEdit, wLogin.data(), wLogin.size() + 1);
-	GetWindowTextW(authorizationPasswordEdit, wPassword.data(), wPassword.size() + 1);
+	GetWindowTextW(authorizationLoginEdit, wLogin.data(), static_cast<int>(wLogin.size() + 1));
+	GetWindowTextW(authorizationPasswordEdit, wPassword.data(), static_cast<int>(wPassword.size() + 1));
 
 	sendLogin = utility::conversion::to_string(wLogin);
 	sendPassword = utility::conversion::to_string(wPassword);
@@ -828,8 +812,6 @@ void asyncAuthorization(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream>
 	(
 		requestType::accountType, accountRequests::authorization
 	).build(body);
-
-	utility::web::insertSizeHeaderToHTTPMessage(request);
 
 	if (isCancel)
 	{
@@ -926,8 +908,6 @@ void setLogin(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream>& clientSt
 	(
 		requestType::accountType, accountRequests::setLogin
 	).build(body);
-
-	utility::web::insertSizeHeaderToHTTPMessage(request);
 
 	try
 	{

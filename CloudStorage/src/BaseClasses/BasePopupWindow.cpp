@@ -83,7 +83,7 @@ namespace UI
 			popupWindows::basePopupWindow::cancelButtonWidth,
 			popupWindows::basePopupWindow::cancelButtonHeight,
 			popupWindow,
-			HMENU(cancel),
+			reinterpret_cast<HMENU>(cancel),
 			nullptr,
 			nullptr
 		);

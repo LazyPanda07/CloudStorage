@@ -44,8 +44,6 @@ void removeFile(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream>& client
 	string response;
 	isCancel = false;
 
-	utility::web::insertSizeHeaderToHTTPMessage(request);
-
 	if (isCancel)
 	{
 		return;
@@ -89,7 +87,7 @@ void removeFile(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream>& client
 
 void asyncRemoveFile(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream>& clientStream, vector<db::fileDataRepresentation>& fileNames, bool& isCancel)
 {
-	int id = SendMessageW(ref.getList(), LVM_GETNEXTITEM, -1, LVNI_SELECTED);
+	LRESULT id = SendMessageW(ref.getList(), LVM_GETNEXTITEM, -1, LVNI_SELECTED);
 
 	while (id != -1)
 	{

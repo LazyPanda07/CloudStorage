@@ -51,9 +51,9 @@ void uploadFile(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream>& client
 	}
 }
 
-int downloadFile(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream>& clientStream, const vector<db::fileDataRepresentation>& fileNames, bool& isCancel, int searchId)
+LRESULT downloadFile(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream>& clientStream, const vector<db::fileDataRepresentation>& fileNames, bool& isCancel, LRESULT searchId)
 {
-	int id = SendMessageW(ref.getList(), LVM_GETNEXTITEM, searchId, LVNI_SELECTED);
+	LRESULT id = SendMessageW(ref.getList(), LVM_GETNEXTITEM, searchId, LVNI_SELECTED);
 
 	if (id != -1)
 	{
@@ -100,7 +100,7 @@ void createFolder(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream>& clie
 
 	wFolderName.resize(GetWindowTextLengthW(enterFolderNameEdit));
 
-	GetWindowTextW(enterFolderNameEdit, wFolderName.data(), wFolderName.size() + 1);
+	GetWindowTextW(enterFolderNameEdit, wFolderName.data(), static_cast<int>(wFolderName.size() + 1));
 
 	initWaitResponsePopupWindow(ref);
 
@@ -118,8 +118,6 @@ void exitFromApplication(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream
 	(
 		requestType::exitType, networkRequests::exit
 	).build();
-
-	utility::web::insertSizeHeaderToHTTPMessage(request);
 
 	try
 	{

@@ -111,7 +111,7 @@ namespace db
 		mt19937 someHash;
 		intmax_t result = 0;
 
-		someHash.seed(hash<string>()(source));
+		someHash.seed(static_cast<unsigned int>(hash<string>()(source)));
 
 		for (size_t i = 0; i < source.size(); i++)
 		{

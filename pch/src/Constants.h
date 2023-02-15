@@ -16,8 +16,6 @@ inline constexpr int filePacketSize = 10 * 1024 * 1024;	//10 MB
 inline constexpr DWORD serverTimeoutRecv = 600000;	//10 minutes
 inline constexpr DWORD clientTimeoutRecv = 30000;	//30 seconds
 
-inline constexpr std::string_view customHTTPHeaderSize = "Total-HTTP-Message-Size: ";
-
 inline constexpr std::string_view dataDelimiter = "/";
 inline constexpr std::string_view dataPartDelimiter = "|";
 

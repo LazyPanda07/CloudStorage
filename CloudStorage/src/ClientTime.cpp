@@ -17,7 +17,7 @@ namespace utility
 
 		gmtime_s(&gmt, &currentTime);
 
-		difference = difftime(mktime(&local), mktime(&gmt));
+		difference = static_cast<time_t>(difftime(mktime(&local), mktime(&gmt)));
 	}
 
 	ClientTime& ClientTime::get()
@@ -29,8 +29,8 @@ namespace utility
 
 	wstring ClientTime::convertToLocal(const string& dateTime)
 	{
-		array<int, 3> date;
-		array<int, 3> time;
+		array<int, 4> date = {};
+		array<int, 4> time = {};
 		tm calendar = {};
 		time_t timeWithOffset;
 		string result;

@@ -109,7 +109,7 @@ void updateNameColumn(UI::MainWindow& ref, const vector<db::fileDataRepresentati
 	for (size_t i = 0; i < data.size(); i++)
 	{
 		item.pszText = const_cast<wchar_t*>(data[i].fileName.data());
-		item.iItem = i;
+		item.iItem = static_cast<int>(i);
 		item.iSubItem = UI::mainWindowUI::nameColumnIndex;
 
 		SendMessageW(ref.getList(), LVM_INSERTITEM, NULL, reinterpret_cast<LPARAM>(&item));
@@ -131,7 +131,7 @@ void updateDateColumn(UI::MainWindow& ref, const vector<db::fileDataRepresentati
 	for (size_t i = 0; i < data.size(); i++)
 	{
 		item.pszText = const_cast<wchar_t*>(data[i].dateOfChange.data());
-		item.iItem = i;
+		item.iItem = static_cast<int>(i);
 		item.iSubItem = UI::mainWindowUI::dateColumnIndex;
 
 		SendMessageW(ref.getList(), LVM_SETITEMW, NULL, reinterpret_cast<LPARAM>(&item));
@@ -153,7 +153,7 @@ void updateTypeColumn(UI::MainWindow& ref, const vector<db::fileDataRepresentati
 	for (size_t i = 0; i < data.size(); i++)
 	{
 		item.pszText = const_cast<wchar_t*>(data[i].fileExtension.data());
-		item.iItem = i;
+		item.iItem = static_cast<int>(i);
 		item.iSubItem = UI::mainWindowUI::typeColumnIndex;
 
 		SendMessageW(ref.getList(), LVM_SETITEMW, NULL, reinterpret_cast<LPARAM>(&item));
@@ -175,7 +175,7 @@ void updateSizeColumn(UI::MainWindow& ref, const vector<db::fileDataRepresentati
 	for (size_t i = 0; i < data.size(); i++)
 	{
 		item.pszText = const_cast<wchar_t*>(data[i].fileSizeS.data());
-		item.iItem = i;
+		item.iItem = static_cast<int>(i);
 		item.iSubItem = UI::mainWindowUI::sizeColumnIndex;
 
 		SendMessageW(ref.getList(), LVM_SETITEMW, NULL, reinterpret_cast<LPARAM>(&item));

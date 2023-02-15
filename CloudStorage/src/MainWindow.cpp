@@ -336,7 +336,7 @@ LRESULT __stdcall MainWindowProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM
 	static wstring login;
 	static wstring password;
 	static size_t uploadFileIndex;
-	static int downloadFileIndex;
+	static LRESULT downloadFileIndex;
 	static bool isCancel;
 #pragma endregion
 
