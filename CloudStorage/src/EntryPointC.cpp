@@ -15,10 +15,10 @@ int __stdcall wWinMain(HINSTANCE hInstance, HINSTANCE, PWSTR pCmdLine, int nCmdS
 
 	utility::INIParser parser(settingsFile);
 
-	web::HTTPNetwork::setAPIServerIp(parser.getKeyValue("APIServer", "ServerIp"));
-	web::HTTPNetwork::setAPIServerPort(parser.getKeyValue("APIServer", "ServerPort"));
+	web::HTTPNetwork::setAPIServerIp(parser.getKeyValueData("APIServer", "ServerIp"));
+	web::HTTPNetwork::setAPIServerPort(parser.getKeyValueData("APIServer", "ServerPort"));
 
-	UI::MainWindow::setDownloadFolder(parser.getKeyValue("UserSettings", "DownloadFolder"));
+	UI::MainWindow::setDownloadFolder(parser.getKeyValueData("UserSettings", "DownloadFolder"));
 
 	UI::MainWindow& instance = UI::MainWindow::get();
 

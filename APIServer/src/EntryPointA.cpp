@@ -21,13 +21,13 @@ int main(int argc, char** argv)
 
 	utility::INIParser parser(settingsFile);
 
-	web::APIServer::setAPIServerPort(parser.getKeyValue("APIServer", "ServerPort"));
+	web::APIServer::setAPIServerPort(parser.getKeyValueData("APIServer", "ServerPort"));
 
-	web::FilesNetwork::setCloudStorageServerIp(parser.getKeyValue("CloudStorageServer", "ServerIp"));
-	web::FilesNetwork::setCloudStorageServerPort(parser.getKeyValue("CloudStorageServer", "ServerPort"));
+	web::FilesNetwork::setCloudStorageServerIp(parser.getKeyValueData("CloudStorageServer", "ServerIp"));
+	web::FilesNetwork::setCloudStorageServerPort(parser.getKeyValueData("CloudStorageServer", "ServerPort"));
 
-	web::DataBaseNetwork::setDataBaseServerIp(parser.getKeyValue("DataBaseServer", "ServerIp"));
-	web::DataBaseNetwork::setDataBaseServerPort(parser.getKeyValue("DataBaseServer", "ServerPort"));
+	web::DataBaseNetwork::setDataBaseServerIp(parser.getKeyValueData("DataBaseServer", "ServerIp"));
+	web::DataBaseNetwork::setDataBaseServerPort(parser.getKeyValueData("DataBaseServer", "ServerPort"));
 
 	showAllCommands();
 
@@ -90,7 +90,7 @@ int main(int argc, char** argv)
 			}
 		}
 	}
-	catch (const web::WebException& e)
+	catch (const web::exceptions::WebException& e)
 	{
 		cout << e.what() << endl;
 	}

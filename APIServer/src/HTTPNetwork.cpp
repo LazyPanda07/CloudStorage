@@ -20,7 +20,7 @@ namespace web
 		{
 			return Network::sendBytes(data.data(), data.size());
 		}
-		catch (const WebException& e)
+		catch (const exceptions::WebException& e)
 		{
 			this->log(e.what());
 			return -1;
@@ -43,7 +43,7 @@ namespace web
 
 				if (lastPacket < 0)
 				{
-					throw WebException();
+					throw exceptions::WebException();
 				}
 				else if (lastPacket == 0)
 				{
@@ -55,7 +55,7 @@ namespace web
 				if (totalReceive > 25 && !size)
 				{
 					HTTPParser parser(data);
-					const unordered_map<string, string>& headers = parser.getHeaders();
+					const auto& headers = parser.getHeaders();
 
 					auto it = headers.find("Total-HTTP-Message-Size");
 
@@ -80,7 +80,7 @@ namespace web
 
 			return totalReceive;
 		}
-		catch (const WebException& e)
+		catch (const exceptions::WebException& e)
 		{
 			this->log(e.what());
 			return -1;
@@ -88,18 +88,18 @@ namespace web
 	}
 
 	HTTPNetwork::HTTPNetwork(SOCKET clientSocket) :
-		Network(clientSocket, Network::ReceiveMode::prohibitResize)
+		Network(clientSocket, Network::receiveMode::prohibitResize)
 	{
 
 	}
 
-	int HTTPNetwork::sendData(const string_view& data)
+	int HTTPNetwork::sendData(string_view data)
 	{
 		try
 		{
 			return Network::sendBytes(data.data(), data.size());
 		}
-		catch (const WebException& e)
+		catch (const exceptions::WebException& e)
 		{
 			this->log(e.what());
 			return -1;
@@ -122,7 +122,7 @@ namespace web
 
 				if (lastPacket < 0)
 				{
-					throw WebException();
+					throw exceptions::WebException();
 				}
 				else if (lastPacket == 0)
 				{
@@ -134,7 +134,7 @@ namespace web
 				if (totalReceive > 25 && !size)
 				{
 					HTTPParser parser(data);
-					const unordered_map<string, string>& headers = parser.getHeaders();
+					const auto& headers = parser.getHeaders();
 
 					auto it = headers.find("Total-HTTP-Message-Size");
 
@@ -159,7 +159,7 @@ namespace web
 
 			return totalReceive;
 		}
-		catch (const WebException& e)
+		catch (const exceptions::WebException& e)
 		{
 			this->log(e.what());
 			return -1;

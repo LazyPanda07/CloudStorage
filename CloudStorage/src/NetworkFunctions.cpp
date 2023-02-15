@@ -125,7 +125,7 @@ void exitFromApplication(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream
 	{
 		*clientStream << request;
 	}
-	catch (const web::WebException&)
+	catch (const web::exceptions::WebException&)
 	{
 
 	}

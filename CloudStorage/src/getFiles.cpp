@@ -76,7 +76,7 @@ void asyncGetFiles(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream>& cli
 	{
 		*clientStream << request;
 	}
-	catch (const web::WebException&)
+	catch (const web::exceptions::WebException&)
 	{
 		if (UI::serverRequestError(ref) == IDOK)
 		{
@@ -90,7 +90,7 @@ void asyncGetFiles(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream>& cli
 	{
 		*clientStream >> response;
 	}
-	catch (const web::WebException&)
+	catch (const web::exceptions::WebException&)
 	{
 		if (UI::serverResponseError(ref) == IDOK)
 		{

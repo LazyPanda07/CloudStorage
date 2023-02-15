@@ -70,7 +70,7 @@ string asyncFolderControlMessages(UI::MainWindow& ref, unique_ptr<streams::IOSoc
 		request = web::HTTPBuilder().postRequest().headers
 		(
 			requestType::controlType, controlRequest
-		).build(&body);
+		).build(body);
 	}
 
 	utility::web::insertSizeHeaderToHTTPMessage(request);
@@ -88,7 +88,7 @@ string asyncFolderControlMessages(UI::MainWindow& ref, unique_ptr<streams::IOSoc
 	{
 		*clientStream << request;
 	}
-	catch (const web::WebException&)
+	catch (const web::exceptions::WebException&)
 	{
 
 	}
@@ -106,7 +106,7 @@ string asyncFolderControlMessages(UI::MainWindow& ref, unique_ptr<streams::IOSoc
 	{
 		*clientStream >> response;
 	}
-	catch (const web::WebException&)
+	catch (const web::exceptions::WebException&)
 	{
 
 	}
@@ -209,7 +209,7 @@ void asyncUploadFile(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream>& c
 			"File-Name", file.filename().string(),
 			"Range", offset,
 			isLast ? "Total-File-Size" : "Reserved", isLast ? fileSize : 0
-		).build(data);
+		).build(*data);
 
 		utility::web::insertSizeHeaderToHTTPMessage(message);
 
@@ -217,7 +217,7 @@ void asyncUploadFile(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream>& c
 		{
 			*clientStream << message;
 		}
-		catch (const web::WebException&)
+		catch (const web::exceptions::WebException&)
 		{
 			UI::serverRequestError(ref);
 			SendMessageW(ref.getMainWindow(), UI::events::deletePopupWindowE, NULL, NULL);
@@ -238,7 +238,7 @@ void asyncUploadFile(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream>& c
 	{
 		*clientStream >> response;
 	}
-	catch (const web::WebException&)
+	catch (const web::exceptions::WebException&)
 	{
 		UI::serverResponseError(ref);
 		SendMessageW(ref.getMainWindow(), UI::events::deletePopupWindowE, NULL, NULL);
@@ -376,7 +376,7 @@ void asyncDownloadFile(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream>&
 		{
 			*clientStream << request;
 		}
-		catch (const web::WebException&)
+		catch (const web::exceptions::WebException&)
 		{
 			UI::serverRequestError(ref);
 			out.close();
@@ -387,7 +387,7 @@ void asyncDownloadFile(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream>&
 		{
 			*clientStream >> response;
 		}
-		catch (const web::WebException&)
+		catch (const web::exceptions::WebException&)
 		{
 			UI::serverResponseError(ref);
 			out.close();
@@ -395,7 +395,7 @@ void asyncDownloadFile(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream>&
 		}
 
 		web::HTTPParser parser(response);
-		const unordered_map<string, string>& headers = parser.getHeaders();
+		const auto& headers = parser.getHeaders();
 		auto it = headers.find("Total-File-Size");
 		lastPacket = it != end(headers);
 		const string& data = parser.getBody();
@@ -483,16 +483,16 @@ void asyncReconnect(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream>& cl
 	{
 		*clientStream << request;
 	}
-	catch (const web::WebException&)
+	catch (const web::exceptions::WebException&)
 	{
 
 	}
 
 	try
 	{
-		clientStream = make_unique<streams::IOSocketStream>(new buffers::IOSocketBuffer(new web::HTTPNetwork()));
+		clientStream = make_unique<streams::IOSocketStream>(make_unique<web::HTTPNetwork>());
 	}
-	catch (const web::WebException&)
+	catch (const web::exceptions::WebException&)
 	{
 		if (UI::serverRequestError(ref) == IDOK)
 		{
@@ -551,7 +551,7 @@ void asyncCreateFolder(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream>&
 	request = web::HTTPBuilder().postRequest().headers
 	(
 		requestType::filesType, filesRequests::createFolder
-	).build(&body);
+	).build(body);
 
 	utility::web::insertSizeHeaderToHTTPMessage(request);
 
@@ -561,7 +561,7 @@ void asyncCreateFolder(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream>&
 
 		*clientStream >> response;
 	}
-	catch (const web::WebException&)
+	catch (const web::exceptions::WebException&)
 	{
 
 	}
@@ -674,7 +674,7 @@ void asyncRegistration(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream>&
 	string request = web::HTTPBuilder().postRequest().headers
 	(
 		requestType::accountType, accountRequests::registration
-	).build(&body);
+	).build(body);
 
 	utility::web::insertSizeHeaderToHTTPMessage(request);
 
@@ -691,7 +691,7 @@ void asyncRegistration(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream>&
 	{
 		*clientStream << request;
 	}
-	catch (const web::WebException&)
+	catch (const web::exceptions::WebException&)
 	{
 		if (UI::serverRequestError(ref) == IDOK)
 		{
@@ -708,7 +708,7 @@ void asyncRegistration(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream>&
 	{
 		*clientStream >> response;
 	}
-	catch (const web::WebException&)
+	catch (const web::exceptions::WebException&)
 	{
 		if (UI::serverResponseError(ref) == IDOK)
 		{
@@ -827,7 +827,7 @@ void asyncAuthorization(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream>
 	string request = web::HTTPBuilder().postRequest().headers
 	(
 		requestType::accountType, accountRequests::authorization
-	).build(&body);
+	).build(body);
 
 	utility::web::insertSizeHeaderToHTTPMessage(request);
 
@@ -844,7 +844,7 @@ void asyncAuthorization(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream>
 	{
 		*clientStream << request;
 	}
-	catch (const web::WebException&)
+	catch (const web::exceptions::WebException&)
 	{
 		UI::serverRequestError(ref);
 		return;
@@ -854,7 +854,7 @@ void asyncAuthorization(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream>
 	{
 		*clientStream >> response;
 	}
-	catch (const web::WebException&)
+	catch (const web::exceptions::WebException&)
 	{
 		UI::serverResponseError(ref);
 		return;
@@ -925,7 +925,7 @@ void setLogin(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream>& clientSt
 	string request = web::HTTPBuilder().postRequest().headers
 	(
 		requestType::accountType, accountRequests::setLogin
-	).build(&body);
+	).build(body);
 
 	utility::web::insertSizeHeaderToHTTPMessage(request);
 
@@ -933,7 +933,7 @@ void setLogin(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream>& clientSt
 	{
 		*clientStream << request;
 	}
-	catch (const web::WebException&)
+	catch (const web::exceptions::WebException&)
 	{
 
 	}
@@ -942,7 +942,7 @@ void setLogin(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream>& clientSt
 	{
 		*clientStream >> response;
 	}
-	catch (const web::WebException&)
+	catch (const web::exceptions::WebException&)
 	{
 
 	}
@@ -963,9 +963,9 @@ void asyncFirstConnect(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream>&
 			return;
 		}
 
-		clientStream = make_unique<streams::IOSocketStream>(new buffers::IOSocketBuffer(new web::HTTPNetwork()));
+		clientStream = make_unique<streams::IOSocketStream>(make_unique<web::HTTPNetwork>());
 	}
-	catch (const web::WebException&)
+	catch (const web::exceptions::WebException&)
 	{
 		if (UI::serverRequestError(ref) == IDOK)
 		{

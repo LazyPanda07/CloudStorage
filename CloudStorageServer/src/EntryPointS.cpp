@@ -19,7 +19,7 @@ int main(int argc, char** argv)
 
 	utility::INIParser parser(settingsFile);
 
-	web::CloudStorageServer::setCloudStorageServerPort(parser.getKeyValue("CloudStorageServer", "ServerPort"));
+	web::CloudStorageServer::setCloudStorageServerPort(parser.getKeyValueData("CloudStorageServer", "ServerPort"));
 
 	showAllCommands();
 
@@ -75,7 +75,7 @@ int main(int argc, char** argv)
 		}
 
 	}
-	catch (const web::WebException& e)
+	catch (const web::exceptions::WebException& e)
 	{
 		cout << e.what() << endl;
 	}

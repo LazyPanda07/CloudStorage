@@ -55,7 +55,7 @@ void removeFile(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream>& client
 	{
 		*clientStream << request;
 	}
-	catch (const web::WebException&)
+	catch (const web::exceptions::WebException&)
 	{
 		UI::serverRequestError(ref);
 		return;
@@ -65,14 +65,14 @@ void removeFile(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream>& client
 	{
 		*clientStream >> response;
 	}
-	catch (const web::WebException&)
+	catch (const web::exceptions::WebException&)
 	{
 		UI::serverResponseError(ref);
 		return;
 	}
 
 	web::HTTPParser parser(response);
-	const unordered_map<string, string>& headers = parser.getHeaders();
+	const auto& headers = parser.getHeaders();
 
 	if (headers.at("Error") == "0")
 	{

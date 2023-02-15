@@ -17,10 +17,9 @@ namespace web
 {
 	void CloudStorageServer::clientConnection(SOCKET clientSocket, sockaddr addr)
 	{
-		streams::IOSocketStream clientStream(new buffers::BaseIOSocketBuffer(new FilesNetwork(clientSocket)));
+		streams::IOSocketStream clientStream(make_unique<FilesNetwork>(clientSocket));
 		string login;
 		filesystem::path currentPath(filesystem::current_path());
-		const string ip = getIpV4(addr);
 
 		while (true)
 		{
@@ -80,7 +79,7 @@ namespace web
 					return;
 				}
 			}
-			catch (const WebException&)
+			catch (const exceptions::WebException&)
 			{
 				return;
 			}
@@ -88,7 +87,7 @@ namespace web
 	}
 
 	CloudStorageServer::CloudStorageServer() :
-		BaseTCPServer(cloudStorageServerPort, serverTimeoutRecv, false)
+		BaseTCPServer(cloudStorageServerPort, "0.0.0.0", serverTimeoutRecv, false)
 	{
 
 	}

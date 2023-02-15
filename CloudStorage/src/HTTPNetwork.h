@@ -20,7 +20,7 @@ namespace web
 	public:
 		HTTPNetwork();
 
-		int sendData(const std::string_view& data) override;
+		int sendData(std::string_view data) override;
 
 		int receiveData(std::string& data) override;
 

@@ -19,7 +19,7 @@ int main(int argc, char** argv)
 
 	utility::INIParser parser(settingsFile);
 
-	web::DataBaseServer::setDataBaseServerPort(parser.getKeyValue("DataBaseServer", "ServerPort"));
+	web::DataBaseServer::setDataBaseServerPort(parser.getKeyValueData("DataBaseServer", "ServerPort"));
 
 	showAllCommands();
 
@@ -74,7 +74,7 @@ int main(int argc, char** argv)
 			}
 		}
 	}
-	catch (const web::WebException& e)
+	catch (const web::exceptions::WebException& e)
 	{
 		cout << e.what() << endl;
 	}

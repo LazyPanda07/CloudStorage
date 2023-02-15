@@ -21,11 +21,10 @@ namespace web
 {
 	void APIServer::clientConnection(SOCKET clientSocket, sockaddr addr)
 	{
-		streams::IOSocketStream clientStream(new buffers::IOSocketBuffer(new HTTPNetwork(clientSocket)));
+		streams::IOSocketStream clientStream(make_unique<HTTPNetwork>(clientSocket));
 		unique_ptr<streams::IOSocketStream> filesStream = nullptr;
 		unique_ptr<streams::IOSocketStream> dataBaseStream = nullptr;
 		string HTTPRequest;
-		const string ip = getIpV4(addr);
 
 		connectToFilesServer(filesStream);
 
@@ -42,7 +41,7 @@ namespace web
 				if (checkHTTP(HTTPRequest))
 				{
 					HTTPParser parser(HTTPRequest);
-					const unordered_map<string, string>& headers = parser.getHeaders();
+					const auto& headers = parser.getHeaders();
 					auto it = headers.find(requestType::accountType);
 
 					if (it != end(headers))
@@ -155,7 +154,7 @@ namespace web
 					}
 				}
 			}
-			catch (const WebException&)
+			catch (const exceptions::WebException&)
 			{
 				data.erase(ip);
 				return;
@@ -164,7 +163,7 @@ namespace web
 	}
 
 	APIServer::APIServer() :
-		BaseTCPServer(APIServerPort, serverTimeoutRecv, false)
+		BaseTCPServer(APIServerPort, "0.0.0.0", serverTimeoutRecv, false)
 	{
 
 	}

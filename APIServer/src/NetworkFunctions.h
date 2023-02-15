@@ -6,18 +6,19 @@
 #include <memory>
 
 #include "BaseIOSocketStream.h"
+#include "HTTPParser.h"
 
 bool checkHTTP(const std::string& request);
 
 void showAllFilesInFolder(streams::IOSocketStream& clientStream, std::unique_ptr<streams::IOSocketStream>& dataBaseStream);
 
-void uploadFile(streams::IOSocketStream& clientStream, std::unique_ptr<streams::IOSocketStream>& filesStream, std::unique_ptr<streams::IOSocketStream>& dataBaseStream, const std::string& data, const std::unordered_map<std::string, std::string>& headers);
+void uploadFile(streams::IOSocketStream& clientStream, std::unique_ptr<streams::IOSocketStream>& filesStream, std::unique_ptr<streams::IOSocketStream>& dataBaseStream, const std::string& data, const std::unordered_map<std::string, std::string, web::HTTPParser::insensitiveStringHash, web::HTTPParser::insensitiveStringEqual>& headers);
 
-void downloadFile(streams::IOSocketStream& clientStream, std::unique_ptr<streams::IOSocketStream>& filesStream, const std::unordered_map<std::string, std::string>& headers);
+void downloadFile(streams::IOSocketStream& clientStream, std::unique_ptr<streams::IOSocketStream>& filesStream, const std::unordered_map<std::string, std::string, web::HTTPParser::insensitiveStringHash, web::HTTPParser::insensitiveStringEqual>& headers);
 
-void removeFile(streams::IOSocketStream& clientStream, std::unique_ptr<streams::IOSocketStream>& filesStream, std::unique_ptr<streams::IOSocketStream>& dataBaseStream, const std::unordered_map<std::string, std::string>& headers);
+void removeFile(streams::IOSocketStream& clientStream, std::unique_ptr<streams::IOSocketStream>& filesStream, std::unique_ptr<streams::IOSocketStream>& dataBaseStream, const std::unordered_map<std::string, std::string, web::HTTPParser::insensitiveStringHash, web::HTTPParser::insensitiveStringEqual>& headers);
 
-void cancelUploadFile(streams::IOSocketStream& clientStream, std::unique_ptr<streams::IOSocketStream>& filesStream, const std::unordered_map<std::string, std::string>& headers);
+void cancelUploadFile(streams::IOSocketStream& clientStream, std::unique_ptr<streams::IOSocketStream>& filesStream, const std::unordered_map<std::string, std::string, web::HTTPParser::insensitiveStringHash, web::HTTPParser::insensitiveStringEqual>& headers);
 
 void setLogin(streams::IOSocketStream& clientStream, std::unique_ptr<streams::IOSocketStream>& filesStream, std::unique_ptr<streams::IOSocketStream>& dataBaseStream, const std::string& data);
 

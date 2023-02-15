@@ -16,10 +16,9 @@ namespace web
 {
 	void DataBaseServer::clientConnection(SOCKET clientSocket, sockaddr addr)
 	{
-		streams::IOSocketStream clientStream(new buffers::IOSocketBuffer(new DataBaseNetwork(clientSocket)));
+		streams::IOSocketStream clientStream(make_unique<DataBaseNetwork>(clientSocket));
 		string login;
 		filesystem::path currentPath("Home");
-		const string ip = getIpV4(addr);
 
 		while (true)
 		{
@@ -71,7 +70,7 @@ namespace web
 					return;
 				}
 			}
-			catch (const WebException&)
+			catch (const exceptions::WebException&)
 			{
 				return;
 			}
@@ -79,7 +78,7 @@ namespace web
 	}
 
 	DataBaseServer::DataBaseServer() : 
-		BaseTCPServer(dataBaseServerPort, serverTimeoutRecv, false)
+		BaseTCPServer(dataBaseServerPort, "0.0.0.0", serverTimeoutRecv, false)
 	{
 
 	}

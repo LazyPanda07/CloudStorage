@@ -16,9 +16,9 @@ namespace web
 			{
 				try
 				{
-					filesStream = make_unique<streams::IOSocketStream>(new buffers::IOSocketBuffer(new FilesNetwork()));
+					filesStream = make_unique<streams::IOSocketStream>(make_unique<FilesNetwork>());
 				}
-				catch (const web::WebException&)
+				catch (const web::exceptions::WebException&)
 				{
 
 				}
@@ -34,9 +34,9 @@ namespace web
 			{
 				try
 				{
-					dataBaseStream = make_unique<streams::IOSocketStream>(new buffers::IOSocketBuffer(new DataBaseNetwork()));
+					dataBaseStream = make_unique<streams::IOSocketStream>(make_unique<DataBaseNetwork>());
 				}
-				catch (const web::WebException&)
+				catch (const web::exceptions::WebException&)
 				{
 
 				}
