@@ -171,7 +171,6 @@ COPY /Y $(ProjectDir)settings.ini $(SolutionDir)$(Configuration)-$(Platform)\$(P
     <ClCompile Include="src\DataBaseNetwork.cpp" />
     <ClCompile Include="src\EntryPointA.cpp" />
     <ClCompile Include="src\FilesNetwork.cpp" />
-    <ClCompile Include="src\HTTPNetwork.cpp" />
     <ClCompile Include="src\NetworkFunctions.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -179,7 +178,6 @@ COPY /Y $(ProjectDir)settings.ini $(SolutionDir)$(Configuration)-$(Platform)\$(P
     <ClInclude Include="src\ConnectToOtherServers.h" />
     <ClInclude Include="src\DataBaseNetwork.h" />
     <ClInclude Include="src\FilesNetwork.h" />
-    <ClInclude Include="src\HTTPNetwork.h" />
     <ClInclude Include="src\NetworkFunctions.h" />
   </ItemGroup>
   <ItemGroup>

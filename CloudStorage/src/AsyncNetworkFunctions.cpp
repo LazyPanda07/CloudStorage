@@ -12,7 +12,7 @@
 #include "PopupWindows/DownloadFilePopupWindow.h"
 #include "PopupWindows/WaitResponsePopupWindow.h"
 #include "ClientTime.h"
-#include "HTTPNetwork.h"
+#include "CustomHTTPNetwork.h"
 #include "ErrorHandling.h"
 #include "getFiles.h"
 #include "removeFile.h"
@@ -478,7 +478,7 @@ void asyncReconnect(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream>& cl
 
 	try
 	{
-		clientStream = make_unique<streams::IOSocketStream>(make_unique<web::HTTPNetwork>());
+		clientStream = make_unique<streams::IOSocketStream>(make_unique<web::CustomHTTPNetwork>());
 	}
 	catch (const web::exceptions::WebException&)
 	{
@@ -943,7 +943,7 @@ void asyncFirstConnect(UI::MainWindow& ref, unique_ptr<streams::IOSocketStream>&
 			return;
 		}
 
-		clientStream = make_unique<streams::IOSocketStream>(make_unique<web::HTTPNetwork>());
+		clientStream = make_unique<streams::IOSocketStream>(make_unique<web::CustomHTTPNetwork>());
 	}
 	catch (const web::exceptions::WebException&)
 	{

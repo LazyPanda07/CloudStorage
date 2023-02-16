@@ -1,25 +1,22 @@
 #pragma once
 
-#include "BaseNetwork.h"
+#include "HTTPNetwork.h"
 
 namespace web
 {
-	class HTTPNetwork : public Network
+	class CustomHTTPNetwork : public HTTPNetwork
 	{
-	private:
-		void log(const std::string& message, std::any&& data = "") override;
-
 	private:
 		static inline std::string APIServerIp;
 		static inline std::string APIServerPort;
 
 	public:
-		HTTPNetwork();
+		CustomHTTPNetwork();
 
 		static void setAPIServerIp(std::string&& ip) noexcept;
 		
 		static void setAPIServerPort(std::string&& port) noexcept;
 
-		~HTTPNetwork() = default;
+		~CustomHTTPNetwork() = default;
 	};
 }

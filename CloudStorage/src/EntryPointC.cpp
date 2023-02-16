@@ -1,6 +1,6 @@
 #include "pch.h"
 
-#include "HTTPNetwork.h"
+#include "CustomHTTPNetwork.h"
 #include "MainWindow.h"
 #include "Log.h"
 #include "UIConstants.h"
@@ -9,14 +9,14 @@
 
 #pragma comment (lib, "INIParser.lib")
 
-int __stdcall wWinMain(HINSTANCE hInstance, HINSTANCE, PWSTR pCmdLine, int nCmdShow)
+int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, PWSTR pCmdLine, int nCmdShow)
 {
 	Log::init();
 
 	utility::INIParser parser(settingsFile);
 
-	web::HTTPNetwork::setAPIServerIp(parser.getKeyValueData("APIServer", "ServerIp"));
-	web::HTTPNetwork::setAPIServerPort(parser.getKeyValueData("APIServer", "ServerPort"));
+	web::CustomHTTPNetwork::setAPIServerIp(parser.getKeyValueData("APIServer", "ServerIp"));
+	web::CustomHTTPNetwork::setAPIServerPort(parser.getKeyValueData("APIServer", "ServerPort"));
 
 	UI::MainWindow::setDownloadFolder(parser.getKeyValueData("UserSettings", "DownloadFolder"));
 
@@ -25,12 +25,21 @@ int __stdcall wWinMain(HINSTANCE hInstance, HINSTANCE, PWSTR pCmdLine, int nCmdS
 	SendMessageW(instance.getMainWindow(), UI::events::initMainWindowPtrE, reinterpret_cast<WPARAM>(&instance), NULL);
 
 	MSG msg = {};
+	BOOL errorCode;
 
-	while (GetMessageW(&msg, nullptr, NULL, NULL))
+	while ((errorCode = GetMessage(&msg, nullptr, 0, 0)) != 0)
 	{
-		TranslateMessage(&msg);
-		DispatchMessageW(&msg);
+		if (errorCode == -1)
+		{
+			break;
+		}
+		else
+		{
+			TranslateMessage(&msg);
+
+			DispatchMessageW(&msg);
+		}
 	}
 
-	return 0;
+	return errorCode;
 }
