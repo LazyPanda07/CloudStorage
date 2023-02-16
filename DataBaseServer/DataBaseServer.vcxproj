@@ -82,7 +82,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)BaseTCPServer\src;$(SolutionDir)pch\src;$(SolutionDir)SocketStreams\src;$(SolutionDir)Log\src;$(SolutionDir)INIParser\src;$(SolutionDir)HTTP\JSON\src</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)BaseTCPServer\src;$(SolutionDir)pch\src;$(SolutionDir)Log\src;$(SolutionDir)INIParser\src;$(SolutionDir)Networks\src;$(SolutionDir)Networks\SocketStreams\src;$(SolutionDir)Networks\HTTP\src;$(SolutionDir)Networks\HTTP\JSON\src</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <PrecompiledHeaderOutputFile>$(SolutionDir)bin\$(Configuration)-$(Platform)\pch\pch.pch</PrecompiledHeaderOutputFile>
@@ -109,7 +109,7 @@ IF EXIST $(SolutionDir)bin\int\$(Configuration)-$(Platform)\pch\vc$(PlatformTool
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)BaseTCPServer\src;$(SolutionDir)pch\src;$(SolutionDir)SocketStreams\src;$(SolutionDir)Log\src;$(SolutionDir)INIParser\src;$(SolutionDir)HTTP\JSON\src</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)BaseTCPServer\src;$(SolutionDir)pch\src;$(SolutionDir)Log\src;$(SolutionDir)INIParser\src;$(SolutionDir)Networks\src;$(SolutionDir)Networks\SocketStreams\src;$(SolutionDir)Networks\HTTP\src;$(SolutionDir)Networks\HTTP\JSON\src</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <PrecompiledHeaderOutputFile>$(SolutionDir)bin\$(Configuration)-$(Platform)\pch\pch.pch</PrecompiledHeaderOutputFile>
@@ -138,7 +138,7 @@ IF EXIST $(SolutionDir)bin\int\$(Configuration)-$(Platform)\pch\vc$(PlatformTool
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)BaseTCPServer\src;$(SolutionDir)pch\src;$(SolutionDir)SocketStreams\src;$(SolutionDir)Log\src;$(SolutionDir)INIParser\src;$(SolutionDir)HTTP\JSON\src</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)BaseTCPServer\src;$(SolutionDir)pch\src;$(SolutionDir)Log\src;$(SolutionDir)INIParser\src;$(SolutionDir)Networks\src;$(SolutionDir)Networks\SocketStreams\src;$(SolutionDir)Networks\HTTP\src;$(SolutionDir)Networks\HTTP\JSON\src</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <PrecompiledHeaderOutputFile>$(SolutionDir)bin\$(Configuration)-$(Platform)\pch\pch.pch</PrecompiledHeaderOutputFile>
@@ -179,11 +179,11 @@ COPY /Y $(ProjectDir)settings.ini $(SolutionDir)$(Configuration)-$(Platform)\$(P
     <ProjectReference Include="..\Log\Log.vcxproj">
       <Project>{89755e92-d5a7-4fa6-b227-7ddc3bba9aa1}</Project>
     </ProjectReference>
+    <ProjectReference Include="..\Networks\Networks.vcxproj">
+      <Project>{e3c5b070-57f3-4e11-9701-fdcc108aecb3}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\pch\pch.vcxproj">
       <Project>{00878fb3-d378-4955-954a-b005d0e232fc}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\SocketStreams\SocketStreams.vcxproj">
-      <Project>{8bb9f3bd-68f4-403a-acc6-f85c75f5d14f}</Project>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

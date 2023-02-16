@@ -85,7 +85,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <PrecompiledHeaderOutputFile>$(SolutionDir)bin\$(Configuration)-$(Platform)\pch\pch.pch</PrecompiledHeaderOutputFile>
-      <AdditionalIncludeDirectories>$(SolutionDir)pch\src;$(SolutionDir)Log\src;$(SolutionDir)SocketStreams\src;$(SolutionDir)HTTP\src;$(SolutionDir)INIParser\src;$(SolutionDir)Resources\src;$(SolutionDir)HTTP\JSON\src</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)pch\src;$(SolutionDir)Log\src;$(SolutionDir)INIParser\src;$(SolutionDir)Resources\src;$(SolutionDir)Networks\src;$(SolutionDir)Networks\SocketStreams\src;$(SolutionDir)Networks\HTTP\src;$(SolutionDir)Networks\HTTP\JSON\src</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -112,7 +112,7 @@ IF EXIST $(SolutionDir)bin\int\$(Configuration)-$(Platform)\pch\vc$(PlatformTool
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <PrecompiledHeaderOutputFile>$(SolutionDir)bin\$(Configuration)-$(Platform)\pch\pch.pch</PrecompiledHeaderOutputFile>
-      <AdditionalIncludeDirectories>$(SolutionDir)pch\src;$(SolutionDir)Log\src;$(SolutionDir)SocketStreams\src;$(SolutionDir)HTTP\src;$(SolutionDir)INIParser\src;$(SolutionDir)Resources\src;$(SolutionDir)HTTP\JSON\src</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)pch\src;$(SolutionDir)Log\src;$(SolutionDir)INIParser\src;$(SolutionDir)Resources\src;$(SolutionDir)Networks\src;$(SolutionDir)Networks\SocketStreams\src;$(SolutionDir)Networks\HTTP\src;$(SolutionDir)Networks\HTTP\JSON\src</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -141,7 +141,7 @@ IF EXIST $(SolutionDir)bin\int\$(Configuration)-$(Platform)\pch\vc$(PlatformTool
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <PrecompiledHeaderOutputFile>$(SolutionDir)bin\$(Configuration)-$(Platform)\pch\pch.pch</PrecompiledHeaderOutputFile>
-      <AdditionalIncludeDirectories>$(SolutionDir)pch\src;$(SolutionDir)Log\src;$(SolutionDir)SocketStreams\src;$(SolutionDir)HTTP\src;$(SolutionDir)INIParser\src;$(SolutionDir)Resources\src;$(SolutionDir)HTTP\JSON\src</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)pch\src;$(SolutionDir)Log\src;$(SolutionDir)INIParser\src;$(SolutionDir)Resources\src;$(SolutionDir)Networks\src;$(SolutionDir)Networks\SocketStreams\src;$(SolutionDir)Networks\HTTP\src;$(SolutionDir)Networks\HTTP\JSON\src</AdditionalIncludeDirectories>
       <DebugInformationFormat>None</DebugInformationFormat>
     </ClCompile>
     <Link>
@@ -226,23 +226,20 @@ COPY /Y $(ProjectDir)settings.ini $(SolutionDir)$(Configuration)-$(Platform)\$(P
     <ClInclude Include="src\WindowProcedures\WaitResponsePopupWindowProcedure.h" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\HTTP\HTTP.vcxproj">
-      <Project>{cd88b391-b7b9-47d5-af8d-153fcb2b5a2b}</Project>
-    </ProjectReference>
     <ProjectReference Include="..\INIParser\INIParser.vcxproj">
       <Project>{ce5f5455-0e8a-49e8-be46-0a12ed898352}</Project>
     </ProjectReference>
     <ProjectReference Include="..\Log\Log.vcxproj">
       <Project>{89755e92-d5a7-4fa6-b227-7ddc3bba9aa1}</Project>
     </ProjectReference>
+    <ProjectReference Include="..\Networks\Networks.vcxproj">
+      <Project>{e3c5b070-57f3-4e11-9701-fdcc108aecb3}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\pch\pch.vcxproj">
       <Project>{00878fb3-d378-4955-954a-b005d0e232fc}</Project>
     </ProjectReference>
     <ProjectReference Include="..\Resources\Resources.vcxproj">
       <Project>{621b3dce-73ed-4311-9b88-ed47c8a5d2a4}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\SocketStreams\SocketStreams.vcxproj">
-      <Project>{8bb9f3bd-68f4-403a-acc6-f85c75f5d14f}</Project>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
