@@ -132,7 +132,7 @@
     </Link>
     <CustomBuildStep>
       <Outputs>$(IntDir)vc$(PlatformToolsetVersion).pdb</Outputs>
-      <Command>COPY /Y $(OutDir)$(ProjectName).dll $(SolutionDir)$(Configuration)-$(Platform)\CloudStorage\</Command>
+      <Command>COPY /Y $(OutDir)$(ProjectName).dll $(SolutionDir)bin\$(Configuration)-$(Platform)\CloudStorage\</Command>
     </CustomBuildStep>
   </ItemDefinitionGroup>
   <ItemGroup>
